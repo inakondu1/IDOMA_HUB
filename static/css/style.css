@@ -1,0 +1,157 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background: #f8f4ed;
+	color: #2d241c;
+}
+
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 7%;
+	background: #ffffff;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.logo {
+	font-size: 24px;
+	font-weight: bold;
+	letter-spacing: 1px;
+}
+
+nav {
+	display: flex;
+	gap: 25px;
+}
+
+nav a {
+	text-decoration: none;
+	color: #2d241c;
+	font-weight: 500;
+}
+
+.hero {
+	min-height: 600px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 70px 20px;
+}
+
+.hero-content {
+	max-width: 750px;
+}
+
+.welcome {
+	font-size: 14px;
+	font-weight: bold;
+	letter-spacing: 3px;
+	margin-bottom: 15px;
+}
+
+h1 {
+	font-size: clamp(45px, 9vw, 85px);
+	letter-spacing: 3px;
+	margin-bottom: 10px;
+}
+
+.tagline {
+	font-size: 26px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.description {
+	font-size: 18px;
+	line-height: 1.7;
+	margin: 0 auto 30px;
+	max-width: 650px;
+}
+
+.hero-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 15px;
+	flex-wrap: wrap;
+}
+
+.button {
+	padding: 14px 25px;
+	border-radius: 8px;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.primary {
+	background: #2d241c;
+	color: white;
+}
+
+.secondary {
+	border: 2px solid #2d241c;
+	color: #2d241c;
+}
+
+.features {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 25px;
+	padding: 60px 7%;
+	background: white;
+}
+
+.feature-card {
+	text-align: center;
+	padding: 35px 25px;
+	border-radius: 15px;
+	background: #f8f4ed;
+}
+
+.icon {
+	font-size: 40px;
+	margin-bottom: 15px;
+}
+
+.feature-card h2 {
+	margin-bottom: 12px;
+}
+
+.feature-card p {
+	line-height: 1.6;
+}
+
+footer {
+	text-align: center;
+	padding: 30px;
+	background: #2d241c;
+	color: white;
+}
+
+@media (max-width: 700px) {
+	.navbar {
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	nav {
+		gap: 12px;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	.features {
+		grid-template-columns: 1fr;
+		padding: 40px 6%;
+	}
+
+	.hero {
+		min-height: 500px;
+	}
+}
