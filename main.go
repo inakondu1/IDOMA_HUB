@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+var db = initDatabase()
+
 type PageData struct {
 	Title string
 }
