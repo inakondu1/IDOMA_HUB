@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Create Account - IDOMA HUB</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+	<header class="navbar">
+		<div class="logo">IDOMA HUB</div>
+
+		<nav>
+			<a href="/">Home</a>
+			<a href="#">Learn Idoma</a>
+			<a href="#">Community</a>
+			<a href="#">Login</a>
+		</nav>
+	</header>
+
+	<main class="auth-page">
+
+		<div class="auth-card">
+
+			<h1>Create Account</h1>
+
+			<p class="auth-intro">
+				Join IDOMA HUB and become part of the community.
+			</p>
+
+			<form action="/register" method="POST">
+
+				<label for="username">Username</label>
+				<input
+					type="text"
+					id="username"
+					name="username"
+					placeholder="Choose a username"
+					required
+				>
+
+				<label for="email">Email</label>
+				<input
+					type="email"
+					id="email"
+					name="email"
+					placeholder="Enter your email"
+					required
+				>
+
+				<label for="password">Password</label>
+				<input
+					type="password"
+					id="password"
+					name="password"
+					placeholder="Create a password"
+					required
+				>
+
+				<label for="confirm_password">Confirm Password</label>
+				<input
+					type="password"
+					id="confirm_password"
+					name="confirm_password"
+					placeholder="Enter your password again"
+					required
+				>
+
+				<button type="submit" class="auth-button">
+					Create Account
+				</button>
+
+			</form>
+
+			<p class="auth-footer">
+				Already have an account?
+				<a href="/login">Login</a>
+			</p>
+
+		</div>
+
+	</main>
+
+	<footer>
+		<p>© 2026 IDOMA HUB. Learn. Connect. Preserve.</p>
+	</footer>
+
+</body>
+</html>
