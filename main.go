@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var db = initDatabase()
@@ -33,6 +35,45 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func registerPageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		username := r.FormValue("username")
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+		confirmPassword := r.FormValue("confirm_password")
+
+		if password != confirmPassword {
+			http.Error(w, "Passwords do not match.", http.StatusBadRequest)
+			return
+		}
+
+		if len(password) < 8 {
+			http.Error(w, "Password must be at least 8 characters.", http.StatusBadRequest)
+			return
+		}
+
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			http.Error(w, "Unable to secure password.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		_, err = db.Exec(
+			"INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+			username,
+			email,
+			string(hashedPassword),
+		)
+		if err != nil {
+			http.Error(w, "Unable to create account. Username or email may already exist.", http.StatusBadRequest)
+			log.Println(err)
+			return
+		}
+
+		fmt.Fprintln(w, "Account created successfully!")
+		return
+	}
+
 	tmpl, err := template.ParseFiles("templates/register.html")
 	if err != nil {
 		http.Error(w, "Unable to load registration page", http.StatusInternalServerError)
