@@ -11,6 +11,8 @@ type Post struct {
 	Username  string
 	Content   string
 	CreatedAt string
+	LikeCount int
+	LikedByMe bool
 }
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,11 +43,20 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT posts.id, users.username, posts.content, posts.created_at
+		SELECT posts.id, users.username, posts.content, posts.created_at,
+		       COUNT(post_likes.id) AS like_count,
+		       EXISTS (
+			       SELECT 1
+			       FROM post_likes user_like
+			       WHERE user_like.post_id = posts.id
+			       AND user_like.user_id = ?
+		       ) AS liked_by_me
 		FROM posts
 		JOIN users ON users.id = posts.user_id
+		LEFT JOIN post_likes ON post_likes.post_id = posts.id
+		GROUP BY posts.id
 		ORDER BY posts.id DESC
-	`)
+	`, userID)
 
 	if err != nil {
 		http.Error(w, "Unable to load posts.", http.StatusInternalServerError)
@@ -64,6 +75,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 			&post.Username,
 			&post.Content,
 			&post.CreatedAt,
+			&post.LikeCount,
+			&post.LikedByMe,
 		)
 
 		if err != nil {
@@ -134,6 +147,62 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, "Unable to create post.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+}
+
+func likePostHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	postID := r.FormValue("post_id")
+
+	if postID == "" {
+		http.Error(w, "Post ID is required.", http.StatusBadRequest)
+		return
+	}
+
+	var liked bool
+
+	err := db.QueryRow(
+		"SELECT EXISTS(SELECT 1 FROM post_likes WHERE post_id = ? AND user_id = ?)",
+		postID,
+		userID,
+	).Scan(&liked)
+
+	if err != nil {
+		http.Error(w, "Unable to check like.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	if liked {
+		_, err = db.Exec(
+			"DELETE FROM post_likes WHERE post_id = ? AND user_id = ?",
+			postID,
+			userID,
+		)
+	} else {
+		_, err = db.Exec(
+			"INSERT INTO post_likes (post_id, user_id) VALUES (?, ?)",
+			postID,
+			userID,
+		)
+	}
+
+	if err != nil {
+		http.Error(w, "Unable to update like.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}

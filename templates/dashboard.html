@@ -122,7 +122,15 @@
 
                                     <div class="post-actions">
 
-                                            <button type="button">❤️ Like</button>
+                                            <form action="/like" method="POST" style="display:inline;">
+    <input type="hidden" name="post_id" value="{{.ID}}">
+    {{if .LikedByMe}}
+    <button type="submit">💔 Unlike</button>
+{{else}}
+    <button type="submit">❤️ Like</button>
+{{end}}
+<span>{{.LikeCount}} likes</span>
+</form>
                                             <button type="button">💬 Comment</button>
                                             <button type="button">↗ Share</button>
 

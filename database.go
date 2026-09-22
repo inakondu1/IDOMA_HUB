@@ -46,6 +46,22 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create posts table:", err)
 	}
 
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS post_likes (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			post_id INTEGER NOT NULL,
+			user_id INTEGER NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE(post_id, user_id),
+			FOREIGN KEY (post_id) REFERENCES posts(id),
+			FOREIGN KEY (user_id) REFERENCES users(id)
+		)
+	`)
+
+	if err != nil {
+		log.Fatal("Unable to create post likes table:", err)
+	}
+
 	log.Println("Database connected successfully.")
 
 	return db
