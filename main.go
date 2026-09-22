@@ -117,7 +117,15 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Fprintf(w, "Login successful! User ID: %d", userID)
+		sessionID, err := createSession(userID)
+		if err != nil {
+			http.Error(w, "Unable to create login session.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		setSessionCookie(w, sessionID)
+		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 		return
 	}
 
@@ -150,6 +158,8 @@ func main() {
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/register", registerPageHandler)
 	http.HandleFunc("/login", loginPageHandler)
+	http.HandleFunc("/dashboard", dashboardHandler)
+	http.HandleFunc("/logout", logoutHandler)
 
 	fmt.Println("IDOMA HUB is running at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

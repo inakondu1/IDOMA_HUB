@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{.Title}}</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="dashboard-body">
+
+	<header class="dashboard-navbar">
+
+		<div class="dashboard-logo">
+			IDOMA HUB
+		</div>
+
+		<nav class="dashboard-nav">
+			<a href="/dashboard">Home</a>
+			<a href="#">Friends</a>
+			<a href="#">Messages</a>
+			<a href="#">Notifications</a>
+			<a href="/logout">Logout</a>
+		</nav>
+
+	</header>
+
+	<main class="dashboard-container">
+
+		<section class="welcome-section">
+			<h1>Welcome, {{.Username}}!</h1>
+			<p>
+				This is your IDOMA HUB community space.
+			</p>
+		</section>
+
+		<div class="dashboard-layout">
+
+			<aside class="dashboard-sidebar">
+
+				<div class="dashboard-card">
+					<h2>Your IDOMA HUB</h2>
+
+					<a href="#">My Profile</a>
+					<a href="#">Friends</a>
+					<a href="#">Messages</a>
+					<a href="#">Notifications</a>
+				</div>
+
+				<div class="dashboard-card">
+					<h2>Explore Idoma</h2>
+
+					<a href="#">Learn Idoma</a>
+					<a href="#">Idoma Names</a>
+					<a href="#">Proverbs</a>
+					<a href="#">Culture & Heritage</a>
+				</div>
+
+				<div class="dashboard-card">
+					<h2>Our Land</h2>
+
+					<a href="#">Idoma Farmers</a>
+					<a href="#">Farm Produce</a>
+					<a href="#">Marketplace</a>
+				</div>
+
+			</aside>
+
+			<section class="feed-section">
+
+				<div class="dashboard-card create-post-card">
+
+					<h2>Create a Post</h2>
+
+					<form action="#" method="POST">
+
+						<textarea
+							name="content"
+							placeholder="What is happening in your community?"
+							rows="4"
+						></textarea>
+
+						<div class="post-actions">
+
+							<button type="button">
+								📷 Photo
+							</button>
+
+							<button type="button">
+								🎥 Video
+							</button>
+
+							<button type="button">
+								�� Farm Produce
+							</button>
+
+							<button type="submit" class="post-button">
+								Post
+							</button>
+
+						</div>
+
+					</form>
+
+				</div>
+
+				<div class="dashboard-card feed-post">
+
+					<div class="post-header">
+						<div class="post-avatar">I</div>
+
+						<div>
+							<strong>IDOMA HUB</strong>
+							<span>Welcome to the community</span>
+						</div>
+					</div>
+
+					<p>
+						Welcome to IDOMA HUB — a place where our people
+						can connect, learn Idoma, share our culture,
+						and celebrate our land.
+					</p>
+
+					<div class="post-actions">
+
+						<button type="button">❤️ Like</button>
+						<button type="button">💬 Comment</button>
+						<button type="button">↗ Share</button>
+
+					</div>
+
+				</div>
+
+				<div class="dashboard-card feed-post">
+
+					<div class="post-header">
+						<div class="post-avatar">🌾</div>
+
+						<div>
+							<strong>Idoma Farmers</strong>
+							<span>Our land. Our food. Our people.</span>
+						</div>
+					</div>
+
+					<p>
+						Share your farm produce, farming stories,
+						agricultural knowledge, and opportunities
+						with the IDOMA HUB community.
+					</p>
+
+					<div class="post-actions">
+
+						<button type="button">❤️ Like</button>
+						<button type="button">💬 Comment</button>
+						<button type="button">↗ Share</button>
+
+					</div>
+
+				</div>
+
+			</section>
+
+			<aside class="dashboard-rightbar">
+
+				<div class="dashboard-card">
+					<h2>People You May Know</h2>
+
+					<p>Connect with Idoma people.</p>
+
+					<button type="button" class="secondary-button">
+						Find Friends
+					</button>
+				</div>
+
+				<div class="dashboard-card">
+					<h2>Learn Idoma</h2>
+
+					<p>
+						Start learning Idoma words, phrases,
+						names, and expressions.
+					</p>
+
+					<a href="#" class="dashboard-link">
+						Start Learning
+					</a>
+				</div>
+
+			</aside>
+
+		</div>
+
+	</main>
+
+	<footer>
+		<p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+	</footer>
+
+</body>
+</html>

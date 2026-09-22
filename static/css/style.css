@@ -360,3 +360,262 @@ footer p {
 		padding: 28px 22px;
 	}
 }
+
+
+/* ================================
+   IDOMA HUB DASHBOARD
+   ================================ */
+
+.dashboard-body {
+	background: var(--idoma-cream);
+	color: var(--idoma-black);
+}
+
+.dashboard-navbar {
+	background: var(--idoma-black);
+	color: var(--idoma-white);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 5%;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.dashboard-logo {
+	color: var(--idoma-white);
+	font-size: 1.3rem;
+	font-weight: 800;
+	letter-spacing: 1px;
+}
+
+.dashboard-nav {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+}
+
+.dashboard-nav a {
+	color: var(--idoma-white);
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.dashboard-nav a:hover {
+	color: #f2b5b8;
+}
+
+.dashboard-container {
+	width: min(1400px, 94%);
+	margin: 0 auto;
+	padding: 30px 0 50px;
+}
+
+.welcome-section {
+	margin-bottom: 25px;
+}
+
+.welcome-section h1 {
+	margin-bottom: 8px;
+	color: var(--idoma-black);
+}
+
+.welcome-section p {
+	margin: 0;
+	color: var(--idoma-gray);
+}
+
+.dashboard-layout {
+	display: grid;
+	grid-template-columns: 240px minmax(0, 1fr) 240px;
+	gap: 22px;
+	align-items: start;
+}
+
+.dashboard-card {
+	background: var(--idoma-white);
+	border: 1px solid var(--idoma-border);
+	border-radius: 14px;
+	padding: 20px;
+	margin-bottom: 20px;
+	box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-card h2 {
+	margin-top: 0;
+	margin-bottom: 15px;
+	font-size: 1.05rem;
+}
+
+.dashboard-sidebar .dashboard-card a {
+	display: block;
+	padding: 10px 0;
+	color: var(--idoma-black);
+	text-decoration: none;
+	border-bottom: 1px solid var(--idoma-border);
+}
+
+.dashboard-sidebar .dashboard-card a:last-child {
+	border-bottom: none;
+}
+
+.dashboard-sidebar .dashboard-card a:hover {
+	color: var(--idoma-red);
+}
+
+.create-post-card textarea {
+	width: 100%;
+	box-sizing: border-box;
+	border: 1px solid var(--idoma-border);
+	border-radius: 10px;
+	padding: 14px;
+	font: inherit;
+	resize: vertical;
+	background: #fffdf9;
+}
+
+.create-post-card textarea:focus {
+	outline: 2px solid rgba(181, 18, 27, 0.2);
+	border-color: var(--idoma-red);
+}
+
+.post-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 15px;
+	align-items: center;
+}
+
+.post-actions button {
+	border: 1px solid var(--idoma-border);
+	background: var(--idoma-white);
+	padding: 9px 13px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.post-actions button:hover {
+	border-color: var(--idoma-red);
+	color: var(--idoma-red);
+}
+
+.post-actions .post-button {
+	background: var(--idoma-red);
+	color: var(--idoma-white);
+	border-color: var(--idoma-red);
+	margin-left: auto;
+}
+
+.post-actions .post-button:hover {
+	background: var(--idoma-red-dark);
+	color: var(--idoma-white);
+}
+
+.post-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 15px;
+}
+
+.post-avatar {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	background: var(--idoma-red);
+	color: var(--idoma-white);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 800;
+	font-size: 1.1rem;
+}
+
+.post-header strong,
+.post-header span {
+	display: block;
+}
+
+.post-header span {
+	margin-top: 3px;
+	color: var(--idoma-gray);
+	font-size: 0.85rem;
+}
+
+.feed-post p {
+	line-height: 1.7;
+	color: #333;
+}
+
+.dashboard-rightbar .dashboard-card p {
+	color: var(--idoma-gray);
+	line-height: 1.6;
+}
+
+.secondary-button,
+.dashboard-link {
+	display: inline-block;
+	border: none;
+	background: var(--idoma-red);
+	color: var(--idoma-white);
+	padding: 10px 15px;
+	border-radius: 8px;
+	text-decoration: none;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.secondary-button:hover,
+.dashboard-link:hover {
+	background: var(--idoma-red-dark);
+	color: var(--idoma-white);
+}
+
+@media (max-width: 1000px) {
+	.dashboard-layout {
+		grid-template-columns: 200px minmax(0, 1fr);
+	}
+
+	.dashboard-rightbar {
+		display: none;
+	}
+}
+
+@media (max-width: 700px) {
+	.dashboard-navbar {
+		padding: 14px 4%;
+	}
+
+	.dashboard-nav {
+		gap: 10px;
+	}
+
+	.dashboard-nav a {
+		font-size: 0.8rem;
+	}
+
+	.dashboard-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.dashboard-sidebar {
+		display: none;
+	}
+
+	.dashboard-container {
+		width: 94%;
+		padding-top: 20px;
+	}
+
+	.post-actions .post-button {
+		margin-left: 0;
+		width: 100%;
+	}
+
+	.post-actions button {
+		flex: 1;
+	}
+}
