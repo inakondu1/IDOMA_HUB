@@ -32,6 +32,20 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create users table:", err)
 	}
 
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS posts (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			content TEXT NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (user_id) REFERENCES users(id)
+		)
+	`)
+
+	if err != nil {
+		log.Fatal("Unable to create posts table:", err)
+	}
+
 	log.Println("Database connected successfully.")
 
 	return db

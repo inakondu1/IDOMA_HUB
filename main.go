@@ -159,6 +159,7 @@ func main() {
 	http.HandleFunc("/register", registerPageHandler)
 	http.HandleFunc("/login", loginPageHandler)
 	http.HandleFunc("/dashboard", dashboardHandler)
+	http.HandleFunc("/post", createPostHandler)
 	http.HandleFunc("/logout", logoutHandler)
 
 	fmt.Println("IDOMA HUB is running at http://localhost:8080")

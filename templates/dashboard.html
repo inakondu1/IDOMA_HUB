@@ -72,7 +72,7 @@
 
 					<h2>Create a Post</h2>
 
-					<form action="#" method="POST">
+					<form action="/post" method="POST">
 
 						<textarea
 							name="content"
@@ -104,55 +104,41 @@
 
 				</div>
 
-				<div class="dashboard-card feed-post">
+                            {{range .Posts}}
+                            <div class="dashboard-card feed-post">
 
-					<div class="post-header">
-						<div class="post-avatar">I</div>
+                                    <div class="post-header">
+                                            <div class="post-avatar">I</div>
 
-						<div>
-							<strong>IDOMA HUB</strong>
-							<span>Welcome to the community</span>
-						</div>
-					</div>
+                                            <div>
+                                                    <strong>{{.Username}}</strong>
+                                                    <span>{{.CreatedAt}}</span>
+                                            </div>
+                                    </div>
 
-					<p>
-						Welcome to IDOMA HUB — a place where our people
-						can connect, learn Idoma, share our culture,
-						and celebrate our land.
-					</p>
+                                    <p>
+                                            {{.Content}}
+                                    </p>
 
-					<div class="post-actions">
+                                    <div class="post-actions">
 
-						<button type="button">❤️ Like</button>
-						<button type="button">💬 Comment</button>
-						<button type="button">↗ Share</button>
+                                            <button type="button">❤️ Like</button>
+                                            <button type="button">💬 Comment</button>
+                                            <button type="button">↗ Share</button>
 
-					</div>
+                                    </div>
 
-				</div>
+                            </div>
+                            {{else}}
+                            <div class="dashboard-card feed-post">
 
-				<div class="dashboard-card feed-post">
+                                    <p>
+                                            No posts yet. Be the first person to share
+                                            something with the IDOMA HUB community.
+                                    </p>
 
-					<div class="post-header">
-						<div class="post-avatar">🌾</div>
-
-						<div>
-							<strong>Idoma Farmers</strong>
-							<span>Our land. Our food. Our people.</span>
-						</div>
-					</div>
-
-					<p>
-						Share your farm produce, farming stories,
-						agricultural knowledge, and opportunities
-						with the IDOMA HUB community.
-					</p>
-
-					<div class="post-actions">
-
-						<button type="button">❤️ Like</button>
-						<button type="button">💬 Comment</button>
-						<button type="button">↗ Share</button>
+                            </div>
+                            {{end}}
 
 					</div>
 
