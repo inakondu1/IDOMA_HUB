@@ -481,25 +481,29 @@ footer p {
 }
 
 .post-actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
-	margin-top: 15px;
-	align-items: center;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 15px;
+        padding: 8px 0;
+        border-top: 1px solid var(--idoma-border);
+        border-bottom: 1px solid var(--idoma-border);
 }
 
 .post-actions button {
-	border: 1px solid var(--idoma-border);
-	background: var(--idoma-white);
-	padding: 9px 13px;
-	border-radius: 8px;
-	cursor: pointer;
-	font-weight: 600;
+        border: none;
+        background: transparent;
+        color: #555;
+        padding: 9px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.9rem;
 }
 
 .post-actions button:hover {
-	border-color: var(--idoma-red);
-	color: var(--idoma-red);
+        background: #f0f2f5;
+        color: var(--idoma-red);
 }
 
 .post-actions .post-button {
@@ -512,6 +516,51 @@ footer p {
 .post-actions .post-button:hover {
 	background: var(--idoma-red-dark);
 	color: var(--idoma-white);
+}
+
+/* Social post action bar */
+.post-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 15px;
+        padding: 8px 0;
+        border-top: 1px solid var(--idoma-border);
+        border-bottom: 1px solid var(--idoma-border);
+}
+
+.post-actions form {
+        margin: 0;
+}
+
+.post-actions button,
+.social-action {
+        border: none;
+        background: transparent;
+        color: #555;
+        padding: 9px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.9rem;
+}
+
+.post-actions button:hover,
+.social-action:hover {
+        background: #f0f2f5;
+        color: var(--idoma-red);
+}
+
+.like-form {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+}
+
+.like-form span {
+        color: var(--idoma-gray);
+        font-size: 0.85rem;
+        font-weight: 600;
 }
 
 .post-header {
@@ -548,6 +597,102 @@ footer p {
 .feed-post p {
 	line-height: 1.7;
 	color: #333;
+}
+
+/* Facebook-style comments */
+.comments-section {
+        width: 100%;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--idoma-border);
+}
+
+.comment-form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 15px;
+}
+
+.comment-form input {
+        flex: 1;
+        min-width: 0;
+        border: 1px solid #ddd;
+        background: #f0f2f5;
+        border-radius: 22px;
+        padding: 11px 15px;
+        font: inherit;
+        outline: none;
+}
+
+.comment-form input:focus {
+        border-color: var(--idoma-red);
+        background: var(--idoma-white);
+}
+
+.comment-form button {
+        border: none;
+        background: var(--idoma-red);
+        color: var(--idoma-white);
+        padding: 10px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 700;
+}
+
+.comment-form button:hover {
+        background: var(--idoma-red-dark);
+}
+
+.comment {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin-bottom: 12px;
+}
+
+.comment-avatar {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 50%;
+        background: var(--idoma-red);
+        color: var(--idoma-white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.85rem;
+}
+
+.comment-bubble {
+        background: #f0f2f5;
+        border-radius: 16px;
+        padding: 8px 12px;
+        max-width: 85%;
+}
+
+.comment-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 3px;
+}
+
+.comment-meta strong {
+        font-size: 0.9rem;
+}
+
+.comment-meta span {
+        color: var(--idoma-gray);
+        font-size: 0.75rem;
+}
+
+.comment-bubble p {
+        margin: 0;
+        line-height: 1.45;
+        color: #333;
+        font-size: 0.92rem;
 }
 
 .dashboard-rightbar .dashboard-card p {

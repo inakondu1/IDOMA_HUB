@@ -129,9 +129,33 @@
 {{else}}
     <button type="submit">❤️ Like</button>
 {{end}}
-<span>{{.LikeCount}} likes</span>
+<span>
+        {{.LikeCount}}
+        {{if eq .LikeCount 1}}like{{else}}likes{{end}}
+</span>
 </form>
-                                            <button type="button">💬 Comment</button>
+                                            <div class="comments-section">
+
+    <form action="/comment" method="POST" class="comment-form">
+        <input type="hidden" name="post_id" value="{{.ID}}">
+        <input type="text" name="content" placeholder="Write a comment..." required>
+        <button type="submit">💬 Comment</button>
+    </form>
+
+    {{range .Comments}}
+    <div class="comment">
+        <div class="comment-avatar">{{printf "%.1s" .Username}}</div>
+        <div class="comment-bubble">
+            <div class="comment-meta">
+                <strong>{{.Username}}</strong>
+                <span>{{.CreatedAt}}</span>
+            </div>
+            <p>{{.Content}}</p>
+        </div>
+    </div>
+    {{end}}
+
+</div>
                                             <button type="button">↗ Share</button>
 
                                     </div>

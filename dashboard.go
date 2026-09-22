@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 )
 
 type Post struct {
@@ -13,6 +14,39 @@ type Post struct {
 	CreatedAt string
 	LikeCount int
 	LikedByMe bool
+	Comments  []Comment
+}
+
+func formatDateTime(value string) string {
+	parsed, err := time.Parse("2006-01-02T15:04:05Z", value)
+	if err != nil {
+		return value
+	}
+
+	wat := time.FixedZone("WAT", 60*60)
+	localTime := parsed.In(wat)
+	now := time.Now().In(wat)
+
+	if localTime.Year() == now.Year() &&
+		localTime.YearDay() == now.YearDay() {
+		return "Today at " + localTime.Format("3:04 PM")
+	}
+
+	yesterday := now.AddDate(0, 0, -1)
+	if localTime.Year() == yesterday.Year() &&
+		localTime.YearDay() == yesterday.YearDay() {
+		return "Yesterday at " + localTime.Format("3:04 PM")
+	}
+
+	return localTime.Format("Jan 2 at 3:04 PM")
+}
+
+type Comment struct {
+	ID        int
+	PostID    int
+	Username  string
+	Content   string
+	CreatedAt string
 }
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
@@ -83,6 +117,50 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Unable to read posts.", http.StatusInternalServerError)
 			log.Println(err)
 			return
+		}
+
+		commentRows, err := db.Query(`
+                        SELECT comments.id, comments.post_id, users.username,
+                               comments.content, comments.created_at
+                        FROM comments
+                        JOIN users ON users.id = comments.user_id
+                        WHERE comments.post_id = ?
+                        ORDER BY comments.id ASC
+                `, post.ID)
+
+		if err != nil {
+			http.Error(w, "Unable to load comments.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		for commentRows.Next() {
+			var comment Comment
+
+			err := commentRows.Scan(
+				&comment.ID,
+				&comment.PostID,
+				&comment.Username,
+				&comment.Content,
+				&comment.CreatedAt,
+			)
+
+			if err != nil {
+				commentRows.Close()
+				http.Error(w, "Unable to read comments.", http.StatusInternalServerError)
+				log.Println(err)
+				return
+			}
+
+			post.Comments = append(post.Comments, comment)
+		}
+
+		commentRows.Close()
+
+		post.CreatedAt = formatDateTime(post.CreatedAt)
+
+		for i := range post.Comments {
+			post.Comments[i].CreatedAt = formatDateTime(post.Comments[i].CreatedAt)
 		}
 
 		posts = append(posts, post)
@@ -203,6 +281,47 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, "Unable to update like.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+}
+
+func createCommentHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	postID := r.FormValue("post_id")
+	content := r.FormValue("content")
+
+	if postID == "" {
+		http.Error(w, "Post ID is required.", http.StatusBadRequest)
+		return
+	}
+
+	if content == "" {
+		http.Error(w, "Comment cannot be empty.", http.StatusBadRequest)
+		return
+	}
+
+	_, err := db.Exec(
+		"INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)",
+		postID,
+		userID,
+		content,
+	)
+
+	if err != nil {
+		http.Error(w, "Unable to create comment.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
