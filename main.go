@@ -92,11 +92,64 @@ func registerPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func loginPageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		usernameOrEmail := r.FormValue("username")
+		password := r.FormValue("password")
+
+		var userID int
+		var storedPassword string
+
+		err := db.QueryRow(
+			"SELECT id, password FROM users WHERE username = ? OR email = ?",
+			usernameOrEmail,
+			usernameOrEmail,
+		).Scan(&userID, &storedPassword)
+
+		if err != nil {
+			http.Error(w, "Invalid username/email or password.", http.StatusUnauthorized)
+			return
+		}
+
+		err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
+		if err != nil {
+			http.Error(w, "Invalid username/email or password.", http.StatusUnauthorized)
+			return
+		}
+
+		fmt.Fprintf(w, "Login successful! User ID: %d", userID)
+		return
+	}
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	tmpl, err := template.ParseFiles("templates/login.html")
+	if err != nil {
+		http.Error(w, "Unable to load login page", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	data := PageData{
+		Title: "Login - IDOMA HUB",
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, "Unable to display login page", http.StatusInternalServerError)
+		log.Println(err)
+	}
+}
+
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/register", registerPageHandler)
+	http.HandleFunc("/login", loginPageHandler)
 
 	fmt.Println("IDOMA HUB is running at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

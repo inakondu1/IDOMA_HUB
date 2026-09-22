@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login - IDOMA HUB</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+	<header class="navbar">
+		<div class="logo">IDOMA HUB</div>
+
+		<nav>
+			<a href="/">Home</a>
+			<a href="#">Learn Idoma</a>
+			<a href="#">Community</a>
+			<a href="/register">Join</a>
+		</nav>
+	</header>
+
+	<main class="auth-page">
+
+		<div class="auth-card">
+
+			<h1>Welcome Back</h1>
+
+			<p class="auth-intro">
+				Login to your IDOMA HUB account.
+			</p>
+
+			<form action="/login" method="POST">
+
+				<label for="username">Username or Email</label>
+				<input
+					type="text"
+					id="username"
+					name="username"
+					placeholder="Enter your username or email"
+					required
+				>
+
+				<label for="password">Password</label>
+				<input
+					type="password"
+					id="password"
+					name="password"
+					placeholder="Enter your password"
+					required
+				>
+
+				<button type="submit" class="auth-button">
+					Login
+				</button>
+
+			</form>
+
+			<p class="auth-footer">
+				Don't have an account?
+				<a href="/register">Create Account</a>
+			</p>
+
+		</div>
+
+	</main>
+
+	<footer>
+		<p>© 2026 IDOMA HUB. Learn. Connect. Preserve.</p>
+	</footer>
+
+</body>
+</html>
