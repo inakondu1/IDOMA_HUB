@@ -19,7 +19,7 @@
 			<a href="/dashboard">Home</a>
 			<a href="#">Friends</a>
 			<a href="#">Messages</a>
-			<a href="#">Notifications</a>
+			<a href="/notifications">🔔 Notifications{{if .NotificationCount}} <span class="notification-badge">{{.NotificationCount}}</span>{{end}}</a>
 			<a href="/logout">Logout</a>
 		</nav>
 
@@ -41,7 +41,7 @@
 				<div class="dashboard-card">
 					<h2>Your IDOMA HUB</h2>
 
-					<a href="#">My Profile</a>
+					<a href="/profile">My Profile</a>
 					<a href="#">Friends</a>
 					<a href="#">Messages</a>
 					<a href="#">Notifications</a>
@@ -185,9 +185,9 @@
 
 					<p>Connect with Idoma people.</p>
 
-					<button type="button" class="secondary-button">
-						Find Friends
-					</button>
+							<a href="/friends" class="secondary-button">
+								Find Friends
+							</a>
 				</div>
 
 				<div class="dashboard-card">

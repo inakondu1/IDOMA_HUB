@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friends - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        .friends-page {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px 60px;
+        }
+
+        .friends-header {
+            margin-bottom: 30px;
+        }
+
+        .friends-header h1 {
+            margin-bottom: 8px;
+        }
+
+        .friends-header p {
+            color: #666;
+        }
+
+        .friends-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .friends-section h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .friend-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+        }
+
+        .friend-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .friend-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .friend-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #287a43;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .friend-name {
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .friend-button {
+            border: none;
+            border-radius: 8px;
+            padding: 9px 13px;
+            cursor: pointer;
+            background: #287a43;
+            color: white;
+            font-weight: 600;
+        }
+
+        .friend-button.reject {
+            background: #eee;
+            color: #333;
+        }
+
+        .empty-message {
+            color: #777;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .friends-page {
+                margin-top: 25px;
+                padding: 0 14px 40px;
+            }
+
+            .friends-section {
+                padding: 18px;
+            }
+
+            .friend-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .friend-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="friends-page">
+
+        <div class="friends-header">
+            <h1>👥 Friends</h1>
+            <p>Connect with people in the IDOMA HUB community.</p>
+        </div>
+
+        <section class="friends-section">
+            <h2>People You May Know</h2>
+
+            {{if .Suggestions}}
+                <div class="friend-list">
+                    {{range .Suggestions}}
+                        <div class="friend-card">
+                            <div class="friend-info">
+                                <div class="friend-avatar">
+                                    {{printf "%.1s" .Username}}
+                                </div>
+
+                                <div class="friend-name">
+                                    {{.Username}}
+                                </div>
+                            </div>
+
+                            <form method="POST" action="/friends">
+                                <input type="hidden" name="action" value="send">
+                                <input type="hidden" name="user_id" value="{{.ID}}">
+                                <button class="friend-button" type="submit">
+                                    Add Friend
+                                </button>
+                            </form>
+                        </div>
+                    {{end}}
+                </div>
+            {{else}}
+                <p class="empty-message">
+                    No new people to connect with right now.
+                </p>
+            {{end}}
+        </section>
+
+        <section class="friends-section">
+            <h2>Incoming Requests</h2>
+
+            {{if .Incoming}}
+                <div class="friend-list">
+                    {{range .Incoming}}
+                        <div class="friend-card">
+                            <div class="friend-info">
+                                <div class="friend-avatar">
+                                    {{printf "%.1s" .Username}}
+                                </div>
+
+                                <div class="friend-name">
+                                    {{.Username}}
+                                </div>
+                            </div>
+
+                            <div>
+                                <form method="POST" action="/friends" style="display:inline;">
+                                    <input type="hidden" name="action" value="accept">
+                                    <input type="hidden" name="user_id" value="{{.ID}}">
+                                    <button class="friend-button" type="submit">
+                                        Accept
+                                    </button>
+                                </form>
+
+                                <form method="POST" action="/friends" style="display:inline;">
+                                    <input type="hidden" name="action" value="reject">
+                                    <input type="hidden" name="user_id" value="{{.ID}}">
+                                    <button class="friend-button reject" type="submit">
+                                        Reject
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {{end}}
+                </div>
+            {{else}}
+                <p class="empty-message">
+                    You don't have any pending friend requests.
+                </p>
+            {{end}}
+        </section>
+
+        <section class="friends-section">
+            <h2>Your Friends</h2>
+
+            {{if .Friends}}
+                <div class="friend-list">
+                    {{range .Friends}}
+                        <div class="friend-card">
+                            <div class="friend-info">
+                                <div class="friend-avatar">
+                                    {{printf "%.1s" .Username}}
+                                </div>
+
+                                <div class="friend-name">
+                                    {{.Username}}
+                                </div>
+                            </div>
+
+                                <form method="POST" action="/friends">
+                                        <input type="hidden" name="action" value="remove">
+                                        <input type="hidden" name="user_id" value="{{.ID}}">
+                                        <button class="friend-button reject" type="submit">
+                                                Remove Friend
+                                        </button>
+                                </form>
+                        </div>
+                    {{end}}
+                </div>
+            {{else}}
+                <p class="empty-message">
+                    You haven't added any friends yet.
+                </p>
+            {{end}}
+        </section>
+
+        <p>
+            <a href="/dashboard">← Back to Dashboard</a>
+        </p>
+
+    </main>
+
+</body>
+</html>

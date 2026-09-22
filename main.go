@@ -12,7 +12,8 @@ import (
 var db = initDatabase()
 
 type PageData struct {
-	Title string
+	Title      string
+	Registered bool
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +71,7 @@ func registerPageHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Fprintln(w, "Account created successfully!")
+		http.Redirect(w, r, "/login?registered=1", http.StatusSeeOther)
 		return
 	}
 
@@ -82,7 +83,8 @@ func registerPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := PageData{
-		Title: "Create Account - IDOMA HUB",
+		Registered: r.URL.Query().Get("registered") == "1",
+		Title:      "Create Account - IDOMA HUB",
 	}
 
 	err = tmpl.Execute(w, data)
@@ -142,7 +144,8 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := PageData{
-		Title: "Login - IDOMA HUB",
+		Registered: r.URL.Query().Get("registered") == "1",
+		Title:      "Login - IDOMA HUB",
 	}
 
 	err = tmpl.Execute(w, data)
@@ -159,8 +162,12 @@ func main() {
 	http.HandleFunc("/register", registerPageHandler)
 	http.HandleFunc("/login", loginPageHandler)
 	http.HandleFunc("/dashboard", dashboardHandler)
+	http.HandleFunc("/profile", profileHandler)
+	http.HandleFunc("/friends", friendsHandler)
+	http.HandleFunc("/notifications", notificationsHandler)
 	http.HandleFunc("/post", createPostHandler)
 	http.HandleFunc("/like", likePostHandler)
+	http.HandleFunc("/comment", createCommentHandler)
 	http.HandleFunc("/logout", logoutHandler)
 
 	fmt.Println("IDOMA HUB is running at http://localhost:8080")

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="profile-page">
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="/dashboard" class="brand">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </div>
+</header>
+
+<main class="profile-container">
+
+    <!-- PROFILE HEADER -->
+
+    <section class="profile-header-card">
+
+        <div class="profile-cover-new">
+            <div class="profile-cover-title">IDOMA HUB</div>
+        </div>
+
+        <div class="profile-identity">
+
+            <div class="profile-avatar-new">
+                {{printf "%.1s" .Username}}
+            </div>
+
+            <div class="profile-identity-info">
+                <h1>{{.Username}}</h1>
+                <p>@{{.Username}}</p>
+                <span>Member of the IDOMA HUB community</span>
+            </div>
+
+            <div class="profile-actions">
+                <button type="button">✏️ Edit Profile</button>
+            </div>
+
+        </div>
+
+        <div class="profile-tabs">
+
+            <div class="profile-tab active">
+                <strong>{{len .Posts}}</strong>
+                <span>Posts</span>
+            </div>
+
+            <div class="profile-tab">
+                <strong>0</strong>
+                <span>Friends</span>
+            </div>
+
+            <div class="profile-tab">
+                <strong>0</strong>
+                <span>Photos</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROFILE CONTENT -->
+
+    <div class="profile-content">
+
+        <!-- ABOUT -->
+
+        <section class="profile-section">
+
+            <div class="profile-section-title">
+                <h2>About</h2>
+            </div>
+
+            <div class="profile-about-item">
+                <span class="about-icon">📧</span>
+                <div>
+                    <small>Email</small>
+                    <p>{{.Email}}</p>
+                </div>
+            </div>
+
+            <div class="profile-about-item">
+                <span class="about-icon">🌍</span>
+                <div>
+                    <small>Community</small>
+                    <p>IDOMA HUB</p>
+                </div>
+            </div>
+
+            <div class="profile-about-item">
+                <span class="about-icon">❤️</span>
+                <div>
+                    <small>About me</small>
+                    <p>Proud member of the IDOMA HUB community.</p>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- POSTS -->
+
+        <section class="profile-section">
+
+            <div class="profile-section-title">
+                <h2>My Posts</h2>
+                <span>{{len .Posts}} posts</span>
+            </div>
+
+            {{range .Posts}}
+
+            <article class="profile-post-new">
+
+                <div class="profile-post-top">
+
+                    <div class="profile-post-avatar">
+                        {{printf "%.1s" $.Username}}
+                    </div>
+
+                    <div class="profile-post-author">
+                        <strong>{{$.Username}}</strong>
+                        <span>{{.CreatedAt}}</span>
+                    </div>
+
+                </div>
+
+                <div class="profile-post-content">
+                    <p>{{.Content}}</p>
+                </div>
+
+                <div class="profile-post-footer">
+
+                    <span>❤️ {{.LikeCount}}
+                        {{if eq .LikeCount 1}}like{{else}}likes{{end}}
+                    </span>
+
+                    <span>💬 Comment</span>
+
+                    <span>↗ Share</span>
+
+                </div>
+
+            </article>
+
+            {{else}}
+
+            <div class="empty-profile-posts">
+                <div>��</div>
+                <h3>No posts yet</h3>
+                <p>Share something with the IDOMA HUB community.</p>
+
+                <a href="/dashboard">Create Your First Post</a>
+            </div>
+
+            {{end}}
+
+        </section>
+
+    </div>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+</body>
+</html>

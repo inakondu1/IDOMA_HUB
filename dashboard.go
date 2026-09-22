@@ -166,14 +166,31 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		posts = append(posts, post)
 	}
 
+	var notificationCount int
+
+	err = db.QueryRow(`
+		SELECT COUNT(*)
+		FROM friend_requests
+		WHERE receiver_id = ?
+		AND status = 'pending'
+	`, userID).Scan(&notificationCount)
+
+	if err != nil {
+		http.Error(w, "Unable to load notifications.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
 	data := struct {
-		Title    string
-		Username string
-		Posts    []Post
+		Title             string
+		Username          string
+		Posts             []Post
+		NotificationCount int
 	}{
-		Title:    "IDOMA HUB - Dashboard",
-		Username: username,
-		Posts:    posts,
+		Title:             "IDOMA HUB - Dashboard",
+		Username:          username,
+		Posts:             posts,
+		NotificationCount: notificationCount,
 	}
 
 	err = tmpl.Execute(w, data)

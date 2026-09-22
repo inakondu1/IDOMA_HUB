@@ -26,6 +26,12 @@
 
 			<h1>Welcome Back</h1>
 
+                        {{if .Registered}}
+                        <div class="success-message">
+                                Account created successfully! Please log in to continue.
+                        </div>
+                        {{end}}
+
 			<p class="auth-intro">
 				Login to your IDOMA HUB account.
 			</p>

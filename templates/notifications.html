@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{.Title}}</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="dashboard-body">
+
+	<header class="dashboard-navbar">
+		<div class="dashboard-logo">
+			IDOMA HUB
+		</div>
+
+		<nav class="dashboard-nav">
+			<a href="/dashboard">Home</a>
+			<a href="/friends">Friends</a>
+			<a href="#">Messages</a>
+			<a href="/notifications">🔔 Notifications{{if .Count}} <span class="notification-badge">{{.Count}}</span>{{end}}</a>
+			<a href="/logout">Logout</a>
+		</nav>
+	</header>
+
+	<main class="dashboard-container">
+
+		<section class="welcome-section">
+			<h1>Notifications</h1>
+			<p>
+				Stay updated with what is happening around your IDOMA HUB community.
+			</p>
+		</section>
+
+		<section class="dashboard-card">
+
+			<h2>Friend Requests</h2>
+
+			{{if .Requests}}
+
+				{{range .Requests}}
+
+					<div class="notification-item">
+
+						<div class="notification-avatar">
+							{{printf "%.1s" .Username}}
+						</div>
+
+						<div class="notification-content">
+							<strong>{{.Username}}</strong>
+							<span>sent you a friend request.</span>
+
+							<div class="notification-actions">
+
+								<form action="/notifications" method="POST">
+									<input type="hidden" name="action" value="accept">
+									<input type="hidden" name="request_id" value="{{.ID}}">
+									<button type="submit" class="friend-button">
+										Accept
+									</button>
+								</form>
+
+								<form action="/notifications" method="POST">
+									<input type="hidden" name="action" value="reject">
+									<input type="hidden" name="request_id" value="{{.ID}}">
+									<button type="submit" class="friend-button reject">
+										Reject
+									</button>
+								</form>
+
+							</div>
+						</div>
+
+					</div>
+
+				{{end}}
+
+			{{else}}
+
+				<p class="empty-message">
+					You have no new notifications.
+				</p>
+
+			{{end}}
+
+		</section>
+
+	</main>
+
+	<footer>
+		<p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+	</footer>
+
+</body>
+</html>
