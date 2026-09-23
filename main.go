@@ -156,6 +156,7 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	http.Handle("/static/uploads/posts/", http.StripPrefix("/static/uploads/posts/", http.FileServer(http.Dir(postUploadDir()))))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/", homeHandler)
@@ -163,11 +164,13 @@ func main() {
 	http.HandleFunc("/login", loginPageHandler)
 	http.HandleFunc("/dashboard", dashboardHandler)
 	http.HandleFunc("/profile", profileHandler)
+	http.HandleFunc("/profile-picture", profilePictureUploadHandler)
 	http.HandleFunc("/friends", friendsHandler)
 	http.HandleFunc("/notifications", notificationsHandler)
 	http.HandleFunc("/post", createPostHandler)
 	http.HandleFunc("/like", likePostHandler)
 	http.HandleFunc("/comment", createCommentHandler)
+	http.HandleFunc("/delete-post", deletePostHandler)
 	http.HandleFunc("/logout", logoutHandler)
 
 	fmt.Println("IDOMA HUB is running at http://localhost:8080")

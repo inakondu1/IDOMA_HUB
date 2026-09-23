@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
@@ -11,6 +12,8 @@ type ProfilePost struct {
 	Content   string
 	CreatedAt string
 	LikeCount int
+	MediaURL  string
+	MediaType string
 }
 
 func profileHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,20 +25,26 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 
 	var username string
 	var email string
+	var profilePicture sql.NullString
 
 	err := db.QueryRow(
-		"SELECT username, email FROM users WHERE id = ?",
+		"SELECT username, email, profile_picture FROM users WHERE id = ?",
 		userID,
-	).Scan(&username, &email)
+	).Scan(&username, &email, &profilePicture)
 
 	if err != nil {
 		http.Error(w, "Unable to load your profile.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
+	profilePictureURL := ""
+	if profilePicture.Valid {
+		profilePictureURL = profilePicture.String
+	}
 
 	rows, err := db.Query(`
 		SELECT posts.id, posts.content, posts.created_at,
+                       posts.media_url, posts.media_type,
 		       COUNT(post_likes.id) AS like_count
 		FROM posts
 		LEFT JOIN post_likes ON post_likes.post_id = posts.id
@@ -60,6 +69,8 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 			&post.ID,
 			&post.Content,
 			&post.CreatedAt,
+			&post.MediaURL,
+			&post.MediaType,
 			&post.LikeCount,
 		)
 
@@ -74,6 +85,7 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl, err := template.ParseFiles("templates/profile.html")
+
 	if err != nil {
 		http.Error(w, "Unable to load profile.", http.StatusInternalServerError)
 		log.Println(err)
@@ -81,18 +93,21 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Title    string
-		Username string
-		Email    string
-		Posts    []ProfilePost
+		Title          string
+		Username       string
+		ProfilePicture string
+		Email          string
+		Posts          []ProfilePost
 	}{
-		Title:    "My Profile - IDOMA HUB",
-		Username: username,
-		Email:    email,
-		Posts:    posts,
+		Title:          "My Profile - IDOMA HUB",
+		Username:       username,
+		ProfilePicture: profilePictureURL,
+		Email:          email,
+		Posts:          posts,
 	}
 
 	err = tmpl.Execute(w, data)
+
 	if err != nil {
 		http.Error(w, "Unable to display profile.", http.StatusInternalServerError)
 		log.Println(err)

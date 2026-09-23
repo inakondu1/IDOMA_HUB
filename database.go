@@ -96,10 +96,51 @@ func initDatabase() *sql.DB {
 	}
 
 	addPostMediaColumns(db)
+	addProfilePictureColumn(db)
 
 	log.Println("Database connected successfully.")
 
 	return db
+}
+
+func addProfilePictureColumn(db *sql.DB) {
+	rows, err := db.Query("PRAGMA table_info(users)")
+	if err != nil {
+		log.Fatal("Unable to inspect users table:", err)
+	}
+	defer rows.Close()
+
+	columns := make(map[string]bool)
+
+	for rows.Next() {
+		var cid int
+		var name string
+		var columnType string
+		var notNull int
+		var defaultValue interface{}
+		var primaryKey int
+
+		err := rows.Scan(
+			&cid,
+			&name,
+			&columnType,
+			&notNull,
+			&defaultValue,
+			&primaryKey,
+		)
+		if err != nil {
+			log.Fatal("Unable to read users table information:", err)
+		}
+
+		columns[name] = true
+	}
+
+	if !columns["profile_picture"] {
+		_, err = db.Exec("ALTER TABLE users ADD COLUMN profile_picture TEXT")
+		if err != nil {
+			log.Fatal("Unable to add profile_picture column:", err)
+		}
+	}
 }
 
 func addPostMediaColumns(db *sql.DB) {

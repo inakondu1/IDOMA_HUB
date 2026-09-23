@@ -225,6 +225,13 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
+func postUploadDir() string {
+	if dir := os.Getenv("UPLOAD_DIR"); dir != "" {
+		return dir
+	}
+	return filepath.Join("static", "uploads", "posts")
+}
+
 func createPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
@@ -247,6 +254,13 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	var mediaURL string
 	var mediaType string
+
+	uploadDir := postUploadDir()
+	if err := os.MkdirAll(uploadDir, 0755); err != nil {
+		http.Error(w, "Unable to prepare upload storage.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
 
 	photo, photoHeader, photoErr := r.FormFile("photo")
 	video, videoHeader, videoErr := r.FormFile("video")
@@ -271,7 +285,7 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
-		filePath := filepath.Join("static", "uploads", "posts", filename)
+		filePath := filepath.Join(postUploadDir(), filename)
 
 		dst, err := os.Create(filePath)
 		if err != nil {
@@ -303,7 +317,7 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
-		filePath := filepath.Join("static", "uploads", "posts", filename)
+		filePath := filepath.Join(postUploadDir(), filename)
 
 		dst, err := os.Create(filePath)
 		if err != nil {
@@ -398,6 +412,186 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+}
+
+func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	err := r.ParseMultipartForm(5 << 20)
+	if err != nil {
+		http.Error(w, "Unable to process image upload.", http.StatusBadRequest)
+		return
+	}
+
+	file, header, err := r.FormFile("profile_picture")
+	if err != nil {
+		http.Error(w, "Please choose an image.", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	ext := strings.ToLower(filepath.Ext(header.Filename))
+
+	allowed := map[string]bool{
+		".jpg":  true,
+		".jpeg": true,
+		".png":  true,
+		".gif":  true,
+		".webp": true,
+	}
+
+	if !allowed[ext] {
+		http.Error(w, "Only JPG, JPEG, PNG, GIF, and WEBP images are allowed.", http.StatusBadRequest)
+		return
+	}
+
+	if err := os.MkdirAll("static/uploads/profile", 0755); err != nil {
+		http.Error(w, "Unable to create upload folder.", http.StatusInternalServerError)
+		return
+	}
+
+	filename := fmt.Sprintf("profile_%d_%d%s", userID, time.Now().UnixNano(), ext)
+	filePath := filepath.Join("static/uploads/profile", filename)
+	mediaURL := "/static/uploads/profile/" + filename
+
+	destination, err := os.Create(filePath)
+	if err != nil {
+		http.Error(w, "Unable to save profile picture.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	defer destination.Close()
+
+	if _, err := io.Copy(destination, file); err != nil {
+		http.Error(w, "Unable to save profile picture.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	var oldPicture string
+
+	err = db.QueryRow(
+		"SELECT COALESCE(profile_picture, '' ) FROM users WHERE id = ?",
+		userID,
+	).Scan(&oldPicture)
+
+	if err != nil {
+		http.Error(w, "Unable to load your current profile picture.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	_, err = db.Exec(
+		"UPDATE users SET profile_picture = ? WHERE id = ?",
+		mediaURL,
+		userID,
+	)
+
+	if err != nil {
+		http.Error(w, "Unable to update your profile picture.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	if oldPicture != "" {
+		prefix := "/static/uploads/profile/"
+		if strings.HasPrefix(oldPicture, prefix) {
+			oldFilename := strings.TrimPrefix(oldPicture, prefix)
+
+			if !strings.Contains(oldFilename, "..") && !strings.Contains(oldFilename, "/") {
+				oldPath := filepath.Join("static/uploads/profile", oldFilename)
+
+				if err := os.Remove(oldPath); err != nil && !os.IsNotExist(err) {
+					log.Println("Unable to delete old profile picture:", err)
+				}
+			}
+		}
+	}
+
+	http.Redirect(w, r, "/profile", http.StatusSeeOther)
+}
+
+func deletePostHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	postID := r.FormValue("post_id")
+	if postID == "" {
+		http.Error(w, "Post ID is required.", http.StatusBadRequest)
+		return
+	}
+
+	var mediaURL string
+
+	err := db.QueryRow(
+		"SELECT media_url FROM posts WHERE id = ? AND user_id = ?",
+		postID,
+		userID,
+	).Scan(&mediaURL)
+
+	if err != nil {
+		http.Error(w, "Post not found.", http.StatusNotFound)
+		return
+	}
+
+	_, err = db.Exec("DELETE FROM comments WHERE post_id = ?", postID)
+	if err != nil {
+		http.Error(w, "Unable to delete post comments.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	_, err = db.Exec("DELETE FROM post_likes WHERE post_id = ?", postID)
+	if err != nil {
+		http.Error(w, "Unable to delete post likes.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	_, err = db.Exec(
+		"DELETE FROM posts WHERE id = ? AND user_id = ?",
+		postID,
+		userID,
+	)
+	if err != nil {
+		http.Error(w, "Unable to delete post.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	if mediaURL != "" {
+		prefix := "/static/uploads/posts/"
+		if strings.HasPrefix(mediaURL, prefix) {
+			filename := strings.TrimPrefix(mediaURL, prefix)
+
+			if !strings.Contains(filename, "..") && !strings.Contains(filename, "/") {
+				filePath := filepath.Join(postUploadDir(), filename)
+
+				if err := os.Remove(filePath); err != nil && !os.IsNotExist(err) {
+					log.Println("Unable to delete post media:", err)
+				}
+			}
+		}
+	}
+
+	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
 
 func createCommentHandler(w http.ResponseWriter, r *http.Request) {

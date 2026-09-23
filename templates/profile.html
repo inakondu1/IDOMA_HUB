@@ -34,7 +34,11 @@
         <div class="profile-identity">
 
             <div class="profile-avatar-new">
+                {{if .ProfilePicture}}
+                <img src="{{.ProfilePicture}}" alt="Profile picture" class="profile-picture">
+                {{else}}
                 {{printf "%.1s" .Username}}
+                {{end}}
             </div>
 
             <div class="profile-identity-info">
@@ -44,7 +48,11 @@
             </div>
 
             <div class="profile-actions">
-                <button type="button">✏️ Edit Profile</button>
+                <form action="/profile-picture" method="POST" enctype="multipart/form-data">
+                    <label for="profilePictureInput" class="profile-picture-button">📷 Change Picture</label>
+                    <input type="file" id="profilePictureInput" name="profile_picture" accept="image/*" required hidden>
+                    <button type="submit" class="profile-upload-button">Upload</button>
+                </form>
             </div>
 
         </div>
@@ -140,6 +148,17 @@
                     <p>{{.Content}}</p>
                 </div>
 
+                {{if .MediaURL}}
+                {{if eq .MediaType "image"}}
+                <img src="{{.MediaURL}}" alt="Post image" class="post-media">
+                {{else if eq .MediaType "video"}}
+                <video controls class="post-media">
+                    <source src="{{.MediaURL}}">
+                    Your browser does not support video playback.
+                </video>
+                {{end}}
+                {{end}}
+
                 <div class="profile-post-footer">
 
                     <span>❤️ {{.LikeCount}}
@@ -151,6 +170,11 @@
                     <span>↗ Share</span>
 
                 </div>
+
+                <form action="/delete-post" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');" style="margin-top: 12px;">
+                    <input type="hidden" name="post_id" value="{{.ID}}">
+                    <button type="submit" class="delete-post-button">🗑️ Delete Post</button>
+                </form>
 
             </article>
 
@@ -176,5 +200,19 @@
     <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
 </footer>
 
+<script>
+const profilePictureInput = document.getElementById("profilePictureInput");
+const profilePicturePreview = document.querySelector(".profile-avatar-new");
+
+profilePictureInput.addEventListener("change", function () {
+    if (!this.files.length) return;
+
+    const file = this.files[0];
+    const url = URL.createObjectURL(file);
+
+    profilePicturePreview.innerHTML =
+        `<img src="${url}" alt="Profile picture preview" class="profile-picture">`;
+});
+</script>
 </body>
 </html>

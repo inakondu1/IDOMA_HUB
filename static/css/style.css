@@ -1485,174 +1485,6 @@ body:has(.profile-card) .secondary-button:hover {
     }
 }
 
-
-/* =========================
-   IDOMA HUB HERO IMAGE
-   ========================= */
-
-.hero {
-    justify-content: space-between;
-    gap: 60px;
-    text-align: left;
-}
-
-.hero-content {
-    flex: 1;
-    max-width: 700px;
-}
-
-.hero-image {
-    flex: 0 0 42%;
-    max-width: 500px;
-    position: relative;
-    z-index: 1;
-}
-
-.hero-image img {
-    width: 100%;
-    height: 420px;
-    object-fit: cover;
-    display: block;
-    border-radius: 22px;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
-}
-
-.description {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-.hero-buttons {
-    justify-content: flex-start;
-}
-
-/* =========================
-   HERO MOBILE
-   ========================= */
-
-@media (max-width: 800px) {
-
-    .hero {
-        flex-direction: column;
-        text-align: center;
-        padding: 60px 6%;
-        gap: 35px;
-    }
-
-    .hero-content {
-        max-width: 100%;
-    }
-
-    .hero-image {
-        flex: none;
-        width: 100%;
-        max-width: 450px;
-        order: -1;
-    }
-
-    .hero-image img {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-        border-radius: 18px;
-    }
-
-    .description {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .hero-buttons {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 480px) {
-
-    .hero {
-        padding: 45px 5%;
-        gap: 25px;
-    }
-
-    .hero-image {
-        max-width: 100%;
-    }
-
-    .hero-image img {
-        height: 240px;
-        border-radius: 15px;
-    }
-
-    .hero-buttons {
-        width: 100%;
-    }
-
-    .hero-buttons .button {
-        width: 100%;
-        text-align: center;
-    }
-}
-
-
-/* =========================
-   FINAL HERO BACKGROUND FIX
-   ========================= */
-
-.hero {
-    background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.30),
-            rgba(0, 0, 0, 0.30)
-        ),
-        url("/static/images/idoma-home.jpeg") center center / cover no-repeat !important;
-}
-
-.hero::before,
-.hero::after {
-    display: none;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-}
-
-
-/* =========================
-   IDOMA HUB FINAL HERO COLOR
-   ========================= */
-
-.hero {
-    background: linear-gradient(
-        135deg,
-        #164a2b,
-        #287a43
-    ) !important;
-
-    color: white;
-}
-
-.hero::before,
-.hero::after {
-    display: none !important;
-}
-
-.notification-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    margin-left: 4px;
-    border-radius: 10px;
-    background: #c0392b;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    line-height: 1;
-}
-
 .post-media {
     width: 100%;
     max-height: 600px;
@@ -1662,3 +1494,270 @@ body:has(.profile-card) .secondary-button:hover {
     margin-top: 12px;
     display: block;
 }
+
+.media-preview {
+    margin-top: 12px;
+}
+
+.post-media-preview {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    background: #f5efe6;
+    border-radius: 12px;
+    display: block;
+}
+
+.delete-post-button {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    background: #f3d6d2;
+    color: #9b2c20;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.delete-post-button:hover {
+    background: #e9bbb5;
+}
+
+.profile-picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.profile-actions form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-picture-button,
+.profile-upload-button {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.profile-picture-button {
+    background: #eee3d3;
+    color: #5b4636;
+}
+
+.profile-picture-button:hover {
+    background: #e2d3c0;
+}
+
+.profile-upload-button {
+    background: #8b5e3c;
+    color: white;
+}
+
+.profile-upload-button:hover {
+    background: #70482e;
+}
+
+/* =========================
+   IDOMA HUB HOMEPAGE
+   PREMIUM REDESIGN
+   ========================= */
+
+body:has(.hero) {
+    background: #f8f3ea;
+}
+
+body:has(.hero) .navbar {
+    min-height: 76px;
+    padding: 0 6%;
+    background: #111111;
+    border-bottom: 3px solid #b5121b;
+}
+
+body:has(.hero) .logo {
+    font-size: 26px;
+    letter-spacing: 2px;
+}
+
+body:has(.hero) .hero {
+    min-height: 650px;
+    padding: 80px 7%;
+    justify-content: flex-start;
+    text-align: left;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.48) 0%,
+            rgba(0, 0, 0, 0.25) 48%,
+            rgba(0, 0, 0, 0.05) 100%
+        ),
+        url("/static/images/idoma-home.jpeg") center center / cover no-repeat !important;
+}
+
+body:has(.hero) .hero::before,
+body:has(.hero) .hero::after {
+    display: none !important;
+}
+
+body:has(.hero) .hero-content {
+    max-width: 760px;
+    position: relative;
+    z-index: 2;
+}
+
+body:has(.hero) .welcome {
+    display: inline-block;
+    padding: 8px 14px;
+    margin-bottom: 22px;
+    border-left: 4px solid #b5121b;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(5px);
+    font-size: 13px;
+    letter-spacing: 3px;
+}
+
+body:has(.hero) h1 {
+    font-size: clamp(52px, 9vw, 100px);
+    letter-spacing: 4px;
+    margin-bottom: 18px;
+    text-shadow: 0 5px 25px rgba(0, 0, 0, 0.35);
+}
+
+body:has(.hero) .tagline {
+    font-size: clamp(24px, 4vw, 38px);
+    max-width: 650px;
+    margin-bottom: 22px;
+}
+
+body:has(.hero) .description {
+    max-width: 650px;
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 32px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+body:has(.hero) .button {
+    border-radius: 10px;
+    padding: 14px 24px;
+}
+
+body:has(.hero) .primary {
+    background: #b5121b;
+    color: white;
+    box-shadow: 0 8px 22px rgba(181, 18, 27, 0.35);
+}
+
+body:has(.hero) .primary:hover {
+    background: #850c13;
+}
+
+body:has(.hero) .secondary {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(5px);
+}
+
+body:has(.hero) .features {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+    padding: 70px 7%;
+    background: #f8f3ea;
+}
+
+body:has(.hero) .feature-card {
+    min-height: 220px;
+    padding: 32px 24px;
+    border: 1px solid #e6ded3;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(17, 17, 17, 0.05);
+}
+
+body:has(.hero) .feature-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 16px 35px rgba(17, 17, 17, 0.10);
+}
+
+body:has(.hero) .icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 18px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8eee9;
+    font-size: 31px;
+}
+
+body:has(.hero) .feature-card h2 {
+    color: #111111;
+    margin-bottom: 10px;
+}
+
+body:has(.hero) .feature-card p {
+    color: #666666;
+    font-size: 15px;
+}
+
+body:has(.hero) footer {
+    background: #111111;
+    color: #ddd;
+    border-top: 4px solid #b5121b;
+}
+
+@media (max-width: 900px) {
+    body:has(.hero) .features {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    body:has(.hero) .navbar {
+        padding: 15px 5%;
+        flex-direction: column;
+    }
+
+    body:has(.hero) nav {
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    body:has(.hero) nav a {
+        font-size: 14px;
+    }
+
+    body:has(.hero) .hero {
+        min-height: 620px;
+        padding: 65px 7%;
+        text-align: center;
+        justify-content: center;
+        background:
+            linear-gradient(
+                rgba(0, 0, 0, 0.62),
+                rgba(0, 0, 0, 0.62)
+            ),
+            url("/static/images/idoma-home.jpeg") center center / cover no-repeat !important;
+    }
+
+    body:has(.hero) .welcome {
+        border-left: none;
+        border-bottom: 3px solid #b5121b;
+    }
+
+    body:has(.hero) .hero-buttons {
+        justify-content: center;
+    }
+
+    body:has(.hero) .features {
+        grid-template-columns: 1fr;
+        padding: 45px 5%;
+    }
+}
+

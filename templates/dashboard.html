@@ -86,7 +86,9 @@
 							rows="4"
 						></textarea>
 
-						<div class="post-actions">
+						<div id="mediaPreview" class="media-preview"></div>
+
+<div class="post-actions">
 
 							<button type="button" onclick="document.getElementById('photoInput').click()">
                                                                 📷 Photo
@@ -229,6 +231,32 @@
 	<footer>
 		<p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
 	</footer>
+
+<script>
+const photoInput = document.getElementById("photoInput");
+const videoInput = document.getElementById("videoInput");
+const mediaPreview = document.getElementById("mediaPreview");
+
+photoInput.addEventListener("change", function () {
+    if (!this.files.length) return;
+
+    videoInput.value = "";
+    const file = this.files[0];
+    const url = URL.createObjectURL(file);
+
+    mediaPreview.innerHTML = `<img src="${url}" alt="Photo preview" class="post-media-preview">`;
+});
+
+videoInput.addEventListener("change", function () {
+    if (!this.files.length) return;
+
+    photoInput.value = "";
+    const file = this.files[0];
+    const url = URL.createObjectURL(file);
+
+    mediaPreview.innerHTML = `<video controls class="post-media-preview"><source src="${url}"></video>`;
+});
+</script>
 
 </body>
 </html>
