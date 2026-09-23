@@ -72,9 +72,15 @@
 
 					<h2>Create a Post</h2>
 
-					<form action="/post" method="POST">
+					<form action="/post" method="POST" enctype="multipart/form-data">
 
-						<textarea
+						<input type="file" id="photoInput" name="photo" accept="image/*" hidden>
+                                                <input type="file" id="videoInput" name="video" accept="video/*" hidden>
+
+                                                
+                                                
+
+                                                <textarea
 							name="content"
 							placeholder="What is happening in your community?"
 							rows="4"
@@ -82,12 +88,12 @@
 
 						<div class="post-actions">
 
-							<button type="button">
-								📷 Photo
+							<button type="button" onclick="document.getElementById('photoInput').click()">
+                                                                📷 Photo
 							</button>
 
-							<button type="button">
-								🎥 Video
+							<button type="button" onclick="document.getElementById('videoInput').click()">
+                                                                🎥 Video
 							</button>
 
 							<button type="button">
@@ -119,6 +125,17 @@
                                     <p>
                                             {{.Content}}
                                     </p>
+
+                                    {{if .MediaURL}}
+                                    {{if eq .MediaType "image"}}
+                                    <img src="{{.MediaURL}}" alt="Post image" class="post-media">
+                                    {{else if eq .MediaType "video"}}
+                                    <video controls class="post-media">
+                                            <source src="{{.MediaURL}}">
+                                            Your browser does not support video playback.
+                                    </video>
+                                    {{end}}
+                                    {{end}}
 
                                     <div class="post-actions">
 

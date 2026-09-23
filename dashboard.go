@@ -1,9 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -14,6 +19,8 @@ type Post struct {
 	CreatedAt string
 	LikeCount int
 	LikedByMe bool
+	MediaURL  string
+	MediaType string
 	Comments  []Comment
 }
 
@@ -78,6 +85,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := db.Query(`
 		SELECT posts.id, users.username, posts.content, posts.created_at,
+                       posts.media_url, posts.media_type,
 		       COUNT(post_likes.id) AS like_count,
 		       EXISTS (
 			       SELECT 1
@@ -109,6 +117,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 			&post.Username,
 			&post.Content,
 			&post.CreatedAt,
+			&post.MediaURL,
+			&post.MediaType,
 			&post.LikeCount,
 			&post.LikedByMe,
 		)
@@ -227,17 +237,102 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	content := r.FormValue("content")
+	err := r.ParseMultipartForm(50 << 20)
+	if err != nil {
+		http.Error(w, "Unable to process upload.", http.StatusBadRequest)
+		return
+	}
 
-	if content == "" {
+	content := strings.TrimSpace(r.FormValue("content"))
+
+	var mediaURL string
+	var mediaType string
+
+	photo, photoHeader, photoErr := r.FormFile("photo")
+	video, videoHeader, videoErr := r.FormFile("video")
+
+	if photoErr == nil && videoErr == nil {
+		photo.Close()
+		video.Close()
+		http.Error(w, "Please upload only one media file at a time.", http.StatusBadRequest)
+		return
+	}
+
+	if photoErr == nil {
+		defer photo.Close()
+
+		ext := strings.ToLower(filepath.Ext(photoHeader.Filename))
+		switch ext {
+		case ".jpg", ".jpeg", ".png", ".gif", ".webp":
+			mediaType = "image"
+		default:
+			http.Error(w, "Unsupported photo format.", http.StatusBadRequest)
+			return
+		}
+
+		filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
+		filePath := filepath.Join("static", "uploads", "posts", filename)
+
+		dst, err := os.Create(filePath)
+		if err != nil {
+			http.Error(w, "Unable to save photo.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		defer dst.Close()
+
+		if _, err := io.Copy(dst, photo); err != nil {
+			http.Error(w, "Unable to save photo.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		mediaURL = "/static/uploads/posts/" + filename
+	}
+
+	if videoErr == nil {
+		defer video.Close()
+
+		ext := strings.ToLower(filepath.Ext(videoHeader.Filename))
+		switch ext {
+		case ".mp4", ".webm", ".ogg":
+			mediaType = "video"
+		default:
+			http.Error(w, "Unsupported video format.", http.StatusBadRequest)
+			return
+		}
+
+		filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
+		filePath := filepath.Join("static", "uploads", "posts", filename)
+
+		dst, err := os.Create(filePath)
+		if err != nil {
+			http.Error(w, "Unable to save video.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		defer dst.Close()
+
+		if _, err := io.Copy(dst, video); err != nil {
+			http.Error(w, "Unable to save video.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		mediaURL = "/static/uploads/posts/" + filename
+	}
+
+	if content == "" && mediaURL == "" {
 		http.Error(w, "Post cannot be empty.", http.StatusBadRequest)
 		return
 	}
 
-	_, err := db.Exec(
-		"INSERT INTO posts (user_id, content) VALUES (?, ?)",
+	_, err = db.Exec(
+		"INSERT INTO posts (user_id, content, media_url, media_type) VALUES (?, ?, ?, ?)",
 		userID,
 		content,
+		mediaURL,
+		mediaType,
 	)
 
 	if err != nil {

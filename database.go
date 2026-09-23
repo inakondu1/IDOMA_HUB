@@ -95,7 +95,56 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create comments table:", err)
 	}
 
+	addPostMediaColumns(db)
+
 	log.Println("Database connected successfully.")
 
 	return db
+}
+
+func addPostMediaColumns(db *sql.DB) {
+	rows, err := db.Query("PRAGMA table_info(posts)")
+	if err != nil {
+		log.Fatal("Unable to inspect posts table:", err)
+	}
+	defer rows.Close()
+
+	columns := make(map[string]bool)
+
+	for rows.Next() {
+		var cid int
+		var name string
+		var columnType string
+		var notNull int
+		var defaultValue interface{}
+		var primaryKey int
+
+		err := rows.Scan(
+			&cid,
+			&name,
+			&columnType,
+			&notNull,
+			&defaultValue,
+			&primaryKey,
+		)
+		if err != nil {
+			log.Fatal("Unable to read posts table information:", err)
+		}
+
+		columns[name] = true
+	}
+
+	if !columns["media_url"] {
+		_, err = db.Exec("ALTER TABLE posts ADD COLUMN media_url TEXT")
+		if err != nil {
+			log.Fatal("Unable to add media_url column:", err)
+		}
+	}
+
+	if !columns["media_type"] {
+		_, err = db.Exec("ALTER TABLE posts ADD COLUMN media_type TEXT")
+		if err != nil {
+			log.Fatal("Unable to add media_type column:", err)
+		}
+	}
 }

@@ -1652,3 +1652,13 @@ body:has(.profile-card) .secondary-button:hover {
     font-weight: bold;
     line-height: 1;
 }
+
+.post-media {
+    width: 100%;
+    max-height: 600px;
+    object-fit: contain;
+    background: #f5efe6;
+    border-radius: 12px;
+    margin-top: 12px;
+    display: block;
+}
