@@ -3174,3 +3174,12 @@ body:has(.hero) footer {
     margin: 25px auto 0;
 }
 
+
+@media (max-width: 700px) {
+    .learning-card:active {
+        transform: scale(0.98);
+        border-color: #b5121b;
+        background: #222222;
+    }
+}
+
