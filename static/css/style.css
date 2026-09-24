@@ -1834,6 +1834,10 @@ body:has(.hero) footer {
     align-items: start;
 }
 
+.dashboard-rightbar {
+    margin-top: -45px;
+}
+
 .dashboard-sidebar {
     position: sticky;
     top: 85px;
@@ -2363,5 +2367,87 @@ body:has(.hero) footer {
 
 .post-actions .post-button:hover {
     background: #850c13;
+}
+
+
+.notification-avatar {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 50%;
+    background: #b5121b;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+
+/* Top dashboard cards */
+.top-dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.top-dashboard-cards .dashboard-card {
+    margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+    .top-dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Dark comments */
+.comments-section {
+    background: #000000;
+}
+
+.comment-form input {
+    background: #1c1c1c;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+.comment-form input::placeholder {
+    color: #aaaaaa;
+}
+
+.comment-form input:focus {
+    background: #1c1c1c;
+    color: #ffffff;
+}
+
+.comment-bubble {
+    background: #1c1c1c;
+    border: 1px solid #333333;
+}
+
+.comment-meta strong {
+    color: #ffffff;
+}
+
+.comment-meta span {
+    color: #aaaaaa;
+}
+
+.comment-bubble p {
+    color: #ffffff;
 }
 

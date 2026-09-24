@@ -34,7 +34,34 @@
 			</p>
 		</section>
 
-		<div class="dashboard-layout">
+		<div class="top-dashboard-cards">
+
+        <div class="dashboard-card">
+                <h2>People You May Know</h2>
+
+                <p>Connect with Idoma people.</p>
+
+                <a href="/friends" class="secondary-button">
+                        Find Friends
+                </a>
+        </div>
+
+        <div class="dashboard-card">
+                <h2>Learn Idoma</h2>
+
+                <p>
+                        Start learning Idoma words, phrases,
+                        names, and expressions.
+                </p>
+
+                <a href="#" class="dashboard-link">
+                        Start Learning
+                </a>
+        </div>
+
+</div>
+
+<div class="dashboard-layout">
 
 			<aside class="dashboard-sidebar">
 
@@ -158,7 +185,7 @@
     <form action="/comment" method="POST" class="comment-form">
         <input type="hidden" name="post_id" value="{{.ID}}">
         <input type="text" name="content" placeholder="Write a comment..." required>
-        <button type="submit">💬 Comment</button>
+        <button type="submit">💬 Comment {{.CommentCount}}</button>
     </form>
 
     {{range .Comments}}
@@ -175,7 +202,7 @@
     {{end}}
 
 </div>
-                                            <form action="/share" method="POST" style="display:inline;"><input type="hidden" name="post_id" value="{{.ID}}"><button type="submit">↗ Share</button></form>
+                                            <form action="/share" method="POST" style="display:inline;"><input type="hidden" name="post_id" value="{{.ID}}"><button type="submit">↗ Share {{.ShareCount}}</button></form>
 
                                     </div>
 
@@ -197,32 +224,7 @@
 
 			</section>
 
-			<aside class="dashboard-rightbar">
-
-				<div class="dashboard-card">
-					<h2>People You May Know</h2>
-
-					<p>Connect with Idoma people.</p>
-
-							<a href="/friends" class="secondary-button">
-								Find Friends
-							</a>
-				</div>
-
-				<div class="dashboard-card">
-					<h2>Learn Idoma</h2>
-
-					<p>
-						Start learning Idoma words, phrases,
-						names, and expressions.
-					</p>
-
-					<a href="#" class="dashboard-link">
-						Start Learning
-					</a>
-				</div>
-
-			</aside>
+			
 
 		</div>
 
