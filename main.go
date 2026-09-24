@@ -169,6 +169,7 @@ func main() {
 	http.HandleFunc("/notifications", notificationsHandler)
 	http.HandleFunc("/post", createPostHandler)
 	http.HandleFunc("/like", likePostHandler)
+	http.HandleFunc("/share", sharePostHandler)
 	http.HandleFunc("/comment", createCommentHandler)
 	http.HandleFunc("/delete-post", deletePostHandler)
 	http.HandleFunc("/logout", logoutHandler)

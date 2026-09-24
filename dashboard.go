@@ -179,11 +179,11 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	var notificationCount int
 
 	err = db.QueryRow(`
-		SELECT COUNT(*)
-		FROM friend_requests
-		WHERE receiver_id = ?
-		AND status = 'pending'
-	`, userID).Scan(&notificationCount)
+            SELECT
+                (SELECT COUNT(*) FROM friend_requests WHERE receiver_id = ? AND status = 'pending')
+                +
+                (SELECT COUNT(*) FROM notifications WHERE recipient_id = ? AND is_read = 0)
+    `, userID, userID).Scan(&notificationCount)
 
 	if err != nil {
 		http.Error(w, "Unable to load notifications.", http.StatusInternalServerError)
@@ -354,6 +354,57 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
+	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+}
+
+func sharePostHandler(w http.ResponseWriter, r *http.Request) {
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	postID := r.FormValue("post_id")
+	if postID == "" {
+		http.Error(w, "Post ID is required.", http.StatusBadRequest)
+		return
+	}
+
+	var originalUserID int
+	var content string
+	var mediaURL string
+	var mediaType string
+
+	err := db.QueryRow(`
+                SELECT user_id, content, media_url, media_type
+                FROM posts
+                WHERE id = ?
+        `, postID).Scan(&originalUserID, &content, &mediaURL, &mediaType)
+
+	if err != nil {
+		http.Error(w, "Original post not found.", http.StatusNotFound)
+		return
+	}
+
+	_, err = db.Exec(`
+                INSERT INTO posts
+                (user_id, content, media_url, media_type, original_post_id)
+                VALUES (?, ?, ?, ?, ?)
+        `, userID, content, mediaURL, mediaType, postID)
+
+	if err != nil {
+		http.Error(w, "Unable to reshare post.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	createPostNotification(originalUserID, userID, postID, "share")
 
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }

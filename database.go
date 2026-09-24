@@ -207,4 +207,12 @@ func addPostMediaColumns(db *sql.DB) {
 			log.Fatal("Unable to add media_type column:", err)
 		}
 	}
+
+	if !columns["original_post_id"] {
+		_, err = db.Exec("ALTER TABLE posts ADD COLUMN original_post_id INTEGER")
+		if err != nil {
+			log.Fatal("Unable to add original_post_id column:", err)
+		}
+	}
+
 }

@@ -1761,3 +1761,607 @@ body:has(.hero) footer {
     }
 }
 
+
+/* ==========================================
+   IDOMA HUB SOCIAL DESIGN
+   Modern social layout + Idoma identity
+   ========================================== */
+
+.dashboard-body {
+    background: #f5f1eb;
+    color: #171717;
+}
+
+.dashboard-navbar {
+    background: #111111;
+    border-bottom: 3px solid #b5121b;
+    padding: 13px 4%;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-logo {
+    color: #ffffff;
+    font-size: 1.45rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.dashboard-logo::first-letter {
+    color: #d71920;
+}
+
+.dashboard-nav {
+    gap: 8px;
+}
+
+.dashboard-nav a {
+    padding: 9px 13px;
+    border-radius: 8px;
+    transition: 0.2s ease;
+}
+
+.dashboard-nav a:hover {
+    background: #b5121b;
+    color: #ffffff;
+}
+
+.dashboard-container {
+    width: min(1450px, 96%);
+    padding: 25px 0 60px;
+}
+
+.welcome-section {
+    background: linear-gradient(135deg, #111111, #2a0b0d);
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 22px;
+    border-left: 5px solid #b5121b;
+}
+
+.welcome-section h1 {
+    color: #ffffff;
+    margin: 0 0 6px;
+}
+
+.welcome-section p {
+    color: #e7dcdc;
+}
+
+.dashboard-layout {
+    grid-template-columns: 250px minmax(0, 1fr) 280px;
+    gap: 20px;
+    align-items: start;
+}
+
+.dashboard-sidebar {
+    position: sticky;
+    top: 85px;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    border: 1px solid #e5dfd8;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.055);
+}
+
+.dashboard-card h2 {
+    color: #171717;
+}
+
+.dashboard-sidebar .dashboard-card {
+    overflow: hidden;
+}
+
+.dashboard-sidebar .dashboard-card h2 {
+    padding-bottom: 12px;
+    border-bottom: 2px solid #b5121b;
+}
+
+.dashboard-sidebar .dashboard-card a {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee8e1;
+    border-radius: 7px;
+    transition: 0.2s ease;
+}
+
+.dashboard-sidebar .dashboard-card a:hover {
+    background: #f9eeee;
+    color: #b5121b;
+    padding-left: 15px;
+}
+
+.create-post-card {
+    padding: 22px;
+}
+
+.create-post-card h2 {
+    font-size: 1.15rem;
+    margin-bottom: 16px;
+}
+
+.create-post-card textarea {
+    min-height: 90px;
+    border: 1px solid #ddd5cc;
+    border-radius: 12px;
+    background: #faf8f5;
+}
+
+.create-post-card textarea:focus {
+    background: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(181, 18, 27, 0.12);
+}
+
+.post-actions {
+    border-top: 1px solid #eee8e1;
+    border-bottom: none;
+    padding-top: 12px;
+}
+
+.post-actions button,
+.social-action {
+    border-radius: 9px;
+    transition: 0.2s ease;
+}
+
+.post-actions button:hover,
+.social-action:hover {
+    background: #f9eeee;
+    color: #b5121b;
+}
+
+.post-actions .post-button {
+    background: #b5121b;
+    padding: 10px 22px;
+    border-radius: 9px;
+}
+
+.post-actions .post-button:hover {
+    background: #850c13;
+}
+
+.feed-post {
+    padding: 22px;
+}
+
+.post-header {
+    margin-bottom: 14px;
+}
+
+.post-avatar {
+    width: 48px;
+    height: 48px;
+    background: #b5121b;
+    box-shadow: 0 0 0 3px #f9eeee;
+}
+
+.feed-post p {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 12px 0;
+}
+
+.post-media {
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 12px;
+}
+
+.comments-section {
+    border-top: 1px solid #eee8e1;
+}
+
+.comment-form input {
+    background: #f7f4f0;
+    border-color: #e2dcd5;
+    border-radius: 20px;
+    padding: 11px 15px;
+}
+
+.comment-form button {
+    background: #b5121b;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+}
+
+.comment-form button:hover {
+    background: #850c13;
+}
+
+@media (max-width: 1050px) {
+    .dashboard-layout {
+        grid-template-columns: 210px minmax(0, 1fr);
+    }
+
+    .dashboard-layout > :last-child {
+        display: none;
+    }
+}
+
+@media (max-width: 760px) {
+    .dashboard-navbar {
+        padding: 12px 4%;
+    }
+
+    .dashboard-nav {
+        gap: 3px;
+    }
+
+    .dashboard-nav a {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+
+    .dashboard-container {
+        width: 94%;
+        padding-top: 15px;
+    }
+
+    .welcome-section {
+        padding: 20px;
+    }
+
+    .dashboard-layout {
+        display: block;
+    }
+
+    .dashboard-sidebar {
+        position: static;
+    }
+
+    .dashboard-sidebar .dashboard-card {
+        margin-bottom: 15px;
+    }
+
+    .create-post-card,
+    .feed-post {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 520px) {
+    .dashboard-navbar {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .dashboard-nav {
+        width: 100%;
+        justify-content: space-between;
+        overflow-x: auto;
+    }
+
+    .dashboard-nav a {
+        white-space: nowrap;
+    }
+
+    .welcome-section h1 {
+        font-size: 1.35rem;
+    }
+
+    .post-actions {
+        flex-wrap: wrap;
+    }
+
+    .post-actions .post-button {
+        margin-left: 0;
+    }
+}
+
+
+/* CALM IDOMA HUB BACKGROUND */
+.dashboard-body {
+    background: #e8e3dc;
+}
+
+.dashboard-card {
+    background: #f7f4ef;
+    border-color: #d8d1c8;
+}
+
+.create-post-card textarea {
+    background: #eeeae4;
+    border-color: #d2cbc2;
+}
+
+.comment-form input {
+    background: #eeeae4;
+    border-color: #d2cbc2;
+}
+
+.dashboard-sidebar .dashboard-card a:hover {
+    background: #eee2df;
+}
+
+
+/* DARK IDOMA HUB THEME */
+.dashboard-body {
+    background: #1b1b1b;
+    color: #eeeeee;
+}
+
+.dashboard-navbar {
+    background: #0d0d0d;
+    border-bottom: 3px solid #b5121b;
+}
+
+.dashboard-card {
+    background: #242424;
+    border-color: #333333;
+    color: #eeeeee;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.25);
+}
+
+.dashboard-card h2,
+.dashboard-card strong {
+    color: #ffffff;
+}
+
+.dashboard-sidebar .dashboard-card h2 {
+    border-bottom-color: #b5121b;
+}
+
+.dashboard-sidebar .dashboard-card a {
+    color: #dddddd;
+    border-bottom-color: #333333;
+}
+
+.dashboard-sidebar .dashboard-card a:hover {
+    background: #35191b;
+    color: #ffffff;
+}
+
+.create-post-card textarea {
+    background: #1d1d1d;
+    color: #eeeeee;
+    border-color: #3a3a3a;
+}
+
+.create-post-card textarea::placeholder {
+    color: #999999;
+}
+
+.create-post-card textarea:focus {
+    background: #202020;
+    color: #ffffff;
+}
+
+.feed-post p {
+    color: #dddddd;
+}
+
+.comments-section {
+    border-top-color: #383838;
+}
+
+.comment-form input {
+    background: #1d1d1d;
+    color: #eeeeee;
+    border-color: #3a3a3a;
+}
+
+.comment-form input::placeholder {
+    color: #999999;
+}
+
+.post-actions {
+    border-top-color: #383838;
+}
+
+.post-actions button,
+.social-action {
+    color: #dddddd;
+}
+
+.post-actions button:hover,
+.social-action:hover {
+    background: #35191b;
+    color: #ffffff;
+}
+
+
+/* LIGHT IDOMA HUB THEME */
+.dashboard-body {
+    background: #eee9e1;
+    color: #292725;
+}
+
+.dashboard-navbar {
+    background: #3b1719;
+    border-bottom: 3px solid #b5121b;
+}
+
+.dashboard-logo {
+    color: #fffaf3;
+}
+
+.dashboard-nav a {
+    color: #f5eee5;
+}
+
+.dashboard-nav a:hover {
+    background: #b5121b;
+    color: #ffffff;
+}
+
+.dashboard-card {
+    background: #faf7f1;
+    border-color: #ddd5ca;
+    color: #292725;
+    box-shadow: 0 3px 12px rgba(60, 45, 30, 0.08);
+}
+
+.dashboard-card h2,
+.dashboard-card strong {
+    color: #292725;
+}
+
+.dashboard-sidebar .dashboard-card h2 {
+    border-bottom-color: #b5121b;
+}
+
+.dashboard-sidebar .dashboard-card a {
+    color: #4b4540;
+    border-bottom-color: #e7dfd5;
+}
+
+.dashboard-sidebar .dashboard-card a:hover {
+    background: #f2e4e2;
+    color: #9d1018;
+}
+
+.create-post-card textarea {
+    background: #f3eee7;
+    color: #292725;
+    border-color: #d8cec2;
+}
+
+.create-post-card textarea::placeholder {
+    color: #817a72;
+}
+
+.create-post-card textarea:focus {
+    background: #fffdf9;
+    box-shadow: 0 0 0 3px rgba(181, 18, 27, 0.10);
+}
+
+.feed-post p {
+    color: #45413d;
+}
+
+.comments-section {
+    border-top-color: #e2d9cf;
+}
+
+.comment-form input {
+    background: #f3eee7;
+    color: #292725;
+    border-color: #d8cec2;
+}
+
+.comment-form input::placeholder {
+    color: #817a72;
+}
+
+.post-actions {
+    border-top-color: #e2d9cf;
+}
+
+.post-actions button,
+.social-action {
+    color: #514b46;
+}
+
+.post-actions button:hover,
+.social-action:hover {
+    background: #f2e4e2;
+    color: #9d1018;
+}
+
+.post-actions .post-button {
+    background: #a9121b;
+    color: #ffffff;
+}
+
+.post-actions .post-button:hover {
+    background: #850c13;
+}
+
+
+/* BLACK IDOMA HUB BACKGROUND */
+.dashboard-body {
+    background: #000000;
+    color: #eeeeee;
+}
+
+.dashboard-navbar {
+    background: #111111;
+    border-bottom: 3px solid #b5121b;
+}
+
+.dashboard-card {
+    background: #1c1c1c;
+    border-color: #333333;
+    color: #eeeeee;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.dashboard-card h2,
+.dashboard-card strong {
+    color: #ffffff;
+}
+
+.dashboard-sidebar .dashboard-card h2 {
+    border-bottom-color: #b5121b;
+}
+
+.dashboard-sidebar .dashboard-card a {
+    color: #d6d6d6;
+    border-bottom-color: #303030;
+}
+
+.dashboard-sidebar .dashboard-card a:hover {
+    background: #321719;
+    color: #ffffff;
+}
+
+.create-post-card textarea {
+    background: #111111;
+    color: #eeeeee;
+    border-color: #383838;
+}
+
+.create-post-card textarea::placeholder {
+    color: #888888;
+}
+
+.feed-post p {
+    color: #d2d2d2;
+}
+
+.comments-section {
+    border-top-color: #333333;
+}
+
+.comment-form input {
+    background: #111111;
+    color: #eeeeee;
+    border-color: #383838;
+}
+
+.comment-form input::placeholder {
+    color: #888888;
+}
+
+.post-actions {
+    border-top-color: #333333;
+}
+
+.post-actions button,
+.social-action {
+    color: #d0d0d0;
+}
+
+.post-actions button:hover,
+.social-action:hover {
+    background: #321719;
+    color: #ffffff;
+}
+
+.post-actions .post-button {
+    background: #b5121b;
+    color: #ffffff;
+}
+
+.post-actions .post-button:hover {
+    background: #850c13;
+}
+

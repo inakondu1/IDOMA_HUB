@@ -175,7 +175,7 @@
     {{end}}
 
 </div>
-                                            <button type="button">↗ Share</button>
+                                            <form action="/share" method="POST" style="display:inline;"><input type="hidden" name="post_id" value="{{.ID}}"><button type="submit">↗ Share</button></form>
 
                                     </div>
 
