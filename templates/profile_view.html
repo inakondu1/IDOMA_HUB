@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        .profile-view-page {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px 60px;
+        }
+
+        .profile-view-card {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .profile-view-cover {
+            height: 180px;
+            background: #111;
+            border-bottom: 3px solid #b5121b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-view-cover h1 {
+            color: #b5121b;
+            font-size: 30px;
+            margin: 0;
+        }
+
+        .profile-view-identity {
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-view-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #b5121b;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 800;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .profile-view-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-view-name {
+            color: #fff;
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .profile-view-subtitle {
+            color: #aaa;
+            margin-top: 6px;
+        }
+
+        .profile-view-posts {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .profile-view-posts h2 {
+            color: #fff;
+            margin-top: 0;
+        }
+
+        .profile-view-post {
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 18px;
+            margin-top: 15px;
+            background: #111;
+        }
+
+        .profile-view-post-content {
+            color: #eee;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .profile-view-post-date {
+            color: #888;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .profile-view-post-likes {
+            color: #aaa;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .profile-view-back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .profile-view-back:hover {
+            color: #b5121b;
+        }
+
+        .profile-view-empty {
+            color: #888;
+            padding: 15px 0;
+        }
+
+        @media (max-width: 600px) {
+            .profile-view-page {
+                margin-top: 20px;
+                padding: 0 14px 40px;
+            }
+
+            .profile-view-cover {
+                height: 130px;
+            }
+
+            .profile-view-identity {
+                padding: 20px;
+            }
+
+            .profile-view-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 25px;
+            }
+
+            .profile-view-name {
+                font-size: 21px;
+            }
+
+            .profile-view-posts {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+
+    <main class="profile-view-page">
+
+        <section class="profile-view-card">
+
+            <div class="profile-view-cover">
+                <h1>IDOMA HUB</h1>
+            </div>
+
+            <div class="profile-view-identity">
+
+                <div class="profile-view-avatar">
+                    {{if .ProfilePicture}}
+                        <img src="{{.ProfilePicture}}" alt="{{.Username}}">
+                    {{else}}
+                        {{printf "%.1s" .Username}}
+                    {{end}}
+                </div>
+
+                <div>
+                    <h1 class="profile-view-name">{{.Username}}</h1>
+                    <div class="profile-view-subtitle">
+                        IDOMA HUB Community Member
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="profile-view-posts">
+
+            <h2>Posts by {{.Username}}</h2>
+
+            {{if .Posts}}
+
+                {{range .Posts}}
+                    <article class="profile-view-post">
+
+                        <div class="profile-view-post-content">
+                            {{.Content}}
+                        </div>
+
+                        {{if .MediaURL}}
+                            {{if eq .MediaType "image"}}
+                                <img
+                                    src="{{.MediaURL}}"
+                                    alt="Post image"
+                                    style="max-width:100%; border-radius:12px; margin-top:15px;"
+                                >
+                            {{else if eq .MediaType "video"}}
+                                <video
+                                    controls
+                                    style="max-width:100%; border-radius:12px; margin-top:15px;"
+                                >
+                                    <source src="{{.MediaURL}}">
+                                </video>
+                            {{end}}
+                        {{end}}
+
+                        <div class="profile-view-post-date">
+                            {{.CreatedAt}}
+                        </div>
+
+                        <div class="profile-view-post-likes">
+                            ❤️ {{.LikeCount}} likes
+                        </div>
+
+                    </article>
+                {{end}}
+
+            {{else}}
+
+                <p class="profile-view-empty">
+                    {{.Username}} hasn't posted anything yet.
+                </p>
+
+            {{end}}
+
+        </section>
+
+        <a class="profile-view-back" href="/friends">
+            ← Back to Friends
+        </a>
+
+    </main>
+
+</body>
+</html>

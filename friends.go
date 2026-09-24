@@ -7,20 +7,25 @@ import (
 )
 
 type FriendUser struct {
-	ID       int
-	Username string
+	ID             int
+	Username       string
+	ProfilePicture string
+	Status         string
 }
 
 type FriendRequest struct {
-	ID       int
-	UserID   int
-	Username string
+	ID             int
+	UserID         int
+	Username       string
+	ProfilePicture string
 }
 
 type FriendsPageData struct {
-	Suggestions []FriendUser
-	Incoming    []FriendRequest
-	Friends     []FriendUser
+	Suggestions   []FriendUser
+	SearchResults []FriendUser
+	SearchQuery   string
+	Incoming      []FriendRequest
+	Friends       []FriendUser
 }
 
 func friendsHandler(w http.ResponseWriter, r *http.Request) {
@@ -77,9 +82,71 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := FriendsPageData{}
 
+	search := r.URL.Query().Get("search")
+	data.SearchQuery = search
+
+	if search != "" {
+		rows, err := db.Query(`
+			SELECT id, username, COALESCE(profile_picture, '')
+			FROM users
+			WHERE id != ?
+			AND username LIKE ?
+			ORDER BY username
+		`, userID, "%"+search+"%")
+
+		if err == nil {
+			for rows.Next() {
+				var user FriendUser
+				if rows.Scan(&user.ID, &user.Username, &user.ProfilePicture) == nil {
+					var status string
+					statusErr := db.QueryRow(`
+                                                SELECT status
+                                                FROM friend_requests
+                                                WHERE
+                                                        (sender_id = ? AND receiver_id = ?)
+                                                        OR
+                                                        (sender_id = ? AND receiver_id = ?)
+                                                ORDER BY id DESC
+                                                LIMIT 1
+                                        `, userID, user.ID, user.ID, userID).Scan(&status)
+
+					if statusErr == nil {
+						if status == "accepted" {
+							user.Status = "friends"
+						} else if status == "pending" {
+							var senderID int
+							senderErr := db.QueryRow(`
+                                                                SELECT sender_id
+                                                                FROM friend_requests
+                                                                WHERE
+                                                                        ((sender_id = ? AND receiver_id = ?)
+                                                                        OR
+                                                                        (sender_id = ? AND receiver_id = ?))
+                                                                        AND status = 'pending'
+                                                                ORDER BY id DESC
+                                                                LIMIT 1
+                                                        `, userID, user.ID, user.ID, userID).Scan(&senderID)
+
+							if senderErr == nil {
+								if senderID == userID {
+									user.Status = "sent"
+								} else {
+									user.Status = "received"
+								}
+							}
+						}
+					}
+
+					data.SearchResults = append(data.SearchResults, user)
+				}
+			}
+			rows.Close()
+		}
+	}
+
 	// People You May Know
 	rows, err := db.Query(`
-		SELECT id, username
+		SELECT id, username, COALESCE(profile_picture, '')
 		FROM users
 		WHERE id != ?
 		AND id NOT IN (
@@ -100,7 +167,7 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		for rows.Next() {
 			var user FriendUser
-			if rows.Scan(&user.ID, &user.Username) == nil {
+			if rows.Scan(&user.ID, &user.Username, &user.ProfilePicture) == nil {
 				data.Suggestions = append(data.Suggestions, user)
 			}
 		}
@@ -109,7 +176,7 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Incoming requests
 	rows, err = db.Query(`
-		SELECT fr.id, u.id, u.username
+		SELECT fr.id, u.id, u.username, COALESCE(u.profile_picture, '')
 		FROM friend_requests fr
 		JOIN users u ON u.id = fr.sender_id
 		WHERE fr.receiver_id = ?
@@ -124,6 +191,7 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 				&request.ID,
 				&request.UserID,
 				&request.Username,
+				&request.ProfilePicture,
 			) == nil {
 				data.Incoming = append(data.Incoming, request)
 			}
@@ -133,7 +201,7 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Your friends
 	rows, err = db.Query(`
-		SELECT u.id, u.username
+		SELECT u.id, u.username, COALESCE(u.profile_picture, '')
 		FROM friend_requests fr
 		JOIN users u ON u.id =
 			CASE
@@ -148,7 +216,7 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		for rows.Next() {
 			var friend FriendUser
-			if rows.Scan(&friend.ID, &friend.Username) == nil {
+			if rows.Scan(&friend.ID, &friend.Username, &friend.ProfilePicture) == nil {
 				data.Friends = append(data.Friends, friend)
 			}
 		}

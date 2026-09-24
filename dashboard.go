@@ -13,15 +13,17 @@ import (
 )
 
 type Post struct {
-	ID        int
-	Username  string
-	Content   string
-	CreatedAt string
-	LikeCount int
-	LikedByMe bool
-	MediaURL  string
-	MediaType string
-	Comments  []Comment
+	ID           int
+	Username     string
+	Content      string
+	CreatedAt    string
+	LikeCount    int
+	CommentCount int
+	ShareCount   int
+	LikedByMe    bool
+	MediaURL     string
+	MediaType    string
+	Comments     []Comment
 }
 
 func formatDateTime(value string) string {
@@ -87,6 +89,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		SELECT posts.id, users.username, posts.content, posts.created_at,
                        posts.media_url, posts.media_type,
 		       COUNT(post_likes.id) AS like_count,
+                    (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comment_count,
+                    (SELECT COUNT(*) FROM posts shares WHERE shares.original_post_id = posts.id) AS share_count,
 		       EXISTS (
 			       SELECT 1
 			       FROM post_likes user_like
@@ -120,6 +124,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 			&post.MediaURL,
 			&post.MediaType,
 			&post.LikeCount,
+			&post.CommentCount,
+			&post.ShareCount,
 			&post.LikedByMe,
 		)
 

@@ -34,6 +34,18 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Method == http.MethodGet {
+		_, err := db.Exec(`
+                     UPDATE notifications
+                     SET is_read = 1
+                     WHERE recipient_id = ? AND is_read = 0
+             `, userID)
+
+		if err != nil {
+			log.Println("Unable to mark notifications as read:", err)
+		}
+	}
+
 	if r.Method == http.MethodPost {
 		action := r.FormValue("action")
 		requestID := r.FormValue("request_id")

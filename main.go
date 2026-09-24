@@ -164,6 +164,7 @@ func main() {
 	http.HandleFunc("/login", loginPageHandler)
 	http.HandleFunc("/dashboard", dashboardHandler)
 	http.HandleFunc("/profile", profileHandler)
+	http.HandleFunc("/profile-view", profileViewHandler)
 	http.HandleFunc("/profile-picture", profilePictureUploadHandler)
 	http.HandleFunc("/friends", friendsHandler)
 	http.HandleFunc("/notifications", notificationsHandler)
