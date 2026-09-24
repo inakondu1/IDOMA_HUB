@@ -256,6 +256,34 @@ videoInput.addEventListener("change", function () {
 
     mediaPreview.innerHTML = `<video controls class="post-media-preview"><source src="${url}"></video>`;
 });
+
+async function sharePost(postID) {
+    const shareURL = window.location.origin + "/dashboard#post-" + postID;
+    const shareData = {
+        title: "IDOMA HUB",
+        text: "Check out this post on IDOMA HUB.",
+        url: shareURL
+    };
+
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+        } catch (error) {
+            if (error.name !== "AbortError") {
+                console.error("Sharing failed:", error);
+            }
+        }
+    } else if (navigator.clipboard) {
+        try {
+            await navigator.clipboard.writeText(shareURL);
+            alert("Post link copied to clipboard!");
+        } catch (error) {
+            alert("Unable to copy the post link.");
+        }
+    } else {
+        prompt("Copy this post link:", shareURL);
+    }
+}
 </script>
 
 </body>

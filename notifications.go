@@ -12,7 +12,16 @@ type NotificationRequest struct {
 	Username string
 }
 
+type ActivityNotification struct {
+	ID        int
+	Username  string
+	PostID    string
+	Type      string
+	CreatedAt string
+}
+
 type NotificationsPageData struct {
+	Activity []ActivityNotification
 	Title    string
 	Requests []NotificationRequest
 	Count    int
@@ -83,9 +92,45 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 		requests = append(requests, request)
 	}
 
+	activityRows, err := db.Query(`
+                SELECT n.id, u.username, n.post_id, n.type, n.created_at
+                FROM notifications n
+                JOIN users u ON u.id = n.sender_id
+                WHERE n.recipient_id = ?
+                ORDER BY n.created_at DESC
+        `, userID)
+
+	if err != nil {
+		http.Error(w, "Unable to load activity notifications.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	defer activityRows.Close()
+
+	var activities []ActivityNotification
+
+	for activityRows.Next() {
+		var activity ActivityNotification
+
+		if err := activityRows.Scan(
+			&activity.ID,
+			&activity.Username,
+			&activity.PostID,
+			&activity.Type,
+			&activity.CreatedAt,
+		); err != nil {
+			http.Error(w, "Unable to read activity notifications.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		activities = append(activities, activity)
+	}
+
 	data := NotificationsPageData{
 		Title:    "Notifications - IDOMA HUB",
 		Requests: requests,
+		Activity: activities,
 		Count:    len(requests),
 	}
 
@@ -99,5 +144,21 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 	if err := tmpl.Execute(w, data); err != nil {
 		http.Error(w, "Unable to display notifications page.", http.StatusInternalServerError)
 		log.Println(err)
+	}
+}
+
+func createPostNotification(recipientID, senderID int, postID string, notificationType string) {
+	if recipientID == senderID {
+		return
+	}
+
+	_, err := db.Exec(`
+                INSERT INTO notifications
+                (recipient_id, sender_id, post_id, type)
+                VALUES (?, ?, ?, ?)
+        `, recipientID, senderID, postID, notificationType)
+
+	if err != nil {
+		log.Println("Unable to create notification:", err)
 	}
 }

@@ -95,6 +95,25 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create comments table:", err)
 	}
 
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS notifications (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        recipient_id INTEGER NOT NULL,
+                        sender_id INTEGER NOT NULL,
+                        post_id INTEGER,
+                        type TEXT NOT NULL,
+                        is_read INTEGER NOT NULL DEFAULT 0,
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (recipient_id) REFERENCES users(id),
+                        FOREIGN KEY (sender_id) REFERENCES users(id),
+                        FOREIGN KEY (post_id) REFERENCES posts(id)
+                )
+        `)
+
+	if err != nil {
+		log.Fatal("Unable to create notifications table:", err)
+	}
+
 	addPostMediaColumns(db)
 	addProfilePictureColumn(db)
 

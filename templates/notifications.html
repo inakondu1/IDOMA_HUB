@@ -85,11 +85,44 @@
 
 		</section>
 
+
+                <section class="dashboard-card">
+                        <h2>Post Activity</h2>
+
+                        {{if .Activity}}
+                                {{range .Activity}}
+                                        <div class="notification-item">
+                                                <div class="notification-avatar">
+                                                        {{printf "%.1s" .Username}}
+                                                </div>
+
+                                                <div class="notification-content">
+                                                        <strong>{{.Username}}</strong>
+
+                                                        {{if eq .Type "like"}}
+                                                                <span>liked your post.</span>
+                                                        {{else if eq .Type "comment"}}
+                                                                <span>commented on your post.</span>
+                                                        {{else if eq .Type "share"}}
+                                                                <span>shared your post.</span>
+                                                        {{end}}
+                                                </div>
+                                        </div>
+                                {{end}}
+                        {{else}}
+                                <p class="empty-message">
+                                        No post activity yet.
+                                </p>
+                        {{end}}
+                </section>
+
 	</main>
 
 	<footer>
 		<p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
 	</footer>
+
+
 
 </body>
 </html>

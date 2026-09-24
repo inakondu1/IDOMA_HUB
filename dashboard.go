@@ -411,6 +411,27 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !liked {
+		var postOwnerID int
+
+		err = db.QueryRow(
+			"SELECT user_id FROM posts WHERE id = ?",
+			postID,
+		).Scan(&postOwnerID)
+
+		if err == nil && postOwnerID != userID {
+			_, err = db.Exec(`
+				INSERT INTO notifications
+				(recipient_id, sender_id, post_id, type)
+				VALUES (?, ?, ?, 'like')
+			`, postOwnerID, userID, postID)
+
+			if err != nil {
+				log.Println("Unable to create like notification:", err)
+			}
+		}
+	}
+
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }
 
@@ -630,6 +651,16 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to create comment.", http.StatusInternalServerError)
 		log.Println(err)
 		return
+	}
+
+	var postOwnerID int
+	err = db.QueryRow(
+		"SELECT user_id FROM posts WHERE id = ?",
+		postID,
+	).Scan(&postOwnerID)
+
+	if err == nil {
+		createPostNotification(postOwnerID, userID, postID, "comment")
 	}
 
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
