@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idoma Names - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">IDOMA HUB</div>
+
+    <nav>
+        <a href="/dashboard">Home</a>
+        <a href="/learning">Learning</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<main class="names-page">
+
+    <a href="/learning" class="back-learning">
+        ← Back to Learning
+    </a>
+
+    <div class="names-header">
+
+        <h1>Idoma Names</h1>
+
+        <p>
+            Welcome, {{.Username}}. Discover Idoma names and their meanings.
+        </p>
+
+    </div>
+
+    <div class="names-search">
+        <input
+            type="text"
+            id="nameSearch"
+            placeholder="Search Idoma names..."
+            onkeyup="searchNames()"
+        >
+    </div>
+
+    <section class="names-grid">
+
+        {{range .Names}}
+
+        <div class="name-card">
+
+            <span class="name-category">
+                {{.Category}}
+            </span>
+
+            <h2>{{.Name}}</h2>
+
+            <p class="name-meaning">
+                {{.Meaning}}
+            </p>
+
+            <div class="name-detail">
+
+                <div>
+                    <span>Gender</span>
+                    <p>{{.Gender}}</p>
+                </div>
+
+                <div>
+                    <span>Source</span>
+                    <p>{{.Source}}</p>
+                </div>
+
+            </div>
+
+        </div>
+
+        {{end}}
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+<script>
+function searchNames() {
+    const input = document.getElementById("nameSearch");
+    const search = input.value.toLowerCase().trim();
+    const cards = document.querySelectorAll(".name-card");
+
+    cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+
+        if (text.includes(search)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+</script>
+
+</body>
+</html>

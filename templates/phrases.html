@@ -1,0 +1,79 @@
+{{define "phrases.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idoma Phrases - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/learning">Learn Idoma</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="phrases-page">
+
+    <a href="/learning" class="back-learning">
+        ← Back to Learning
+    </a>
+
+    <section class="phrases-header">
+
+        <h1>Idoma Phrases</h1>
+
+        <p>
+            Welcome, {{.Username}}.
+            Learn useful Idoma phrases for everyday conversations.
+        </p>
+    </section>
+
+    <section class="phrases-grid">
+
+        {{range .Phrases}}
+        <article class="phrase-card">
+
+            <span class="phrase-category">
+                {{.Category}}
+            </span>
+
+            <h2>{{.Phrase}}</h2>
+
+            <div class="phrase-meaning">
+                <span>Meaning</span>
+                <strong>{{.Meaning}}</strong>
+            </div>
+
+            <div class="phrase-detail">
+                <span>Dialect</span>
+                <p>{{.Dialect}}</p>
+            </div>
+
+            <div class="phrase-detail">
+                <span>Source</span>
+                <p>{{.Source}}</p>
+            </div>
+
+        </article>
+        {{end}}
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+</body>
+</html>
+{{end}}

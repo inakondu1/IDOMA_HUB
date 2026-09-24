@@ -1,0 +1,140 @@
+{{define "practice.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idoma Practice - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/learning">Learn Idoma</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="practice-page">
+
+    <a href="/learning" class="back-learning">
+        ← Back to Learning
+    </a>
+
+    <section class="practice-header">
+
+        <h1>Idoma Practice</h1>
+
+        <p>
+            Welcome, {{.Username}}.
+            Test what you have learned so far.
+        </p>
+    </section>
+
+    <form class="practice-form" id="practiceForm">
+
+        {{range $index, $question := .Questions}}
+        <article class="practice-question" id="question{{$index}}">
+
+            <span class="question-number">
+                Question {{$index}}
+            </span>
+
+            <h2>{{$question.Question}}</h2>
+
+            <div class="practice-options">
+
+                {{range $question.Options}}
+                <label class="practice-option">
+                    <input
+                        type="radio"
+                        name="question{{$index}}"
+                        value="{{.}}"
+                    >
+                    <span>{{.}}</span>
+                </label>
+                {{end}}
+
+            </div>
+
+            <div class="question-feedback" id="feedback{{$index}}"></div>
+
+        </article>
+        {{end}}
+
+        <button type="submit" class="practice-submit">
+            Check Answers
+        </button>
+
+    </form>
+
+    <div id="practiceResult" class="practice-result"></div>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+<script>
+const answers = [
+    {{range .Questions}}
+    "{{.Answer}}",
+    {{end}}
+];
+
+document.getElementById("practiceForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let score = 0;
+
+    answers.forEach(function(answer, index) {
+        const selected = document.querySelector(
+            'input[name="question' + index + '"]:checked'
+        );
+
+        const feedback = document.getElementById("feedback" + index);
+
+        feedback.className = "question-feedback";
+
+        if (selected && selected.value === answer) {
+            score++;
+
+            feedback.innerHTML =
+                "<strong>✓ Correct!</strong>";
+
+            feedback.classList.add("correct");
+        } else if (selected) {
+            feedback.innerHTML =
+                "<strong>✗ Incorrect</strong><br>" +
+                "Your answer: <strong>" + selected.value + "</strong><br>" +
+                "Correct answer: <strong>" + answer + "</strong>";
+
+            feedback.classList.add("incorrect");
+        } else {
+            feedback.innerHTML =
+                "<strong>✗ No answer selected</strong><br>" +
+                "Correct answer: <strong>" + answer + "</strong>";
+
+            feedback.classList.add("incorrect");
+        }
+    });
+
+    const result = document.getElementById("practiceResult");
+
+    result.textContent =
+        "You scored " + score + " out of " + answers.length + ".";
+
+    result.classList.add("show");
+});
+</script>
+
+</body>
+</html>
+{{end}}

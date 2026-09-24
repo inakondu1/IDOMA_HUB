@@ -1,0 +1,107 @@
+{{define "words.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idoma Words - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/learning">Learn Idoma</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="words-page">
+
+    <a href="/learning" class="back-learning">
+        ← Back to Learning
+    </a>
+
+    <section class="words-header">
+
+        <h1>Idoma Words</h1>
+
+        <p>
+            Welcome, {{.Username}}.
+            Learn common Idoma words and their meanings.
+        </p>
+    </section>
+
+    <div class="words-search">
+        <input
+            type="text"
+            id="wordSearch"
+            placeholder="Search Idoma words..."
+            onkeyup="searchWords()"
+        >
+    </div>
+
+    <section class="words-grid">
+
+        {{range .Words}}
+        <article class="word-card">
+
+            <span class="word-category">
+                {{.Category}}
+            </span>
+
+            <h2>{{.Word}}</h2>
+
+            <div class="word-meaning">
+                <span>Meaning</span>
+                <strong>{{.Meaning}}</strong>
+            </div>
+
+            <div class="word-detail">
+                <span>Dialect</span>
+                <p>{{.Dialect}}</p>
+            </div>
+
+            <div class="word-detail">
+                <span>Source</span>
+                <p>{{.Source}}</p>
+            </div>
+
+        </article>
+        {{end}}
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+<script>
+function searchWords() {
+    const input = document.getElementById("wordSearch");
+    const search = input.value.toLowerCase().trim();
+    const cards = document.querySelectorAll(".word-card");
+
+    cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+
+        if (text.includes(search)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+</script>
+
+</body>
+</html>
+{{end}}

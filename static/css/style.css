@@ -2451,3 +2451,699 @@ body:has(.hero) footer {
     color: #ffffff;
 }
 
+
+/* =========================================
+   IDOMA LEARNING PAGE
+   ========================================= */
+
+.learning-page {
+    min-height: calc(100vh - 140px);
+    background: #000000;
+    color: #ffffff;
+    padding: 55px 6% 70px;
+}
+
+.learning-header {
+    max-width: 900px;
+    margin: 0 auto 45px;
+    text-align: center;
+}
+
+.learning-header h1 {
+    margin: 0 0 14px;
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.learning-header p {
+    margin: 0;
+    color: #bdbdbd;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.learning-categories {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.learning-card {
+    display: block;
+    text-decoration: none;
+    color: #ffffff;
+    background: #1c1c1c;
+    border: 1px solid #333333;
+    border-radius: 18px;
+    padding: 30px;
+    min-height: 190px;
+    transition: transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+}
+
+.learning-card:hover {
+    transform: translateY(-4px);
+    border-color: #b5121b;
+    background: #222222;
+}
+
+.learning-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #b5121b;
+    border-radius: 14px;
+    font-size: 1.5rem;
+    margin-bottom: 22px;
+}
+
+.learning-card h2 {
+    margin: 0 0 10px;
+    font-size: 1.35rem;
+    font-weight: 750;
+}
+
+.learning-card p {
+    margin: 0;
+    color: #bdbdbd;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 700px) {
+    .learning-page {
+        padding: 40px 5% 55px;
+    }
+
+    .learning-header {
+        margin-bottom: 30px;
+    }
+
+    .learning-header h1 {
+        font-size: 2rem;
+    }
+
+    .learning-header p {
+        font-size: 0.95rem;
+    }
+
+    .learning-categories {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .learning-card {
+        padding: 24px;
+        min-height: auto;
+    }
+}
+
+
+/* =========================================
+   IDOMA WORDS PAGE
+   ========================================= */
+
+.words-page {
+    min-height: calc(100vh - 140px);
+    background: #000000;
+    color: #ffffff;
+    padding: 45px 6% 70px;
+}
+
+.words-header {
+    max-width: 1000px;
+    margin: 0 auto 40px;
+}
+
+.back-learning {
+    display: inline-block;
+    color: #bdbdbd;
+    text-decoration: none;
+    margin-bottom: 22px;
+    font-size: 0.9rem;
+}
+
+.back-learning:hover {
+    color: #ffffff;
+}
+
+.words-header h1 {
+    margin: 0 0 12px;
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.words-header p {
+    margin: 0;
+    color: #bdbdbd;
+    line-height: 1.7;
+}
+
+.words-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.word-card {
+    background: #1c1c1c;
+    border: 1px solid #333333;
+    border-radius: 18px;
+    padding: 25px;
+    transition: transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+}
+
+.word-card:hover {
+    transform: translateY(-4px);
+    border-color: #b5121b;
+    background: #222222;
+}
+
+.word-category {
+    display: inline-block;
+    background: #b5121b;
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.word-card h2 {
+    margin: 0 0 20px;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.word-meaning span,
+.word-example span {
+    display: block;
+    color: #888888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 5px;
+}
+
+.word-meaning strong {
+    display: block;
+    color: #ffffff;
+    font-size: 1.05rem;
+    margin-bottom: 18px;
+}
+
+.word-example p {
+    margin: 0;
+    color: #bdbdbd;
+    line-height: 1.6;
+}
+
+@media (max-width: 850px) {
+    .words-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .words-page {
+        padding: 35px 5% 55px;
+    }
+
+    .words-header h1 {
+        font-size: 2rem;
+    }
+
+    .words-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.word-detail {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #333333;
+}
+
+.word-detail span {
+    display: block;
+    color: #888888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 5px;
+}
+
+.word-detail p {
+    margin: 0;
+    color: #bdbdbd;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+
+.words-search {
+    max-width: 1000px;
+    margin: 0 auto 28px;
+}
+
+.words-search input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #1c1c1c;
+    color: #ffffff;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    padding: 15px 18px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.words-search input::placeholder {
+    color: #888888;
+}
+
+.words-search input:focus {
+    border-color: #b5121b;
+    background: #222222;
+}
+
+
+/* =========================================
+   IDOMA PHRASES PAGE
+   ========================================= */
+
+.phrases-page {
+    min-height: calc(100vh - 140px);
+    background: #000000;
+    color: #ffffff;
+    padding: 45px 6% 70px;
+}
+
+.phrases-header {
+    max-width: 1000px;
+    margin: 0 auto 40px;
+}
+
+.phrases-header h1 {
+    margin: 0 0 12px;
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.phrases-header p {
+    margin: 0;
+    color: #bdbdbd;
+    line-height: 1.7;
+}
+
+.phrases-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.phrase-card {
+    background: #1c1c1c;
+    border: 1px solid #333333;
+    border-radius: 18px;
+    padding: 25px;
+    transition: transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+}
+
+.phrase-card:hover {
+    transform: translateY(-4px);
+    border-color: #b5121b;
+    background: #222222;
+}
+
+.phrase-category {
+    display: inline-block;
+    background: #b5121b;
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.phrase-card h2 {
+    margin: 0 0 22px;
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.phrase-meaning span,
+.phrase-detail span {
+    display: block;
+    color: #888888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 5px;
+}
+
+.phrase-meaning strong {
+    display: block;
+    color: #ffffff;
+    font-size: 1.05rem;
+    margin-bottom: 18px;
+}
+
+.phrase-detail {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #333333;
+}
+
+.phrase-detail p {
+    margin: 0;
+    color: #bdbdbd;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+    .phrases-page {
+        padding: 35px 5% 55px;
+    }
+
+    .phrases-header h1 {
+        font-size: 2rem;
+    }
+
+    .phrases-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .phrase-card {
+        padding: 22px;
+    }
+}
+
+
+.practice-page {
+    min-height: calc(100vh - 140px);
+    background: #000000;
+    color: #ffffff;
+    padding: 45px 6% 70px;
+}
+
+.practice-header {
+    max-width: 900px;
+    margin: 0 auto 30px;
+    text-align: center;
+}
+
+.practice-header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.practice-header p {
+    color: #aaaaaa;
+    font-size: 1rem;
+}
+
+.practice-form {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.practice-question {
+    background: #1c1c1c;
+    border: 1px solid #333333;
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.question-number {
+    display: inline-block;
+    color: #b5121b;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.practice-question h2 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.practice-options {
+    display: grid;
+    gap: 12px;
+}
+
+.practice-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #000000;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    padding: 13px 15px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.practice-option:hover {
+    border-color: #b5121b;
+    background: #222222;
+}
+
+.practice-option input {
+    accent-color: #b5121b;
+}
+
+.practice-submit {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 30px auto 0;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #b5121b;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.practice-submit:hover {
+    background: #8f0e15;
+}
+
+.practice-result {
+    max-width: 900px;
+    margin: 25px auto 0;
+    padding: 20px;
+    border-radius: 12px;
+    background: #1c1c1c;
+    border: 1px solid #333333;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+@media (max-width: 700px) {
+    .practice-page {
+        padding: 35px 5% 55px;
+    }
+
+    .practice-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .practice-question {
+        padding: 20px;
+    }
+
+    .practice-submit {
+        max-width: 100%;
+    }
+}
+
+
+.names-page {
+    min-height: calc(100vh - 140px);
+    background: #000000;
+    color: #ffffff;
+    padding: 45px 6% 70px;
+}
+
+.names-header {
+    max-width: 1000px;
+    margin: 0 auto 30px;
+    text-align: center;
+}
+
+.names-header h1 {
+    font-size: 2.2rem;
+    margin: 15px 0 10px;
+}
+
+.names-header p {
+    color: #aaaaaa;
+    font-size: 1rem;
+}
+
+.names-search {
+    max-width: 1000px;
+    margin: 0 auto 28px;
+}
+
+.names-search input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #1c1c1c;
+    color: #ffffff;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    padding: 15px 18px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.names-search input::placeholder {
+    color: #888888;
+}
+
+.names-search input:focus {
+    border-color: #b5121b;
+    background: #222222;
+}
+
+.names-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.name-card {
+    background: #1c1c1c;
+    border: 1px solid #333333;
+    border-radius: 18px;
+    padding: 25px;
+    transition: 0.2s ease;
+}
+
+.name-card:hover {
+    border-color: #b5121b;
+    background: #222222;
+    transform: translateY(-2px);
+}
+
+.name-category {
+    display: inline-block;
+    background: #b5121b;
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.name-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.name-meaning {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.name-detail {
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid #333333;
+    display: grid;
+    gap: 12px;
+}
+
+.name-detail span {
+    color: #888888;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.name-detail p {
+    color: #aaaaaa;
+    margin-top: 3px;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+    .names-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .names-page {
+        padding: 35px 5% 55px;
+    }
+
+    .names-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .names-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .name-card {
+        padding: 20px;
+    }
+}
+
+
+.question-feedback {
+    display: none;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.question-feedback.correct {
+    display: block;
+    background: #102015;
+    border: 1px solid #285c35;
+    color: #8ee09d;
+}
+
+.question-feedback.incorrect {
+    display: block;
+    background: #241012;
+    border: 1px solid #6b252b;
+    color: #ff9b9f;
+}
+
+.question-feedback strong {
+    font-weight: 700;
+}
+
