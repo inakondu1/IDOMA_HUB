@@ -1,0 +1,70 @@
+{{define "lessons.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idoma Lessons - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="learning-page">
+
+    <section class="learning-header">
+        <a href="/learning" class="back-learning">
+            ← Back to Learning
+        </a>
+
+        <h1>Idoma Lessons</h1>
+
+        <p>
+            Welcome {{.Username}}.
+            Build your Idoma language step by step.
+        </p>
+    </section>
+
+    <section class="learning-categories">
+
+        <a href="/words" class="learning-card">
+            <div class="learning-icon">📖</div>
+            <h2>Idoma Words</h2>
+            <p>Learn common Idoma words and their meanings.</p>
+        </a>
+
+        <a href="/phrases" class="learning-card">
+            <div class="learning-icon">💬</div>
+            <h2>Idoma Phrases</h2>
+            <p>Learn useful phrases for everyday conversations.</p>
+        </a>
+
+        <a href="/practice" class="learning-card">
+            <div class="learning-icon">🧠</div>
+            <h2>Practice</h2>
+            <p>Test what you have learned with simple questions.</p>
+        </a>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+</body>
+</html>
+{{end}}

@@ -1,0 +1,70 @@
+{{define "culture.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idoma Culture - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="learning-page">
+
+    <section class="learning-header">
+        <a href="/learning" class="back-learning">
+            ← Back to Learning
+        </a>
+
+        <h1>Idoma Culture</h1>
+
+        <p>
+            Welcome {{.Username}}.
+            Discover the people, history and land of Idoma.
+        </p>
+    </section>
+
+    <section class="learning-categories">
+
+        <a href="/names" class="learning-card">
+            <div class="learning-icon">👤</div>
+            <h2>Idoma Names</h2>
+            <p>Discover Idoma names and their meanings.</p>
+        </a>
+
+        <a href="#" class="learning-card">
+            <div class="learning-icon">📜</div>
+            <h2>Idoma History</h2>
+            <p>Explore the history and heritage of the Idoma people.</p>
+        </a>
+
+        <a href="#" class="learning-card">
+            <div class="learning-icon">🌾</div>
+            <h2>Farm Produce</h2>
+            <p>Learn about crops and farm produce from Idoma land.</p>
+        </a>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+</body>
+</html>
+{{end}}

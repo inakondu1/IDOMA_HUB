@@ -168,6 +168,8 @@ func main() {
 	http.HandleFunc("/profile-picture", profilePictureUploadHandler)
 	http.HandleFunc("/friends", friendsHandler)
 	http.HandleFunc("/learning", learningHandler)
+	http.HandleFunc("/culture", cultureHandler)
+	http.HandleFunc("/lessons", lessonsHandler)
 	http.HandleFunc("/words", wordsHandler)
 	http.HandleFunc("/phrases", phrasesHandler)
 	http.HandleFunc("/practice", practiceHandler)
