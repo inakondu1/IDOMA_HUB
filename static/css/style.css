@@ -3167,3 +3167,10 @@ body:has(.hero) footer {
     border-color: #b5121b;
 }
 
+
+.practice-back-bottom {
+    display: block;
+    width: fit-content;
+    margin: 25px auto 0;
+}
+
