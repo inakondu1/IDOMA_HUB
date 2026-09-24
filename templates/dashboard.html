@@ -28,11 +28,15 @@
 	<main class="dashboard-container">
 
 		<section class="welcome-section">
-			<h1>Welcome {{.Username}}!</h1>
-			<p>
-				This is your IDOMA HUB community space.
-			</p>
-		</section>
+                        <h1>Welcome {{.Username}}!</h1>
+                        <p>
+                                This is your IDOMA HUB community space.
+                        </p>
+
+                        <p class="online-status">
+                                🟢 {{.OnlineCount}} people online
+                        </p>
+                </section>
 
 		<div class="top-dashboard-cards">
 
@@ -52,7 +56,6 @@
                 <p>
                         Start learning Idoma words, phrases,
                         names, and expressions.
-                </p>
 
                 <a href="/learning" class="dashboard-link">
                         Start Learning
@@ -153,7 +156,6 @@
 
                                     <p>
                                             {{.Content}}
-                                    </p>
 
                                     {{if .MediaURL}}
                                     {{if eq .MediaType "image"}}
@@ -213,7 +215,6 @@
                                     <p>
                                             No posts yet. Be the first person to share
                                             something with the IDOMA HUB community.
-                                    </p>
 
                             </div>
                             {{end}}

@@ -65,6 +65,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	updateLastActive(r)
+
 	var username string
 
 	err := db.QueryRow(
@@ -202,11 +204,13 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		Username          string
 		Posts             []Post
 		NotificationCount int
+		OnlineCount       int
 	}{
 		Title:             "IDOMA HUB - Dashboard",
 		Username:          username,
 		Posts:             posts,
 		NotificationCount: notificationCount,
+		OnlineCount:       getOnlineCount(),
 	}
 
 	err = tmpl.Execute(w, data)
@@ -248,6 +252,8 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 	if !loggedIn {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+
+		updateLastActive(r)
 	}
 
 	err := r.ParseMultipartForm(50 << 20)
@@ -369,6 +375,8 @@ func sharePostHandler(w http.ResponseWriter, r *http.Request) {
 	if !loggedIn {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+
+		updateLastActive(r)
 	}
 
 	if r.Method != http.MethodPost {
@@ -425,6 +433,8 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 	if !loggedIn {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+
+		updateLastActive(r)
 	}
 
 	postID := r.FormValue("post_id")
@@ -502,6 +512,8 @@ func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
 	if !loggedIn {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+
+		updateLastActive(r)
 	}
 
 	err := r.ParseMultipartForm(5 << 20)
@@ -608,6 +620,8 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	if !loggedIn {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+
+		updateLastActive(r)
 	}
 
 	postID := r.FormValue("post_id")
@@ -682,6 +696,8 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 	if !loggedIn {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+
+		updateLastActive(r)
 	}
 
 	postID := r.FormValue("post_id")

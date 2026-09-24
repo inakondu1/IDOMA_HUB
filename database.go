@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -30,6 +31,13 @@ func initDatabase() *sql.DB {
 
 	if err != nil {
 		log.Fatal("Unable to create users table:", err)
+	}
+
+	_, err = db.Exec(`ALTER TABLE users ADD COLUMN last_active DATETIME`)
+	if err != nil {
+		if !strings.Contains(err.Error(), "duplicate column name") {
+			log.Fatal("Unable to add last_active column:", err)
+		}
 	}
 
 	_, err = db.Exec(`
