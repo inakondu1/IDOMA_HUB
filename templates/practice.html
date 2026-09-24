@@ -72,6 +72,10 @@
             Check Answers
         </button>
 
+        <button type="button" class="practice-reset" id="practiceReset" style="display:none;">
+            Try Again
+        </button>
+
     </form>
 
     <div id="practiceResult" class="practice-result"></div>
@@ -132,6 +136,22 @@ document.getElementById("practiceForm").addEventListener("submit", function(even
         "You scored " + score + " out of " + answers.length + ".";
 
     result.classList.add("show");
+    document.getElementById("practiceReset").style.display = "block";
+});
+
+document.getElementById("practiceReset").addEventListener("click", function() {
+    document.getElementById("practiceForm").reset();
+
+    document.querySelectorAll(".question-feedback").forEach(function(feedback) {
+        feedback.className = "question-feedback";
+        feedback.innerHTML = "";
+    });
+
+    const result = document.getElementById("practiceResult");
+    result.textContent = "";
+    result.classList.remove("show");
+
+    this.style.display = "none";
 });
 </script>
 
