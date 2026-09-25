@@ -70,7 +70,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	var username string
 
 	err := db.QueryRow(
-		"SELECT username FROM users WHERE id = ?",
+		"SELECT username FROM users WHERE id = $1",
 		userID,
 	).Scan(&username)
 
@@ -97,7 +97,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 			       SELECT 1
 			       FROM post_likes user_like
 			       WHERE user_like.post_id = posts.id
-			       AND user_like.user_id = ?
+			       AND user_like.user_id = $1
 		       ) AS liked_by_me
 		FROM posts
 		JOIN users ON users.id = posts.user_id
@@ -142,7 +142,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
                                comments.content, comments.created_at
                         FROM comments
                         JOIN users ON users.id = comments.user_id
-                        WHERE comments.post_id = ?
+                        WHERE comments.post_id = $1
                         ORDER BY comments.id ASC
                 `, post.ID)
 
@@ -188,9 +188,9 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = db.QueryRow(`
             SELECT
-                (SELECT COUNT(*) FROM friend_requests WHERE receiver_id = ? AND status = 'pending')
+                (SELECT COUNT(*) FROM friend_requests WHERE receiver_id = $1 AND status = 'pending')
                 +
-                (SELECT COUNT(*) FROM notifications WHERE recipient_id = ? AND is_read = 0)
+                (SELECT COUNT(*) FROM notifications WHERE recipient_id = $2 AND is_read = 0)
     `, userID, userID).Scan(&notificationCount)
 
 	if err != nil {
@@ -354,7 +354,7 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = db.Exec(
-		"INSERT INTO posts (user_id, content, media_url, media_type) VALUES (?, ?, ?, ?)",
+		"INSERT INTO posts (user_id, content, media_url, media_type) VALUES ($1, $2, $3, $4)",
 		userID,
 		content,
 		mediaURL,
@@ -398,7 +398,7 @@ func sharePostHandler(w http.ResponseWriter, r *http.Request) {
 	err := db.QueryRow(`
                 SELECT user_id, content, media_url, media_type
                 FROM posts
-                WHERE id = ?
+                WHERE id = $1
         `, postID).Scan(&originalUserID, &content, &mediaURL, &mediaType)
 
 	if err != nil {
@@ -409,7 +409,7 @@ func sharePostHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = db.Exec(`
                 INSERT INTO posts
                 (user_id, content, media_url, media_type, original_post_id)
-                VALUES (?, ?, ?, ?, ?)
+                VALUES ($1, $2, $3, $4, $5)
         `, userID, content, mediaURL, mediaType, postID)
 
 	if err != nil {
@@ -447,7 +447,7 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 	var liked bool
 
 	err := db.QueryRow(
-		"SELECT EXISTS(SELECT 1 FROM post_likes WHERE post_id = ? AND user_id = ?)",
+		"SELECT EXISTS(SELECT 1 FROM post_likes WHERE post_id = $1 AND user_id = $2)",
 		postID,
 		userID,
 	).Scan(&liked)
@@ -460,13 +460,13 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if liked {
 		_, err = db.Exec(
-			"DELETE FROM post_likes WHERE post_id = ? AND user_id = ?",
+			"DELETE FROM post_likes WHERE post_id = $1 AND user_id = $2",
 			postID,
 			userID,
 		)
 	} else {
 		_, err = db.Exec(
-			"INSERT INTO post_likes (post_id, user_id) VALUES (?, ?)",
+			"INSERT INTO post_likes (post_id, user_id) VALUES ($1, $2)",
 			postID,
 			userID,
 		)
@@ -482,7 +482,7 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 		var postOwnerID int
 
 		err = db.QueryRow(
-			"SELECT user_id FROM posts WHERE id = ?",
+			"SELECT user_id FROM posts WHERE id = $1",
 			postID,
 		).Scan(&postOwnerID)
 
@@ -490,7 +490,7 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 			_, err = db.Exec(`
 				INSERT INTO notifications
 				(recipient_id, sender_id, post_id, type)
-				VALUES (?, ?, ?, 'like')
+				VALUES ($1, $2, $3, 'like')
 			`, postOwnerID, userID, postID)
 
 			if err != nil {
@@ -570,7 +570,7 @@ func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
 	var oldPicture string
 
 	err = db.QueryRow(
-		"SELECT COALESCE(profile_picture, '' ) FROM users WHERE id = ?",
+		"SELECT COALESCE(profile_picture, '' ) FROM users WHERE id = $1",
 		userID,
 	).Scan(&oldPicture)
 
@@ -581,7 +581,7 @@ func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = db.Exec(
-		"UPDATE users SET profile_picture = ? WHERE id = ?",
+		"UPDATE users SET profile_picture = $1 WHERE id = $2",
 		mediaURL,
 		userID,
 	)
@@ -633,7 +633,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	var mediaURL string
 
 	err := db.QueryRow(
-		"SELECT media_url FROM posts WHERE id = ? AND user_id = ?",
+		"SELECT media_url FROM posts WHERE id = $1 AND user_id = $2",
 		postID,
 		userID,
 	).Scan(&mediaURL)
@@ -643,14 +643,14 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = db.Exec("DELETE FROM comments WHERE post_id = ?", postID)
+	_, err = db.Exec("DELETE FROM comments WHERE post_id = $1", postID)
 	if err != nil {
 		http.Error(w, "Unable to delete post comments.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
 
-	_, err = db.Exec("DELETE FROM post_likes WHERE post_id = ?", postID)
+	_, err = db.Exec("DELETE FROM post_likes WHERE post_id = $1", postID)
 	if err != nil {
 		http.Error(w, "Unable to delete post likes.", http.StatusInternalServerError)
 		log.Println(err)
@@ -658,7 +658,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = db.Exec(
-		"DELETE FROM posts WHERE id = ? AND user_id = ?",
+		"DELETE FROM posts WHERE id = $1 AND user_id = $2",
 		postID,
 		userID,
 	)
@@ -714,7 +714,7 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err := db.Exec(
-		"INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)",
+		"INSERT INTO comments (post_id, user_id, content) VALUES ($1, $2, $3)",
 		postID,
 		userID,
 		content,
@@ -728,7 +728,7 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	var postOwnerID int
 	err = db.QueryRow(
-		"SELECT user_id FROM posts WHERE id = ?",
+		"SELECT user_id FROM posts WHERE id = $1",
 		postID,
 	).Scan(&postOwnerID)
 

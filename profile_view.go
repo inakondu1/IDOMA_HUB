@@ -31,7 +31,7 @@ func profileViewHandler(w http.ResponseWriter, r *http.Request) {
 	var profilePicture sql.NullString
 
 	err = db.QueryRow(
-		"SELECT username, profile_picture FROM users WHERE id = ?",
+		"SELECT username, profile_picture FROM users WHERE id = $1",
 		profileID,
 	).Scan(&username, &profilePicture)
 
@@ -52,7 +52,7 @@ func profileViewHandler(w http.ResponseWriter, r *http.Request) {
                        COUNT(post_likes.id) AS like_count
                 FROM posts
                 LEFT JOIN post_likes ON post_likes.post_id = posts.id
-                WHERE posts.user_id = ?
+                WHERE posts.user_id = $1
                 GROUP BY posts.id
                 ORDER BY posts.id DESC
         `, profileID)

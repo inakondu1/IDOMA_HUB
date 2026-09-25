@@ -38,7 +38,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 		_, err := db.Exec(`
                      UPDATE notifications
                      SET is_read = 1
-                     WHERE recipient_id = ? AND is_read = 0
+                     WHERE recipient_id = $1 AND is_read = 0
              `, userID)
 
 		if err != nil {
@@ -55,14 +55,14 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 			_, _ = db.Exec(`
 				UPDATE friend_requests
 				SET status = 'accepted'
-				WHERE id = ? AND receiver_id = ? AND status = 'pending'
+				WHERE id = $1 AND receiver_id = $2 AND status = 'pending'
 			`, requestID, userID)
 
 		case "reject":
 			_, _ = db.Exec(`
 				UPDATE friend_requests
 				SET status = 'rejected'
-				WHERE id = ? AND receiver_id = ? AND status = 'pending'
+				WHERE id = $1 AND receiver_id = $2 AND status = 'pending'
 			`, requestID, userID)
 		}
 
@@ -74,7 +74,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 		SELECT fr.id, u.id, u.username
 		FROM friend_requests fr
 		JOIN users u ON u.id = fr.sender_id
-		WHERE fr.receiver_id = ?
+		WHERE fr.receiver_id = $1
 		AND fr.status = 'pending'
 		ORDER BY fr.created_at DESC
 	`, userID)
@@ -108,7 +108,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
                 SELECT n.id, u.username, n.post_id, n.type, n.created_at
                 FROM notifications n
                 JOIN users u ON u.id = n.sender_id
-                WHERE n.recipient_id = ?
+                WHERE n.recipient_id = $1
                 ORDER BY n.created_at DESC
         `, userID)
 
@@ -167,7 +167,7 @@ func createPostNotification(recipientID, senderID int, postID string, notificati
 	_, err := db.Exec(`
                 INSERT INTO notifications
                 (recipient_id, sender_id, post_id, type)
-                VALUES (?, ?, ?, ?)
+                VALUES ($1, $2, $3, $4)
         `, recipientID, senderID, postID, notificationType)
 
 	if err != nil {

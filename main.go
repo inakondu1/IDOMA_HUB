@@ -60,7 +60,7 @@ func registerPageHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		_, err = db.Exec(
-			"INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+			"INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
 			username,
 			email,
 			string(hashedPassword),
@@ -103,7 +103,7 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 		var storedPassword string
 
 		err := db.QueryRow(
-			"SELECT id, password FROM users WHERE username = ? OR email = ?",
+			"SELECT id, password FROM users WHERE username = $1 OR email = $2",
 			usernameOrEmail,
 			usernameOrEmail,
 		).Scan(&userID, &storedPassword)

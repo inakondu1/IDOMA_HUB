@@ -47,9 +47,10 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 			case "send":
 				if id != userID {
 					_, _ = db.Exec(`
-						INSERT OR IGNORE INTO friend_requests
+						INSERT INTO friend_requests
 						(sender_id, receiver_id, status)
-						VALUES (?, ?, 'pending')
+						VALUES ($1, $2, 'pending')
+                                                ON CONFLICT DO NOTHING
 					`, userID, id)
 				}
 
@@ -57,21 +58,21 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 				_, _ = db.Exec(`
 					UPDATE friend_requests
 					SET status = 'accepted'
-					WHERE id = ? AND receiver_id = ? AND status = 'pending'
+					WHERE id = $1 AND receiver_id = $2 AND status = 'pending'
 				`, id, userID)
 
 			case "remove":
 				_, _ = db.Exec(`
 					DELETE FROM friend_requests
 					WHERE status = 'accepted'
-					AND ((sender_id = ? AND receiver_id = ?)
-					OR (sender_id = ? AND receiver_id = ?))
+					AND ((sender_id = $1 AND receiver_id = $2)
+					OR (sender_id = $3 AND receiver_id = $4))
 				`, userID, id, id, userID)
 			case "reject":
 				_, _ = db.Exec(`
 					UPDATE friend_requests
 					SET status = 'rejected'
-					WHERE id = ? AND receiver_id = ? AND status = 'pending'
+					WHERE id = $1 AND receiver_id = $2 AND status = 'pending'
 				`, id, userID)
 			}
 		}
@@ -89,8 +90,8 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 		rows, err := db.Query(`
 			SELECT id, username, COALESCE(profile_picture, '')
 			FROM users
-			WHERE id != ?
-			AND username LIKE ?
+			WHERE id != $1
+			AND username LIKE $2
 			ORDER BY username
 		`, userID, "%"+search+"%")
 
@@ -103,9 +104,9 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
                                                 SELECT status
                                                 FROM friend_requests
                                                 WHERE
-                                                        (sender_id = ? AND receiver_id = ?)
+                                                        (sender_id = $1 AND receiver_id = $2)
                                                         OR
-                                                        (sender_id = ? AND receiver_id = ?)
+                                                        (sender_id = $1 AND receiver_id = $2)
                                                 ORDER BY id DESC
                                                 LIMIT 1
                                         `, userID, user.ID, user.ID, userID).Scan(&status)
@@ -119,9 +120,9 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
                                                                 SELECT sender_id
                                                                 FROM friend_requests
                                                                 WHERE
-                                                                        ((sender_id = ? AND receiver_id = ?)
+                                                                        ((sender_id = $1 AND receiver_id = $2)
                                                                         OR
-                                                                        (sender_id = ? AND receiver_id = ?))
+                                                                        (sender_id = $1 AND receiver_id = $2))
                                                                         AND status = 'pending'
                                                                 ORDER BY id DESC
                                                                 LIMIT 1
@@ -148,17 +149,17 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query(`
 		SELECT id, username, COALESCE(profile_picture, '')
 		FROM users
-		WHERE id != ?
+		WHERE id != $1
 		AND id NOT IN (
 			SELECT receiver_id
 			FROM friend_requests
-			WHERE sender_id = ?
+			WHERE sender_id = $1
 			AND status IN ('pending', 'accepted')
 		)
 		AND id NOT IN (
 			SELECT sender_id
 			FROM friend_requests
-			WHERE receiver_id = ?
+			WHERE receiver_id = $1
 			AND status IN ('pending', 'accepted')
 		)
 		ORDER BY username
@@ -179,7 +180,7 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 		SELECT fr.id, u.id, u.username, COALESCE(u.profile_picture, '')
 		FROM friend_requests fr
 		JOIN users u ON u.id = fr.sender_id
-		WHERE fr.receiver_id = ?
+		WHERE fr.receiver_id = $1
 		AND fr.status = 'pending'
 		ORDER BY fr.created_at DESC
 	`, userID)
@@ -205,10 +206,10 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 		FROM friend_requests fr
 		JOIN users u ON u.id =
 			CASE
-				WHEN fr.sender_id = ? THEN fr.receiver_id
+				WHEN fr.sender_id = $1 THEN fr.receiver_id
 				ELSE fr.sender_id
 			END
-		WHERE (fr.sender_id = ? OR fr.receiver_id = ?)
+		WHERE (fr.sender_id = $2 OR fr.receiver_id = $3)
 		AND fr.status = 'accepted'
 		ORDER BY u.username
 	`, userID, userID, userID)

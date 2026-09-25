@@ -29,7 +29,7 @@ func wordsHandler(w http.ResponseWriter, r *http.Request) {
 	var username string
 
 	err := db.QueryRow(
-		"SELECT username FROM users WHERE id = ?",
+		"SELECT username FROM users WHERE id = $1",
 		userID,
 	).Scan(&username)
 
