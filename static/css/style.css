@@ -3429,3 +3429,65 @@ body.profile-page footer {
     color: #aaa;
     border-top: 1px solid #222;
 }
+
+/* =========================================================
+   SIMPLE IDOMA HUB ENTRANCE
+   ========================================================= */
+
+body.simple-home {
+    min-height: 100vh;
+    margin: 0;
+    background: #000;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.simple-home-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.simple-home-logo {
+    font-size: clamp(2.8rem, 8vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: #b5121b;
+}
+
+.simple-home-tagline {
+    margin: 12px 0 35px;
+    color: #aaa;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+.simple-home-button {
+    min-width: 210px;
+    text-align: center;
+}
+
+.simple-home-login {
+    margin-top: 20px;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.simple-home-login a {
+    color: #b5121b;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+body.simple-home footer {
+    background: #000;
+    color: #666;
+    border-top: 1px solid #222;
+    text-align: center;
+    padding: 18px;
+}
