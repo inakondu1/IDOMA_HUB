@@ -102,7 +102,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		FROM posts
 		JOIN users ON users.id = posts.user_id
 		LEFT JOIN post_likes ON post_likes.post_id = posts.id
-		GROUP BY posts.id
+		GROUP BY posts.id, users.username, posts.content, posts.created_at, posts.media_url, posts.media_type
 		ORDER BY posts.id DESC
 	`, userID)
 
