@@ -3341,3 +3341,91 @@ body:has(.hero) footer {
         font-size: 0.9rem;
     }
 }
+
+/* =========================================================
+   IDOMA HUB PROFILE PAGE - BLACK THEME
+   ========================================================= */
+
+body.profile-page {
+    background: #000;
+    color: #fff;
+}
+
+body.profile-page .profile-header-card,
+body.profile-page .profile-section {
+    background: #000;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.04);
+}
+
+body.profile-page .profile-identity-info h1 {
+    color: #fff;
+}
+
+body.profile-page .profile-identity-info p,
+body.profile-page .profile-identity-info span {
+    color: #aaa;
+}
+
+body.profile-page .profile-tabs {
+    border-top-color: #333;
+}
+
+body.profile-page .profile-tab {
+    border-right-color: #333;
+}
+
+body.profile-page .profile-tab span {
+    color: #aaa;
+}
+
+body.profile-page .profile-section-title h2 {
+    color: #fff;
+}
+
+body.profile-page .profile-section-title span {
+    color: #aaa;
+}
+
+body.profile-page .profile-about-item {
+    border-bottom-color: #333;
+}
+
+body.profile-page .profile-about-item small {
+    color: #999;
+}
+
+body.profile-page .profile-about-item p {
+    color: #eee;
+}
+
+body.profile-page .profile-post-new {
+    border-bottom-color: #333;
+}
+
+body.profile-page .profile-post-author strong {
+    color: #fff;
+}
+
+body.profile-page .profile-post-author span {
+    color: #999;
+}
+
+body.profile-page .profile-post-content p {
+    color: #eee;
+}
+
+body.profile-page .profile-post-footer {
+    color: #aaa;
+}
+
+body.profile-page .empty-profile-posts {
+    background: #000;
+    color: #fff;
+}
+
+body.profile-page footer {
+    background: #000;
+    color: #aaa;
+    border-top: 1px solid #222;
+}
