@@ -3491,3 +3491,43 @@ body.simple-home footer {
     text-align: center;
     padding: 18px;
 }
+
+/* =========================================================
+   BLACK LOGIN AND REGISTER PAGES
+   ========================================================= */
+
+body:has(.auth-page) {
+    background: #000;
+    color: #fff;
+}
+
+body:has(.auth-page) .auth-card {
+    background: #111;
+    color: #fff;
+    border: 1px solid #222;
+    border-top: 6px solid var(--idoma-red);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+body:has(.auth-page) .auth-card h1 {
+    color: #fff;
+}
+
+body:has(.auth-page) .auth-card label {
+    color: #fff;
+}
+
+body:has(.auth-page) .auth-card input {
+    background: #000;
+    color: #fff;
+    border: 1px solid #333;
+}
+
+body:has(.auth-page) .auth-card input::placeholder {
+    color: #777;
+}
+
+body:has(.auth-page) .auth-intro,
+body:has(.auth-page) .auth-footer {
+    color: #aaa;
+}
