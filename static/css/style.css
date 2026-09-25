@@ -3531,3 +3531,23 @@ body:has(.auth-page) .auth-intro,
 body:has(.auth-page) .auth-footer {
     color: #aaa;
 }
+
+/* =========================================================
+   DARK CREATE POST BOX
+   ========================================================= */
+
+.create-post-card textarea {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+}
+
+.create-post-card textarea::placeholder {
+    color: #888 !important;
+}
+
+.create-post-card textarea:focus {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: var(--idoma-red) !important;
+}
