@@ -103,7 +103,18 @@
             color: white;
             font-weight: 700;
             white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            box-sizing: border-box;
             transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .friend-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
         }
 
         .friend-button:hover {
@@ -139,6 +150,15 @@
             .friend-card {
                 align-items: flex-start;
                 flex-direction: column;
+            }
+
+            .friend-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .friend-actions .friend-button {
+                width: 100%;
             }
 
             .friend-button {
@@ -349,13 +369,22 @@
                                 </a>
                             </div>
 
+                            <div class="friend-actions">
+                                <a
+                                    class="friend-button"
+                                    href="/messages?user_id={{.ID}}"
+                                >
+                                    💬 Message
+                                </a>
+
                                 <form method="POST" action="/friends">
-                                        <input type="hidden" name="action" value="remove">
-                                        <input type="hidden" name="user_id" value="{{.ID}}">
-                                        <button class="friend-button reject" type="submit">
-                                                Remove Friend
-                                        </button>
+                                    <input type="hidden" name="action" value="remove">
+                                    <input type="hidden" name="user_id" value="{{.ID}}">
+                                    <button class="friend-button reject" type="submit">
+                                        Remove Friend
+                                    </button>
                                 </form>
+                            </div>
                         </div>
                     {{end}}
                 </div>
