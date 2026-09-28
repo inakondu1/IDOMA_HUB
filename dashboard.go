@@ -562,25 +562,9 @@ func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := os.MkdirAll("static/uploads/profile", 0755); err != nil {
-		http.Error(w, "Unable to create upload folder.", http.StatusInternalServerError)
-		return
-	}
-
-	filename := fmt.Sprintf("profile_%d_%d%s", userID, time.Now().UnixNano(), ext)
-	filePath := filepath.Join("static/uploads/profile", filename)
-	mediaURL := "/static/uploads/profile/" + filename
-
-	destination, err := os.Create(filePath)
+	mediaURL, err := uploadToCloudinary(file, "idoma_hub/profile", "image")
 	if err != nil {
-		http.Error(w, "Unable to save profile picture.", http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-	defer destination.Close()
-
-	if _, err := io.Copy(destination, file); err != nil {
-		http.Error(w, "Unable to save profile picture.", http.StatusInternalServerError)
+		http.Error(w, "Unable to upload profile picture.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -608,21 +592,6 @@ func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to update your profile picture.", http.StatusInternalServerError)
 		log.Println(err)
 		return
-	}
-
-	if oldPicture != "" {
-		prefix := "/static/uploads/profile/"
-		if strings.HasPrefix(oldPicture, prefix) {
-			oldFilename := strings.TrimPrefix(oldPicture, prefix)
-
-			if !strings.Contains(oldFilename, "..") && !strings.Contains(oldFilename, "/") {
-				oldPath := filepath.Join("static/uploads/profile", oldFilename)
-
-				if err := os.Remove(oldPath); err != nil && !os.IsNotExist(err) {
-					log.Println("Unable to delete old profile picture:", err)
-				}
-			}
-		}
 	}
 
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)

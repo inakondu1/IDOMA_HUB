@@ -10,6 +10,7 @@ import (
 )
 
 var db = initDatabase()
+var cld = initCloudinary()
 
 type PageData struct {
 	Title      string
