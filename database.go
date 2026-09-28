@@ -171,6 +171,19 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create messages table:", err)
 	}
 
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS farm_produce (
+			id SERIAL PRIMARY KEY,
+			name TEXT NOT NULL,
+			description TEXT NOT NULL,
+			image_url TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		log.Fatal("Unable to create farm_produce table:", err)
+	}
+
 	log.Println("PostgreSQL database connected successfully.")
 
 	return db
