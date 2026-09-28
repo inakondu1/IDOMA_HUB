@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        .conversations-page {
+            max-width: 900px;
+            margin: 15px auto;
+            padding: 0 24px 70px;
+        }
+
+        .conversations-header {
+            background: white;
+            border-radius: 20px;
+            padding: 24px 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .conversations-header h1 {
+            margin: 0 0 8px;
+            color: #3d3027;
+        }
+
+        .conversations-header p {
+            margin: 0;
+            color: #777;
+        }
+
+        .conversation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .conversation-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            background: white;
+            border-radius: 18px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .conversation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 25px rgba(0, 0, 0, 0.09);
+        }
+
+        .conversation-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #287a43;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .conversation-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .conversation-name {
+            font-weight: 700;
+            color: #3d3027;
+            margin-bottom: 5px;
+        }
+
+        .conversation-last-message {
+            color: #777;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-meta {
+            text-align: right;
+            flex-shrink: 0;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .unread-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            margin-top: 6px;
+            border-radius: 12px;
+            background: #287a43;
+            color: white;
+            font-weight: 700;
+        }
+
+        .empty-conversations {
+            background: white;
+            border-radius: 20px;
+            padding: 70px 25px;
+            text-align: center;
+            color: #777;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .conversations-footer {
+            margin-top: 20px;
+        }
+
+        .conversations-footer a {
+            color: #287a43;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            .conversations-page {
+                padding: 0 14px 40px;
+            }
+
+            .conversations-header {
+                padding: 20px;
+            }
+
+            .conversation-card {
+                padding: 15px;
+            }
+
+            .conversation-avatar {
+                width: 48px;
+                height: 48px;
+            }
+
+            .conversation-meta {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="conversations-page">
+
+        <section class="conversations-header">
+            <h1>💬 Messages</h1>
+            <p>Your private conversations on IDOMA HUB.</p>
+        </section>
+
+        {{if .Conversations}}
+
+            <div class="conversation-list">
+
+                {{range .Conversations}}
+
+                    <a
+                        class="conversation-card"
+                        href="/messages?user_id={{.UserID}}"
+                    >
+                        <div class="conversation-avatar">
+                            {{printf "%.1s" .Username}}
+                        </div>
+
+                        <div class="conversation-info">
+                            <div class="conversation-name">
+                                {{.Username}}
+                            </div>
+
+                            <div class="conversation-last-message">
+                                {{.LastMessage}}
+                            </div>
+                        </div>
+
+                        <div class="conversation-meta">
+                            <div>{{.CreatedAt}}</div>
+
+                            {{if .UnreadCount}}
+                                <div class="unread-badge">
+                                    {{.UnreadCount}}
+                                </div>
+                            {{end}}
+                        </div>
+                    </a>
+
+                {{end}}
+
+            </div>
+
+        {{else}}
+
+            <div class="empty-conversations">
+                <h2>No conversations yet</h2>
+                <p>
+                    Add friends and start a private conversation with them.
+                </p>
+                <a href="/friends">Find Friends</a>
+            </div>
+
+        {{end}}
+
+        <div class="conversations-footer">
+            <a href="/dashboard">← Back to Dashboard</a>
+        </div>
+
+    </main>
+
+</body>
+</html>
