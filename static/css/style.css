@@ -1139,7 +1139,7 @@ body:has(.profile-card) .secondary-button:hover {
 .profile-cover-image {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     display: block;
 }
@@ -1515,7 +1515,7 @@ body:has(.profile-card) .secondary-button:hover {
 .post-media {
     width: 100%;
     max-height: 600px;
-    object-fit: contain;
+    object-fit: cover;
     background: #f5efe6;
     border-radius: 12px;
     margin-top: 12px;
@@ -1529,7 +1529,7 @@ body:has(.profile-card) .secondary-button:hover {
 .post-media-preview {
     width: 100%;
     max-height: 400px;
-    object-fit: contain;
+    object-fit: cover;
     background: #f5efe6;
     border-radius: 12px;
     display: block;
