@@ -155,6 +155,22 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to add original_post_id column:", err)
 	}
 
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS messages (
+                        id SERIAL PRIMARY KEY,
+                        sender_id INTEGER NOT NULL,
+                        receiver_id INTEGER NOT NULL,
+                        content TEXT NOT NULL,
+                        is_read INTEGER NOT NULL DEFAULT 0,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (sender_id) REFERENCES users(id),
+                        FOREIGN KEY (receiver_id) REFERENCES users(id)
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create messages table:", err)
+	}
+
 	log.Println("PostgreSQL database connected successfully.")
 
 	return db

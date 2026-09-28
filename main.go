@@ -175,6 +175,7 @@ func main() {
 	http.HandleFunc("/practice", practiceHandler)
 	http.HandleFunc("/names", namesHandler)
 	http.HandleFunc("/notifications", notificationsHandler)
+	http.HandleFunc("/messages", messagesHandler)
 	http.HandleFunc("/post", createPostHandler)
 	http.HandleFunc("/like", likePostHandler)
 	http.HandleFunc("/share", sharePostHandler)

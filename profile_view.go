@@ -96,11 +96,13 @@ func profileViewHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
+		ID             int
 		Title          string
 		Username       string
 		ProfilePicture string
 		Posts          []ProfilePost
 	}{
+		ID:             profileID,
 		Title:          username + " - IDOMA HUB",
 		Username:       username,
 		ProfilePicture: profilePictureURL,
