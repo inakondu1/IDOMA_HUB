@@ -31,7 +31,7 @@ func profileViewHandler(w http.ResponseWriter, r *http.Request) {
 	var profilePicture sql.NullString
 
 	err = db.QueryRow(
-		"SELECT username, profile_picture FROM users WHERE id = $1",
+		"SELECT username, COALESCE(profile_picture, '') FROM users WHERE id = $1",
 		profileID,
 	).Scan(&username, &profilePicture)
 

@@ -73,7 +73,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT fr.id, u.id, u.username, u.profile_picture
+		SELECT fr.id, u.id, u.username, COALESCE(u.profile_picture, '')
 		FROM friend_requests fr
 		JOIN users u ON u.id = fr.sender_id
 		WHERE fr.receiver_id = $1
@@ -108,7 +108,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	activityRows, err := db.Query(`
-                SELECT n.id, u.username, u.profile_picture, n.post_id, n.type, n.created_at
+                SELECT n.id, u.username, COALESCE(u.profile_picture, ''), n.post_id, n.type, n.created_at
                 FROM notifications n
                 JOIN users u ON u.id = n.sender_id
                 WHERE n.recipient_id = $1

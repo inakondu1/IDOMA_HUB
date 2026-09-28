@@ -50,7 +50,7 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
                                 SELECT DISTINCT ON (u.id)
                                         u.id AS user_id,
                                         u.username,
-                                        u.profile_picture,
+                                        COALESCE(u.profile_picture, '') AS profile_picture,
                                         m.content AS last_message,
                                         TO_CHAR(m.created_at, 'YYYY-MM-DD HH24:MI') AS created_at,
                                         (

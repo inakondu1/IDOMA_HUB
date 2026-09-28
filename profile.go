@@ -28,7 +28,7 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 	var profilePicture sql.NullString
 
 	err := db.QueryRow(
-		"SELECT username, email, profile_picture FROM users WHERE id = $1",
+		"SELECT username, email, COALESCE(profile_picture, '') FROM users WHERE id = $1",
 		userID,
 	).Scan(&username, &email, &profilePicture)
 

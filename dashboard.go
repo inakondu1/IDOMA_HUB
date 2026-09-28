@@ -73,7 +73,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	var profilePicture string
 
 	err := db.QueryRow(
-		"SELECT username, profile_picture FROM users WHERE id = $1",
+		"SELECT username, COALESCE(profile_picture, '') FROM users WHERE id = $1",
 		userID,
 	).Scan(&username, &profilePicture)
 
@@ -91,7 +91,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT posts.id, users.username, users.profile_picture, posts.content, posts.created_at,
+		SELECT posts.id, users.username, COALESCE(users.profile_picture, ''), posts.content, posts.created_at,
                        posts.media_url, posts.media_type,
 		       COUNT(post_likes.id) AS like_count,
                     (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comment_count,
@@ -142,7 +142,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		commentRows, err := db.Query(`
-                        SELECT comments.id, comments.post_id, users.username, users.profile_picture,
+                        SELECT comments.id, comments.post_id, users.username, COALESCE(users.profile_picture, ''),
                                comments.content, comments.created_at
                         FROM comments
                         JOIN users ON users.id = comments.user_id
