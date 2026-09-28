@@ -13,6 +13,10 @@
             padding: 0 24px 70px;
         }
 
+        .back-dashboard { margin-bottom: 15px; }
+
+        .back-dashboard a { color: #287a43; text-decoration: none; font-weight: 700; }
+
         .messages-header {
             background: white;
             border-radius: 20px;
@@ -151,7 +155,11 @@
                 padding: 0 14px 40px;
             }
 
-            .messages-header {
+            .back-dashboard { margin-bottom: 15px; }
+
+        .back-dashboard a { color: #287a43; text-decoration: none; font-weight: 700; }
+
+        .messages-header {
                 padding: 20px;
             }
 
@@ -177,6 +185,10 @@
 <body>
 
     <main class="messages-page">
+
+        <div class="back-dashboard">
+            <a href="/dashboard">← Back to Dashboard</a>
+        </div>
 
         <section class="messages-header">
             <h1>💬 {{.OtherUsername}}</h1>
