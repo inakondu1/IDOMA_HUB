@@ -199,17 +199,28 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var messageCount int
+
+	err = db.QueryRow("SELECT COUNT(*) FROM messages WHERE receiver_id = $1 AND is_read = 0", userID).Scan(&messageCount)
+	if err != nil {
+		http.Error(w, "Unable to load message notifications.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
 	data := struct {
 		Title             string
 		Username          string
 		Posts             []Post
 		NotificationCount int
+		MessageCount      int
 		OnlineCount       int
 	}{
 		Title:             "IDOMA HUB - Dashboard",
 		Username:          username,
 		Posts:             posts,
 		NotificationCount: notificationCount,
+		MessageCount:      messageCount,
 		OnlineCount:       getOnlineCount(),
 	}
 
