@@ -44,74 +44,22 @@
             </p>
         </div>
 
+        {{if .Produce}}
+        {{range .Produce}}
         <div class="learning-card farm-produce-card">
-            <img src="/static/images/farm-produce/plantain.jpeg" alt="Plantain" class="farm-produce-image">
-            <h2>🍌 Plantain</h2>
-            <p>
-                Plantain is grown in many farming communities and is an important
-                source of food.
-            </p>
+            {{if .ImageURL}}
+            <img src="{{.ImageURL}}" alt="{{.Name}}" class="farm-produce-image">
+            {{end}}
+            <h2>{{.Name}}</h2>
+            <p>{{.Description}}</p>
         </div>
-
-        <div class="learning-card farm-produce-card">
-            <img src="/static/images/farm-produce/tomatoes.jpeg" alt="Tomatoes" class="farm-produce-image">
-            <h2>🍅 Tomatoes</h2>
-            <p>
-                Tomatoes are an important vegetable crop used in many meals and
-                grown by farmers in different communities.
-            </p>
-        </div>
-
-        <div class="learning-card farm-produce-card">
-            <img src="/static/images/farm-produce/rice.jpeg" alt="Rice" class="farm-produce-image">
-            <h2>🌾 Rice</h2>
-            <p>
-                Rice is an important food crop grown and consumed across many
-                communities.
-            </p>
-        </div>
-
-        <div class="learning-card farm-produce-card">
-            <img src="/static/images/farm-produce/rice-farm.jpeg" alt="Rice farm" class="farm-produce-image">
-            <h2>🌾 Rice Farm</h2>
-            <p>
-                Rice farming provides food and supports the livelihood of farmers
-                and farming communities.
-            </p>
-        </div>
-
-        <div class="learning-card farm-produce-card">
-            <img src="/static/images/farm-produce/pawpaw.jpeg" alt="Pawpaw" class="farm-produce-image">
-            <h2>🥭 Pawpaw</h2>
-            <p>
-                Pawpaw is a nutritious fruit that can be grown in farming
-                communities and enjoyed as part of the local food supply.
-            </p>
-        </div>
-
+        {{end}}
+        {{else}}
         <div class="learning-card">
-            <h2>🍠 Yam</h2>
-            <p>
-                Yam is an important food crop in Idoma communities and is closely
-                connected with farming, food and cultural life.
-            </p>
+            <h2>Farm Produce</h2>
+            <p>Farm produce information will be available here soon.</p>
         </div>
-
-        <div class="learning-card">
-            <h2>🌿 Cassava</h2>
-            <p>
-                Cassava is another important crop grown by farmers and used in
-                different forms of food.
-            </p>
-        </div>
-
-        <div class="learning-card">
-            <h2>🍊 Fruits</h2>
-            <p>
-                Fruits such as mango and orange are also part of the agricultural
-                produce found in Idoma communities.
-            </p>
-        </div>
+        {{end}}
 
     </section>
 

@@ -184,6 +184,29 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create farm_produce table:", err)
 	}
 
+	var farmProduceCount int
+	err = db.QueryRow("SELECT COUNT(*) FROM farm_produce").Scan(&farmProduceCount)
+	if err != nil {
+		log.Fatal("Unable to check farm produce:", err)
+	}
+
+	if farmProduceCount == 0 {
+		_, err = db.Exec(`
+			INSERT INTO farm_produce (name, description, image_url) VALUES
+			('Plantain', 'Plantain is grown in many farming communities and is an important source of food.', '/static/images/farm-produce/plantain.jpeg'),
+			('Tomatoes', 'Tomatoes are an important vegetable crop used in many meals and grown by farmers in different communities.', '/static/images/farm-produce/tomatoes.jpeg'),
+			('Rice', 'Rice is an important food crop grown and consumed across many communities.', '/static/images/farm-produce/rice.jpeg'),
+			('Rice Farm', 'Rice farming provides food and supports the livelihood of farmers and farming communities.', '/static/images/farm-produce/rice-farm.jpeg'),
+			('Pawpaw', 'Pawpaw is a nutritious fruit that can be grown in farming communities and enjoyed as part of the local food supply.', '/static/images/farm-produce/pawpaw.jpeg'),
+			('Yam', 'Yam is an important food crop in Idoma communities and is closely connected with farming, food and cultural life.', '' ),
+			('Cassava', 'Cassava is another important crop grown by farmers and used in different forms of food.', '' ),
+			('Fruits', 'Fruits such as mango and orange are also part of the agricultural produce found in Idoma communities.', '' )
+		`)
+		if err != nil {
+			log.Fatal("Unable to insert farm produce:", err)
+		}
+	}
+
 	log.Println("PostgreSQL database connected successfully.")
 
 	return db
