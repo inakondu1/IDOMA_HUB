@@ -13,17 +13,18 @@ import (
 )
 
 type Post struct {
-	ID           int
-	Username     string
-	Content      string
-	CreatedAt    string
-	LikeCount    int
-	CommentCount int
-	ShareCount   int
-	LikedByMe    bool
-	MediaURL     string
-	MediaType    string
-	Comments     []Comment
+	ID             int
+	Username       string
+	ProfilePicture string
+	Content        string
+	CreatedAt      string
+	LikeCount      int
+	CommentCount   int
+	ShareCount     int
+	LikedByMe      bool
+	MediaURL       string
+	MediaType      string
+	Comments       []Comment
 }
 
 func formatDateTime(value string) string {
@@ -51,11 +52,12 @@ func formatDateTime(value string) string {
 }
 
 type Comment struct {
-	ID        int
-	PostID    int
-	Username  string
-	Content   string
-	CreatedAt string
+	ID             int
+	PostID         int
+	Username       string
+	ProfilePicture string
+	Content        string
+	CreatedAt      string
 }
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,11 +70,12 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	updateLastActive(r)
 
 	var username string
+	var profilePicture string
 
 	err := db.QueryRow(
-		"SELECT username FROM users WHERE id = $1",
+		"SELECT username, profile_picture FROM users WHERE id = $1",
 		userID,
-	).Scan(&username)
+	).Scan(&username, &profilePicture)
 
 	if err != nil {
 		http.Error(w, "Unable to load your account.", http.StatusInternalServerError)
@@ -88,7 +91,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT posts.id, users.username, posts.content, posts.created_at,
+		SELECT posts.id, users.username, users.profile_picture, posts.content, posts.created_at,
                        posts.media_url, posts.media_type,
 		       COUNT(post_likes.id) AS like_count,
                     (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comment_count,
@@ -102,7 +105,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		FROM posts
 		JOIN users ON users.id = posts.user_id
 		LEFT JOIN post_likes ON post_likes.post_id = posts.id
-		GROUP BY posts.id, users.username, posts.content, posts.created_at, posts.media_url, posts.media_type
+		GROUP BY posts.id, users.username, users.profile_picture, posts.content, posts.created_at, posts.media_url, posts.media_type
 		ORDER BY posts.id DESC
 	`, userID)
 
@@ -121,6 +124,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		err := rows.Scan(
 			&post.ID,
 			&post.Username,
+			&post.ProfilePicture,
 			&post.Content,
 			&post.CreatedAt,
 			&post.MediaURL,
@@ -138,7 +142,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		commentRows, err := db.Query(`
-                        SELECT comments.id, comments.post_id, users.username,
+                        SELECT comments.id, comments.post_id, users.username, users.profile_picture,
                                comments.content, comments.created_at
                         FROM comments
                         JOIN users ON users.id = comments.user_id
@@ -159,6 +163,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 				&comment.ID,
 				&comment.PostID,
 				&comment.Username,
+				&comment.ProfilePicture,
 				&comment.Content,
 				&comment.CreatedAt,
 			)
@@ -211,6 +216,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Title             string
 		Username          string
+		ProfilePicture    string
 		Posts             []Post
 		NotificationCount int
 		MessageCount      int
@@ -218,6 +224,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}{
 		Title:             "IDOMA HUB - Dashboard",
 		Username:          username,
+		ProfilePicture:    profilePicture,
 		Posts:             posts,
 		NotificationCount: notificationCount,
 		MessageCount:      messageCount,

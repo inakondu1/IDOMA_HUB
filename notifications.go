@@ -7,17 +7,19 @@ import (
 )
 
 type NotificationRequest struct {
-	ID       int
-	UserID   int
-	Username string
+	ID             int
+	UserID         int
+	Username       string
+	ProfilePicture string
 }
 
 type ActivityNotification struct {
-	ID        int
-	Username  string
-	PostID    string
-	Type      string
-	CreatedAt string
+	ID             int
+	Username       string
+	ProfilePicture string
+	PostID         string
+	Type           string
+	CreatedAt      string
 }
 
 type NotificationsPageData struct {
@@ -71,7 +73,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT fr.id, u.id, u.username
+		SELECT fr.id, u.id, u.username, u.profile_picture
 		FROM friend_requests fr
 		JOIN users u ON u.id = fr.sender_id
 		WHERE fr.receiver_id = $1
@@ -95,6 +97,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 			&request.ID,
 			&request.UserID,
 			&request.Username,
+			&request.ProfilePicture,
 		); err != nil {
 			http.Error(w, "Unable to read notifications.", http.StatusInternalServerError)
 			log.Println(err)
@@ -105,7 +108,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	activityRows, err := db.Query(`
-                SELECT n.id, u.username, n.post_id, n.type, n.created_at
+                SELECT n.id, u.username, u.profile_picture, n.post_id, n.type, n.created_at
                 FROM notifications n
                 JOIN users u ON u.id = n.sender_id
                 WHERE n.recipient_id = $1
@@ -127,6 +130,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 		if err := activityRows.Scan(
 			&activity.ID,
 			&activity.Username,
+			&activity.ProfilePicture,
 			&activity.PostID,
 			&activity.Type,
 			&activity.CreatedAt,

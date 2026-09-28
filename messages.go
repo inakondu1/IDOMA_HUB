@@ -22,11 +22,12 @@ type MessagesPageData struct {
 }
 
 type Conversation struct {
-	UserID      int
-	Username    string
-	LastMessage string
-	CreatedAt   string
-	UnreadCount int
+	UserID         int
+	Username       string
+	ProfilePicture string
+	LastMessage    string
+	CreatedAt      string
+	UnreadCount    int
 }
 
 type ConversationsPageData struct {
@@ -44,11 +45,12 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 
 	if userIDParam == "" {
 		rows, err := db.Query(`
-                        SELECT user_id, username, last_message, created_at, unread_count
+                        SELECT user_id, username, profile_picture, last_message, created_at, unread_count
                         FROM (
                                 SELECT DISTINCT ON (u.id)
                                         u.id AS user_id,
                                         u.username,
+                                        u.profile_picture,
                                         m.content AS last_message,
                                         TO_CHAR(m.created_at, 'YYYY-MM-DD HH24:MI') AS created_at,
                                         (
@@ -82,6 +84,7 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 			if err := rows.Scan(
 				&conversation.UserID,
 				&conversation.Username,
+				&conversation.ProfilePicture,
 				&conversation.LastMessage,
 				&conversation.CreatedAt,
 				&conversation.UnreadCount,

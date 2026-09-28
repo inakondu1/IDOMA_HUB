@@ -43,7 +43,7 @@
 					<div class="notification-item">
 
 						<div class="notification-avatar">
-							{{printf "%.1s" .Username}}
+							{{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="notification-avatar-image">{{else}}{{printf "%.1s" .Username}}{{end}}
 						</div>
 
 						<div class="notification-content">
@@ -93,7 +93,7 @@
                                 {{range .Activity}}
                                         <div class="notification-item">
                                                 <div class="notification-avatar">
-                                                        {{printf "%.1s" .Username}}
+                                                        {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="notification-avatar-image">{{else}}{{printf "%.1s" .Username}}{{end}}
                                                 </div>
 
                                                 <div class="notification-content">

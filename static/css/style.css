@@ -583,6 +583,16 @@ footer p {
 	font-size: 1.1rem;
 }
 
+.post-avatar-image {
+	width: 48px;
+	height: 48px;
+	min-width: 48px;
+	border-radius: 50%;
+	object-fit: cover;
+	display: block;
+	box-shadow: 0 0 0 3px #f9eeee;
+}
+
 .post-header strong,
 .post-header span {
 	display: block;
@@ -649,6 +659,15 @@ footer p {
         align-items: flex-start;
         gap: 9px;
         margin-bottom: 12px;
+}
+
+.comment-avatar-image {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
 }
 
 .comment-avatar {
@@ -1882,6 +1901,32 @@ body:has(.hero) footer {
     padding: 22px;
 }
 
+.create-post-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.create-post-avatar,
+.create-post-avatar-fallback {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-post-avatar-fallback {
+    background: var(--idoma-red);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+
 .create-post-card h2 {
     font-size: 1.15rem;
     margin-bottom: 16px;
@@ -2382,6 +2427,15 @@ body:has(.hero) footer {
     justify-content: center;
     font-weight: 800;
     font-size: 1.1rem;
+}
+
+.notification-avatar-image {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
 }
 
 .notification-item {

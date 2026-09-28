@@ -55,6 +55,14 @@
             box-shadow: 0 9px 25px rgba(0, 0, 0, 0.09);
         }
 
+        .conversation-avatar-image {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+
         .conversation-avatar {
             width: 54px;
             height: 54px;
@@ -177,7 +185,7 @@
                         href="/messages?user_id={{.UserID}}"
                     >
                         <div class="conversation-avatar">
-                            {{printf "%.1s" .Username}}
+                            {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="conversation-avatar-image">{{else}}{{printf "%.1s" .Username}}{{end}}
                         </div>
 
                         <div class="conversation-info">
