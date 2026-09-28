@@ -1,0 +1,136 @@
+{{define "history.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idoma History - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="learning-page">
+
+    <section class="learning-header">
+        <a href="/culture" class="back-learning">
+            ← Back to Culture
+        </a>
+
+        <h1>Idoma History</h1>
+
+        <p>
+            Welcome {{.Username}}.
+            Explore the history and heritage of the Idoma people.
+        </p>
+    </section>
+
+    <section class="history-content">
+
+        <article class="dashboard-card">
+            <h2>The Idoma People</h2>
+
+            <p>
+                The Idoma are an important ethnic group of central Nigeria,
+                with their homeland located mainly in the southern part of
+                present-day Benue State.
+            </p>
+
+            <p>
+                Idoma history is older than the creation of modern Benue State
+                and the formation of Nigeria as an independent country.
+            </p>
+        </article>
+
+        <article class="dashboard-card">
+            <h2>Origins and Migration</h2>
+
+            <p>
+                Idoma origin traditions are preserved through oral history,
+                family genealogies and community traditions.
+            </p>
+
+            <p>
+                Many Idoma communities connect their ancestral history with
+                Apa and the wider Kwararafa region. Historical research,
+                however, shows that the development of Idoma identity involved
+                different groups and migrations over time.
+            </p>
+
+            <p>
+                Different communities may therefore preserve different
+                traditions about Idoma origins.
+            </p>
+        </article>
+
+        <article class="dashboard-card">
+            <h2>Life and Community</h2>
+
+            <p>
+                Farming has historically been central to life in Idoma
+                communities. Yams and other crops have played important roles
+                in food production, family life and local economies.
+            </p>
+
+            <p>
+                Family relationships, community traditions, oral history,
+                music and cultural practices have helped preserve Idoma
+                identity across generations.
+            </p>
+        </article>
+
+        <article class="dashboard-card">
+            <h2>Colonial Period</h2>
+
+            <p>
+                British colonial rule brought significant political and
+                administrative changes to Idoma communities during the late
+                nineteenth and early twentieth centuries.
+            </p>
+
+            <p>
+                Colonial administration also changed traditional political
+                structures and influenced the development of recognised
+                traditional institutions.
+            </p>
+        </article>
+
+        <article class="dashboard-card">
+            <h2>Preserving Our History</h2>
+
+            <p>
+                Idoma history continues to live through language, names,
+                stories, family histories, music, dance, festivals, farming,
+                traditional institutions and knowledge passed from elders to
+                younger generations.
+            </p>
+
+            <p>
+                IDOMA HUB is created to help preserve and share this knowledge
+                with present and future generations.
+            </p>
+        </article>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+</body>
+</html>
+{{end}}
