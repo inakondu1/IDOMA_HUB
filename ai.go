@@ -124,7 +124,7 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 			response, err = askGemini(question)
 			if err != nil {
 				log.Printf("IDOMA AI Gemini error: %v", err)
-				http.Error(w, "Unable to get a response from IDOMA AI", http.StatusInternalServerError)
+				http.Error(w, fmt.Sprintf("IDOMA AI error: %v", err), http.StatusInternalServerError)
 				return
 			}
 		}
