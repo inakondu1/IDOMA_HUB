@@ -3693,8 +3693,8 @@ body:has(.auth-page) .auth-footer {
     padding: 9px 16px;
     border: 1px solid var(--idoma-red);
     border-radius: 8px;
-    color: var(--idoma-red);
-    background: #ffffff;
+    color: #ffffff;
+    background: #000000;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s ease;
@@ -3711,3 +3711,178 @@ body:has(.auth-page) .auth-footer {
         font-size: 0.9rem;
     }
 }
+
+/* =========================================================
+   IDOMA AI PROFESSIONAL INTERFACE
+   ========================================================= */
+
+.ai-page {
+    min-height: calc(100vh - 140px);
+    background: #000000;
+    color: #ffffff;
+    padding: 35px 6% 70px;
+}
+
+.ai-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.ai-header {
+    text-align: center;
+    margin: 10px auto 35px;
+    max-width: 800px;
+}
+
+.ai-header h1 {
+    margin: 0 0 12px;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.ai-header p {
+    margin: 0;
+    color: #bdbdbd;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.ai-tools {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.ai-tool {
+    padding: 10px 20px;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    background: #000000;
+    color: #bdbdbd;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.ai-tool.active {
+    border-color: var(--idoma-red);
+    background: var(--idoma-red);
+    color: #ffffff;
+}
+
+.ai-chat-card {
+    background: #000000;
+    border: 1px solid #333333;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+}
+
+.ai-chat-card h2 {
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+.ai-chat-card > p {
+    margin: 0 0 22px;
+    color: #999999;
+    line-height: 1.6;
+}
+
+.ai-chat-form textarea {
+    width: 100%;
+    min-height: 220px;
+    box-sizing: border-box;
+    resize: vertical;
+    padding: 18px;
+    background: #000000;
+    color: #ffffff;
+    border: 1px solid #383838;
+    border-radius: 14px;
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.6;
+    outline: none;
+}
+
+.ai-chat-form textarea::placeholder {
+    color: #777777;
+}
+
+.ai-chat-form textarea:focus {
+    border-color: var(--idoma-red);
+    box-shadow: 0 0 0 3px rgba(181, 18, 27, 0.15);
+}
+
+.ai-ask-button {
+    margin-top: 15px;
+    padding: 13px 24px;
+    border: none;
+    border-radius: 10px;
+    background: var(--idoma-red);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.ai-ask-button:hover {
+    background: var(--idoma-red-dark);
+    transform: translateY(-1px);
+}
+
+.ai-response {
+    margin-top: 25px;
+    padding: 25px;
+    background: #000000;
+    border: 1px solid #333333;
+    border-left: 4px solid var(--idoma-red);
+    border-radius: 14px;
+}
+
+.ai-response h2 {
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+
+.ai-response p {
+    margin: 0 0 22px;
+    color: #d0d0d0;
+    line-height: 1.8;
+}
+
+.ai-response p:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+    .ai-page {
+        padding: 25px 5% 50px;
+    }
+
+    .ai-header h1 {
+        font-size: 2.1rem;
+    }
+
+    .ai-tools {
+        flex-direction: column;
+    }
+
+    .ai-tool {
+        text-align: center;
+    }
+
+    .ai-chat-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .ai-chat-form textarea {
+        min-height: 240px;
+    }
+}
+
