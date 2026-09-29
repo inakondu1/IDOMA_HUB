@@ -95,7 +95,8 @@ Learner's question:
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("Gemini API returned status %s", resp.Status)
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("Gemini API returned status %s: %s", resp.Status, string(body))
 	}
 
 	var result AIResponse
