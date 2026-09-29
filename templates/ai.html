@@ -1,0 +1,80 @@
+{{define "ai.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDOMA AI - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="learning-page">
+
+    <section class="learning-header">
+        <h1>🤖 IDOMA AI</h1>
+
+        <p>
+            Welcome {{.Username}}.
+            Ask questions and learn about the Idoma language, culture and people.
+        </p>
+    </section>
+
+    <section class="learning-card">
+
+        <h2>Ask IDOMA AI</h2>
+
+        <p>
+            You can ask questions about Idoma words, phrases, culture,
+            history and other learning topics.
+        </p>
+
+        <form method="POST" action="/ai">
+            <textarea
+                name="question"
+                rows="5"
+                placeholder="Ask something about Idoma..."
+                required
+            ></textarea>
+
+            <button type="submit">Ask IDOMA AI</button>
+        </form>
+
+        {{if .Response}}
+        <div class="learning-card">
+            <h2>Your Question</h2>
+            <p>{{.Question}}</p>
+
+            <h2>IDOMA AI Answer</h2>
+            <p>{{.Response}}</p>
+        </div>
+        {{end}}
+
+    </section>
+
+    <p>
+        <a href="/learning">← Back to Learning</a>
+    </p>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+</body>
+</html>
+{{end}}
