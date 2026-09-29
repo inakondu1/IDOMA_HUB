@@ -3626,3 +3626,62 @@ body:has(.auth-page) .auth-footer {
     color: #fff !important;
     border-color: var(--idoma-red) !important;
 }
+
+/* IDOMA AI dashboard card */
+.ai-dashboard-card {
+    border: 2px solid var(--idoma-red);
+    background: linear-gradient(135deg, #fffdf9 0%, #f8f0e8 100%);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ai-dashboard-card::before {
+    content: "AI";
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--idoma-red);
+    opacity: 0.7;
+}
+
+.ai-dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(181, 18, 27, 0.12);
+}
+
+.ai-dashboard-card h2 {
+    color: var(--idoma-red-dark);
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+}
+
+.ai-dashboard-card p {
+    color: #555555;
+    margin-bottom: 18px;
+}
+
+.ai-dashboard-card .dashboard-link {
+    display: inline-block;
+    font-weight: 700;
+    color: var(--idoma-red);
+    text-decoration: none;
+}
+
+.ai-dashboard-card .dashboard-link:hover {
+    color: var(--idoma-red-dark);
+    text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+    .ai-dashboard-card {
+        padding: 18px;
+    }
+
+    .ai-dashboard-card h2 {
+        font-size: 1.1rem;
+    }
+}
