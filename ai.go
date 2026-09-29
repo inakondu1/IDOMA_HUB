@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 )
@@ -122,6 +123,7 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 		if question != "" {
 			response, err = askGemini(question)
 			if err != nil {
+				log.Printf("IDOMA AI Gemini error: %v", err)
 				http.Error(w, "Unable to get a response from IDOMA AI", http.StatusInternalServerError)
 				return
 			}
