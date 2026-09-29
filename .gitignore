@@ -3,3 +3,6 @@ idoma_hub.db
 static/uploads/
 
 *.sqlite-backup
+
+.env
+.env.*
