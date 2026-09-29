@@ -3685,3 +3685,29 @@ body:has(.auth-page) .auth-footer {
         font-size: 1.1rem;
     }
 }
+
+/* IDOMA AI top navigation */
+.ai-back-dashboard {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 9px 16px;
+    border: 1px solid var(--idoma-red);
+    border-radius: 8px;
+    color: var(--idoma-red);
+    background: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.ai-back-dashboard:hover {
+    color: #ffffff;
+    background: var(--idoma-red);
+}
+
+@media (max-width: 700px) {
+    .ai-back-dashboard {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+    }
+}
