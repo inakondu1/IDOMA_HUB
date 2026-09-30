@@ -73,7 +73,7 @@ Learner's question:
 		return "", err
 	}
 
-	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent"
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
 
 	req, err := http.NewRequest(
 		http.MethodPost,
