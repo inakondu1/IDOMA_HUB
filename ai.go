@@ -155,6 +155,7 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 
 	var question string
 	var response string
+	var aiError string
 
 	if r.Method == http.MethodPost {
 		question = r.FormValue("question")
@@ -163,8 +164,7 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 			response, err = askGemini(question)
 			if err != nil {
 				log.Printf("IDOMA AI Gemini error: %v", err)
-				http.Error(w, "IDOMA AI is temporarily unavailable. Please try again shortly.", http.StatusServiceUnavailable)
-				return
+				aiError = "IDOMA AI is temporarily unavailable. Please try again shortly."
 			}
 		}
 	}
@@ -173,10 +173,12 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 		Username string
 		Question string
 		Response string
+		Error    string
 	}{
 		Username: username,
 		Question: question,
 		Response: response,
+		Error:    aiError,
 	}
 
 	tmpl, err := template.ParseFiles("templates/ai.html")
