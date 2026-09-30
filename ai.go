@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type AIRequest struct {
@@ -93,10 +94,28 @@ Learner's question:
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusServiceUnavailable {
+		resp.Body.Close()
+		time.Sleep(2 * time.Second)
+
+		req, err = http.NewRequest(http.MethodPost, url, bytes.NewBuffer(jsonData))
+		if err != nil {
+			return "", err
+		}
+
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("x-goog-api-key", apiKey)
+
+		resp, err = client.Do(req)
+		if err != nil {
+			return "", err
+		}
+	}
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
 		return "", fmt.Errorf("Gemini API returned status %s: %s", resp.Status, string(body))
 	}
 
