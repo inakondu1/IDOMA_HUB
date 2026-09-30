@@ -163,7 +163,7 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 			response, err = askGemini(question)
 			if err != nil {
 				log.Printf("IDOMA AI Gemini error: %v", err)
-				http.Error(w, fmt.Sprintf("IDOMA AI error: %v", err), http.StatusInternalServerError)
+				http.Error(w, "IDOMA AI is temporarily unavailable. Please try again shortly.", http.StatusServiceUnavailable)
 				return
 			}
 		}
