@@ -32,31 +32,8 @@ type AICandidate struct {
 	Content AIContent `json:"content"`
 }
 
-func askGemini(question string) (string, error) {
+func askGemini(prompt string) (string, error) {
 	apiKey := os.Getenv("GEMINI_API_KEY")
-
-	if apiKey == "" {
-		return "", fmt.Errorf("GEMINI_API_KEY is not set")
-	}
-
-	prompt := `You are IDOMA AI, the learning assistant inside IDOMA HUB.
-
-Your main purpose is to help users learn the Idoma language, Idoma culture, Idoma history, Idoma names, phrases, traditions and heritage.
-
-When a user asks how to say something in Idoma:
-- Give the Idoma expression when you know it reliably.
-- Give the English meaning.
-- Give pronunciation guidance when useful.
-- Do not invent Idoma words, translations or cultural facts.
-- If you are unsure, clearly say that you are unsure instead of guessing.
-
-Keep explanations simple, friendly and useful for someone learning Idoma.
-
-If a question is unrelated to Idoma learning, politely guide the conversation back toward Idoma learning.
-
-Learner's question:
-` + question
-
 	requestData := AIRequest{
 		Contents: []AIContent{
 			{
@@ -74,64 +51,87 @@ Learner's question:
 		return "", err
 	}
 
-	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
-
-	req, err := http.NewRequest(
-		http.MethodPost,
-		url,
-		bytes.NewBuffer(jsonData),
-	)
-	if err != nil {
-		return "", err
+	models := []string{
+		"gemini-3.8-flash",
+		"gemini-3.7-flash",
+		"gemini-3.6-flash",
 	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("x-goog-api-key", apiKey)
 
 	client := &http.Client{}
+	var lastErr error
 
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
+	for _, model := range models {
+		url := fmt.Sprintf(
+			"https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent",
+			model,
+		)
 
-	if resp.StatusCode == http.StatusServiceUnavailable {
-		resp.Body.Close()
-		time.Sleep(2 * time.Second)
+		for attempt := 1; attempt <= 2; attempt++ {
+			req, err := http.NewRequest(
+				http.MethodPost,
+				url,
+				bytes.NewBuffer(jsonData),
+			)
+			if err != nil {
+				return "", err
+			}
 
-		req, err = http.NewRequest(http.MethodPost, url, bytes.NewBuffer(jsonData))
-		if err != nil {
-			return "", err
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("x-goog-api-key", apiKey)
+
+			resp, err := client.Do(req)
+			if err != nil {
+				return "", err
+			}
+
+			if resp.StatusCode == http.StatusOK {
+				var result AIResponse
+
+				err = json.NewDecoder(resp.Body).Decode(&result)
+				resp.Body.Close()
+
+				if err != nil {
+					return "", err
+				}
+
+				if len(result.Candidates) == 0 ||
+					len(result.Candidates[0].Content.Parts) == 0 {
+					return "", fmt.Errorf("Gemini returned no answer")
+				}
+
+				return result.Candidates[0].Content.Parts[0].Text, nil
+			}
+
+			body, _ := io.ReadAll(resp.Body)
+			status := resp.Status
+			resp.Body.Close()
+
+			lastErr = fmt.Errorf(
+				"Gemini model %s returned status %s: %s",
+				model,
+				status,
+				string(body),
+			)
+
+			transient := resp.StatusCode == http.StatusRequestTimeout ||
+				resp.StatusCode == http.StatusTooManyRequests ||
+				resp.StatusCode >= 500
+
+			if !transient {
+				break
+			}
+
+			if attempt < 2 {
+				time.Sleep(time.Duration(1<<(attempt-1)) * time.Second)
+			}
 		}
-
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("x-goog-api-key", apiKey)
-
-		resp, err = client.Do(req)
-		if err != nil {
-			return "", err
-		}
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		resp.Body.Close()
-		return "", fmt.Errorf("Gemini API returned status %s: %s", resp.Status, string(body))
+	if lastErr != nil {
+		return "", lastErr
 	}
 
-	var result AIResponse
-
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		return "", err
-	}
-
-	if len(result.Candidates) == 0 ||
-		len(result.Candidates[0].Content.Parts) == 0 {
-		return "", fmt.Errorf("Gemini returned no answer")
-	}
-
-	return result.Candidates[0].Content.Parts[0].Text, nil
+	return "", fmt.Errorf("Gemini request failed")
 }
 
 func aiHandler(w http.ResponseWriter, r *http.Request) {
