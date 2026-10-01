@@ -6,3 +6,6 @@ static/uploads/
 
 .env
 .env.*
+
+# Idoma translation database
+idoma_translation_db/

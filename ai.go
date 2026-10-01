@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -10,7 +11,11 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	_ "github.com/mattn/go-sqlite3"
 )
+
+const translationDBPath = "idoma_translation_db/idoma_translation_search.db"
 
 type AIRequest struct {
 	Contents []AIContent `json:"contents"`
@@ -30,6 +35,33 @@ type AIResponse struct {
 
 type AICandidate struct {
 	Content AIContent `json:"content"`
+}
+
+func findIdomaTranslation(englishText string) (string, string, error) {
+	db, err := sql.Open("sqlite3", translationDBPath)
+	if err != nil {
+		return "", "", err
+	}
+	defer db.Close()
+
+	var verseKey string
+	var idu string
+
+	err = db.QueryRow(`
+		SELECT verse_key, idu
+		FROM translations
+		WHERE en = ?
+		LIMIT 1
+	`, englishText).Scan(&verseKey, &idu)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", "", nil
+		}
+		return "", "", err
+	}
+
+	return verseKey, idu, nil
 }
 
 func askGemini(prompt string) (string, error) {
@@ -161,10 +193,24 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 		question = r.FormValue("question")
 
 		if question != "" {
-			response, err = askGemini(question)
-			if err != nil {
-				log.Printf("IDOMA AI Gemini error: %v", err)
-				aiError = "IDOMA AI is temporarily unavailable. Please try again shortly."
+			verseKey, idomaText, lookupErr := findIdomaTranslation(question)
+
+			if lookupErr != nil {
+				log.Printf("IDOMA translation database error: %v", lookupErr)
+			}
+
+			if idomaText != "" {
+				response = fmt.Sprintf(
+					"Idoma translation (%s):\n%s",
+					verseKey,
+					idomaText,
+				)
+			} else {
+				response, err = askGemini(question)
+				if err != nil {
+					log.Printf("IDOMA AI Gemini error: %v", err)
+					aiError = "IDOMA AI is temporarily unavailable. Please try again shortly."
+				}
 			}
 		}
 	}
