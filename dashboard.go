@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -285,13 +283,6 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 	var mediaURL string
 	var mediaType string
 
-	uploadDir := postUploadDir()
-	if err := os.MkdirAll(uploadDir, 0755); err != nil {
-		http.Error(w, "Unable to prepare upload storage.", http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-
 	photo, photoHeader, photoErr := r.FormFile("photo")
 	video, videoHeader, videoErr := r.FormFile("video")
 
@@ -314,24 +305,12 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
-		filePath := filepath.Join(postUploadDir(), filename)
-
-		dst, err := os.Create(filePath)
+		mediaURL, err = uploadToCloudinary(photo, "idoma_hub/posts", "image")
 		if err != nil {
-			http.Error(w, "Unable to save photo.", http.StatusInternalServerError)
+			http.Error(w, "Unable to upload photo.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
-		defer dst.Close()
-
-		if _, err := io.Copy(dst, photo); err != nil {
-			http.Error(w, "Unable to save photo.", http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-
-		mediaURL = "/static/uploads/posts/" + filename
 	}
 
 	if videoErr == nil {
@@ -346,24 +325,12 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
-		filePath := filepath.Join(postUploadDir(), filename)
-
-		dst, err := os.Create(filePath)
+		mediaURL, err = uploadToCloudinary(video, "idoma_hub/posts", "video")
 		if err != nil {
-			http.Error(w, "Unable to save video.", http.StatusInternalServerError)
+			http.Error(w, "Unable to upload video.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
-		defer dst.Close()
-
-		if _, err := io.Copy(dst, video); err != nil {
-			http.Error(w, "Unable to save video.", http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-
-		mediaURL = "/static/uploads/posts/" + filename
 	}
 
 	if content == "" && mediaURL == "" {
