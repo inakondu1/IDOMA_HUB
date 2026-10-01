@@ -104,7 +104,6 @@
 
                                                 <div class="create-post-user">
                                                         {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="create-post-avatar">{{else}}<div class="create-post-avatar-fallback">{{printf "%.1s" .Username}}</div>{{end}}
-                                                        <strong>{{.Username}}</strong>
                                                 </div>
 
 						<input type="file" id="photoInput" name="photo" accept="image/*" hidden>
@@ -149,7 +148,6 @@
                                             {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="post-avatar-image">{{else}}<div class="post-avatar">{{printf "%.1s" .Username}}</div>{{end}}
 
                                             <div>
-                                                    <strong>{{.Username}}</strong>
                                                     <span>{{.CreatedAt}}</span>
                                             </div>
                                     </div>
@@ -195,7 +193,6 @@
         {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="comment-avatar-image">{{else}}<div class="comment-avatar">{{printf "%.1s" .Username}}</div>{{end}}
         <div class="comment-bubble">
             <div class="comment-meta">
-                <strong>{{.Username}}</strong>
                 <span>{{.CreatedAt}}</span>
             </div>
             <p>{{.Content}}</p>
