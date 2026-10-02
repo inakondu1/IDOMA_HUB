@@ -172,7 +172,6 @@ func main() {
 	http.HandleFunc("/ai", aiHandler)
 	http.HandleFunc("/ai/translate", aiTranslateHandler)
 	http.HandleFunc("/bible", bibleHandler)
-	http.HandleFunc("/bible-data-check", bibleDataCheckHandler)
 	http.HandleFunc("/culture", cultureHandler)
 	http.HandleFunc("/lessons", lessonsHandler)
 	http.HandleFunc("/words", wordsHandler)

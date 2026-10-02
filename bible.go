@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -64,52 +63,4 @@ func bibleHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to display IDOMA Bible page", http.StatusInternalServerError)
 		return
 	}
-}
-
-func bibleDataCheckHandler(w http.ResponseWriter, r *http.Request) {
-	var total int
-	var firstVerse, lastVerse string
-
-	err := db.QueryRow(`
-		SELECT COUNT(*)
-		FROM translations
-	`).Scan(&total)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = db.QueryRow(`
-		SELECT verse_key
-		FROM translations
-		ORDER BY id ASC
-		LIMIT 1
-	`).Scan(&firstVerse)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = db.QueryRow(`
-		SELECT verse_key
-		FROM translations
-		ORDER BY id DESC
-		LIMIT 1
-	`).Scan(&lastVerse)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/plain")
-	fmt.Fprintf(
-		w,
-		"Total translation records: %d\nFirst verse: %s\nLast verse: %s\n",
-		total,
-		firstVerse,
-		lastVerse,
-	)
 }
