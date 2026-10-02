@@ -47,36 +47,36 @@
 
                 <h2>📖 Bible Reader</h2>
 
-                <div class="bible-controls">
+                <form action="/bible" method="GET" class="bible-controls">
 
                     <div>
                         <label for="bible-book">Book</label>
-                        <select id="bible-book">
+                        <select id="bible-book" name="book" required>
                             <option value="">Select book</option>
-                            <option>Genesis</option>
-                            <option>Exodus</option>
-                            <option>Leviticus</option>
-                            <option>Numbers</option>
-                            <option>Deuteronomy</option>
-                            <option>Joshua</option>
-                            <option>Judges</option>
-                            <option>Ruth</option>
-                            <option>1 Samuel</option>
-                            <option>2 Samuel</option>
-                            <option>1 Kings</option>
-                            <option>2 Kings</option>
-                            <option>Matthew</option>
-                            <option>Mark</option>
-                            <option>Luke</option>
-                            <option>John</option>
-                            <option>Acts</option>
-                            <option>Romans</option>
+                            <option value="GEN">Genesis</option>
+                            <option value="EXO">Exodus</option>
+                            <option value="LEV">Leviticus</option>
+                            <option value="NUM">Numbers</option>
+                            <option value="DEU">Deuteronomy</option>
+                            <option value="JOS">Joshua</option>
+                            <option value="JDG">Judges</option>
+                            <option value="RUT">Ruth</option>
+                            <option value="1SA">1 Samuel</option>
+                            <option value="2SA">2 Samuel</option>
+                            <option value="1KI">1 Kings</option>
+                            <option value="2KI">2 Kings</option>
+                            <option value="MAT">Matthew</option>
+                            <option value="MRK">Mark</option>
+                            <option value="LUK">Luke</option>
+                            <option value="JHN">John</option>
+                            <option value="ACT">Acts</option>
+                            <option value="ROM">Romans</option>
                         </select>
                     </div>
 
                     <div>
                         <label for="bible-chapter">Chapter</label>
-                        <select id="bible-chapter">
+                        <select id="bible-chapter" name="chapter" required>
                             <option value="">Select</option>
                             <option>1</option>
                             <option>2</option>
@@ -91,11 +91,11 @@
                         </select>
                     </div>
 
-                    <button type="button" class="ai-ask-button">
+                    <button type="submit" class="ai-ask-button">
                         Open Chapter
                     </button>
 
-                </div>
+                </form>
 
                 <form action="/bible" method="GET" class="bible-search">
                     <input
