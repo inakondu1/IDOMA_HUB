@@ -113,39 +113,63 @@
 
                 <div class="bible-reading-area">
 
-                    {{if .Error}}
+                      {{if .Error}}
 
-                        <div class="bible-error">
-                            <p>{{.Error}}</p>
-                        </div>
+                          <div class="bible-error">
+                              <p>{{.Error}}</p>
+                          </div>
 
-                    {{else if .Verse.VerseKey}}
+                      {{else if .ChapterVerses}}
 
-                        <h3>{{.Verse.VerseKey}}</h3>
+                          <div class="bible-chapter-heading">
+                              <h3>{{.Book}} {{.Chapter}}</h3>
+                              <p>{{len .ChapterVerses}} verses</p>
+                          </div>
 
-                        <div class="bible-verse">
-                            <h4>Idoma</h4>
-                            <p>{{.Verse.Idoma}}</p>
-                        </div>
+                          {{range .ChapterVerses}}
+                              <article class="bible-verse">
+                                  <h4>{{.VerseKey}}</h4>
 
-                        <div class="bible-verse">
-                            <h4>English</h4>
-                            <p>{{.Verse.English}}</p>
-                        </div>
+                                  <div class="bible-text">
+                                      <strong>Idoma</strong>
+                                      <p>{{.Idoma}}</p>
+                                  </div>
 
-                    {{else}}
+                                  <div class="bible-text">
+                                      <strong>English</strong>
+                                      <p>{{.English}}</p>
+                                  </div>
+                              </article>
+                          {{end}}
 
-                        <h3>Enter a Bible reference</h3>
+                      {{else if .Verse.VerseKey}}
 
-                        <p>
-                            Search for a verse such as JHN.3.16 or GEN.1.1.
-                        </p>
+                          <h3>{{.Verse.VerseKey}}</h3>
 
-                    {{end}}
+                          <div class="bible-verse">
+                              <h4>Idoma</h4>
+                              <p>{{.Verse.Idoma}}</p>
+                          </div>
 
-                </div>
+                          <div class="bible-verse">
+                              <h4>English</h4>
+                              <p>{{.Verse.English}}</p>
+                          </div>
 
-            </section>
+                      {{else}}
+
+                          <h3>📖 Start Reading</h3>
+
+                          <p>
+                              Select a book and chapter above, or search for a verse such as
+                              JHN.3.16 or GEN.1.1.
+                          </p>
+
+                      {{end}}
+
+                  </div>
+
+              </section>
 
             <!-- TRANSLATOR -->
             <section class="bible-card bible-translator">
