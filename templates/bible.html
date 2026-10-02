@@ -40,24 +40,89 @@
             </p>
         </section>
 
-        <div class="bible-tools">
+        <div class="bible-layout">
 
-            <section class="bible-card">
-                <h2>📖 IDOMA BIBLE</h2>
+            <!-- BIBLE READER -->
+            <section class="bible-card bible-reader">
 
-                <p>
-                    Read the Idoma Bible and explore Bible passages.
-                </p>
+                <h2>📖 Bible Reader</h2>
 
-                <a href="https://www.bible.com/versions/2537-ifbcl-ub-y-bu-k-id-ma"
-                   class="ai-ask-button"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Read Idoma Bible
-                </a>
+                <div class="bible-controls">
+
+                    <div>
+                        <label for="bible-book">Book</label>
+                        <select id="bible-book">
+                            <option value="">Select book</option>
+                            <option>Genesis</option>
+                            <option>Exodus</option>
+                            <option>Leviticus</option>
+                            <option>Numbers</option>
+                            <option>Deuteronomy</option>
+                            <option>Joshua</option>
+                            <option>Judges</option>
+                            <option>Ruth</option>
+                            <option>1 Samuel</option>
+                            <option>2 Samuel</option>
+                            <option>1 Kings</option>
+                            <option>2 Kings</option>
+                            <option>Matthew</option>
+                            <option>Mark</option>
+                            <option>Luke</option>
+                            <option>John</option>
+                            <option>Acts</option>
+                            <option>Romans</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="bible-chapter">Chapter</label>
+                        <select id="bible-chapter">
+                            <option value="">Select</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="ai-ask-button">
+                        Open Chapter
+                    </button>
+
+                </div>
+
+                <div class="bible-search">
+                    <input
+                        type="text"
+                        placeholder="Search Bible passages..."
+                        aria-label="Search Bible passages">
+                    <button type="button" class="ai-ask-button">
+                        Search
+                    </button>
+                </div>
+
+                <div class="bible-reading-area">
+
+                    <h3>Choose a book and chapter</h3>
+
+                    <p>
+                        The Idoma Bible text will appear here when the authorized
+                        Bible source is connected.
+                    </p>
+
+                </div>
+
             </section>
 
-            <section class="bible-card">
+            <!-- TRANSLATOR -->
+            <section class="bible-card bible-translator">
+
                 <h2>🔤 TRANSLATOR</h2>
 
                 <p>
@@ -67,6 +132,7 @@
                 <a href="/ai/translate" class="ai-ask-button">
                     Open Translator
                 </a>
+
             </section>
 
         </div>
