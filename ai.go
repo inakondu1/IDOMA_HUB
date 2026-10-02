@@ -11,11 +11,7 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	_ "github.com/mattn/go-sqlite3"
 )
-
-const translationDBPath = "idoma_translation_db/idoma_translation_search.db"
 
 type AIRequest struct {
 	Contents []AIContent `json:"contents"`
@@ -38,26 +34,21 @@ type AICandidate struct {
 }
 
 func findIdomaTranslation(englishText string) (string, string, error) {
-	db, err := sql.Open("sqlite3", translationDBPath)
-	if err != nil {
-		return "", "", err
-	}
-	defer db.Close()
-
 	var verseKey string
 	var idu string
 
-	err = db.QueryRow(`
+	err := db.QueryRow(`
 		SELECT verse_key, idu
 		FROM translations
-		WHERE en = ?
+		WHERE en = $1
 		LIMIT 1
 	`, englishText).Scan(&verseKey, &idu)
 
+	if err == sql.ErrNoRows {
+		return "", "", nil
+	}
+
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return "", "", nil
-		}
 		return "", "", err
 	}
 
@@ -71,16 +62,11 @@ type TranslationMatch struct {
 }
 
 func searchIdomaTranslations(englishText string) ([]TranslationMatch, error) {
-	db, err := sql.Open("sqlite3", translationDBPath)
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
 	rows, err := db.Query(`
 		SELECT verse_key, idu, en
-		FROM translations_fts
-		WHERE translations_fts MATCH ?
+		FROM translations
+		WHERE to_tsvector('simple', en) @@ plainto_tsquery('simple', $1)
+		ORDER BY id
 		LIMIT 10
 	`, englishText)
 	if err != nil {
