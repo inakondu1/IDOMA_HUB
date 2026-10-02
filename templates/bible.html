@@ -1,0 +1,84 @@
+{{define "bible.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDOMA Bible - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="ai-page">
+
+    <div class="ai-container">
+
+        <p>
+            <a href="/dashboard" class="ai-back-dashboard">
+                ← Back to Dashboard
+            </a>
+        </p>
+
+        <section class="ai-header">
+            <h1>📖 IDOMA BIBLE</h1>
+
+            <p>
+                Read the Bible in Idoma and search for Bible passages.
+            </p>
+        </section>
+
+        <div class="bible-tools">
+
+            <section class="bible-card">
+                <h2>📖 IDOMA BIBLE</h2>
+
+                <p>
+                    Read the Idoma Bible and explore Bible passages.
+                </p>
+
+                <a href="https://www.bible.com/versions/2537-ifbcl-ub-y-bu-k-id-ma"
+                   class="ai-ask-button"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Read Idoma Bible
+                </a>
+            </section>
+
+            <section class="bible-card">
+                <h2>🔤 TRANSLATOR</h2>
+
+                <p>
+                    Translate English Bible words, phrases, and passages into Idoma.
+                </p>
+
+                <a href="/ai/translate" class="ai-ask-button">
+                    Open Translator
+                </a>
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+</body>
+</html>
+{{end}}
