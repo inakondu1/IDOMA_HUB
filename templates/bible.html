@@ -97,24 +97,51 @@
 
                 </div>
 
-                <div class="bible-search">
+                <form action="/bible" method="GET" class="bible-search">
                     <input
                         type="text"
-                        placeholder="Search Bible passages..."
-                        aria-label="Search Bible passages">
-                    <button type="button" class="ai-ask-button">
+                        name="ref"
+                        value="{{.Reference}}"
+                        placeholder="Enter reference e.g. JHN.3.16"
+                        aria-label="Bible verse reference"
+                        required>
+
+                    <button type="submit" class="ai-ask-button">
                         Search
                     </button>
-                </div>
+                </form>
 
                 <div class="bible-reading-area">
 
-                    <h3>Choose a book and chapter</h3>
+                    {{if .Error}}
 
-                    <p>
-                        The Idoma Bible text will appear here when the authorized
-                        Bible source is connected.
-                    </p>
+                        <div class="bible-error">
+                            <p>{{.Error}}</p>
+                        </div>
+
+                    {{else if .Verse.VerseKey}}
+
+                        <h3>{{.Verse.VerseKey}}</h3>
+
+                        <div class="bible-verse">
+                            <h4>Idoma</h4>
+                            <p>{{.Verse.Idoma}}</p>
+                        </div>
+
+                        <div class="bible-verse">
+                            <h4>English</h4>
+                            <p>{{.Verse.English}}</p>
+                        </div>
+
+                    {{else}}
+
+                        <h3>Enter a Bible reference</h3>
+
+                        <p>
+                            Search for a verse such as JHN.3.16 or GEN.1.1.
+                        </p>
+
+                    {{end}}
 
                 </div>
 
