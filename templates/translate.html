@@ -1,0 +1,120 @@
+{{define "translate.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDOMA Translator - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="/dashboard" class="logo">IDOMA HUB</a>
+
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/friends">Friends</a>
+        </nav>
+    </div>
+</header>
+
+<main class="ai-page">
+
+    <div class="ai-container">
+
+        <p>
+            <a href="/dashboard" class="ai-back-dashboard">
+                ← Back to Dashboard
+            </a>
+        </p>
+
+        <section class="ai-header">
+            <h1>🤖 IDOMA AI</h1>
+
+            <p>
+                Welcome {{.Username}}.
+                Translate English into Idoma using the IDOMA HUB translation database.
+            </p>
+        </section>
+
+        <div class="ai-tools">
+            <a href="/ai" class="ai-tool">
+                AI CHAT
+            </a>
+
+            <a href="/ai/translate" class="ai-tool active">
+                TRANSLATOR
+            </a>
+        </div>
+
+        <section class="ai-chat-card">
+
+            <h2>English → Idoma Translator</h2>
+
+            <p>
+                Enter an English word, phrase, or sentence.
+            </p>
+
+            <form method="POST" action="/ai/translate" class="ai-chat-form">
+
+                <textarea
+                    name="text"
+                    placeholder="Enter English text to translate..."
+                    required
+                ></textarea>
+
+                <button type="submit" class="ai-ask-button">
+                    Translate to Idoma
+                </button>
+
+            </form>
+
+            {{if .Matches}}
+            <div class="ai-response">
+
+                <h2>Translation Results</h2>
+
+                {{range .Matches}}
+                <div class="translation-result">
+
+                    <p><strong>Reference:</strong> {{.VerseKey}}</p>
+
+                    <p><strong>English:</strong><br>
+                        {{.English}}
+                    </p>
+
+                    <p><strong>Idoma:</strong><br>
+                        {{.Idoma}}
+                    </p>
+
+                </div>
+                {{end}}
+
+            </div>
+            {{end}}
+
+            {{if .Error}}
+            <div class="ai-error-card">
+                <div class="ai-error-icon">!</div>
+                <h2>Translation unavailable</h2>
+                <p>{{.Error}}</p>
+            </div>
+            {{end}}
+
+        </section>
+
+    </div>
+
+</main>
+
+<footer>
+    <p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+</footer>
+
+</body>
+</html>
+{{end}}

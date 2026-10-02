@@ -64,6 +64,53 @@ func findIdomaTranslation(englishText string) (string, string, error) {
 	return verseKey, idu, nil
 }
 
+type TranslationMatch struct {
+	VerseKey string
+	Idoma    string
+	English  string
+}
+
+func searchIdomaTranslations(englishText string) ([]TranslationMatch, error) {
+	db, err := sql.Open("sqlite3", translationDBPath)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	rows, err := db.Query(`
+		SELECT verse_key, idu, en
+		FROM translations_fts
+		WHERE translations_fts MATCH ?
+		LIMIT 10
+	`, englishText)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var matches []TranslationMatch
+
+	for rows.Next() {
+		var match TranslationMatch
+
+		if err := rows.Scan(
+			&match.VerseKey,
+			&match.Idoma,
+			&match.English,
+		); err != nil {
+			return nil, err
+		}
+
+		matches = append(matches, match)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return matches, nil
+}
+
 func askGemini(prompt string) (string, error) {
 	apiKey := os.Getenv("GEMINI_API_KEY")
 	requestData := AIRequest{
@@ -236,6 +283,66 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		http.Error(w, "Unable to display IDOMA AI page", http.StatusInternalServerError)
+		return
+	}
+}
+
+func aiTranslateHandler(w http.ResponseWriter, r *http.Request) {
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	var username string
+
+	err := db.QueryRow(
+		"SELECT username FROM users WHERE id = $1",
+		userID,
+	).Scan(&username)
+
+	if err != nil {
+		http.Error(w, "Unable to load IDOMA Translator", http.StatusInternalServerError)
+		return
+	}
+
+	var text string
+	var matches []TranslationMatch
+	var translationError string
+
+	if r.Method == http.MethodPost {
+		text = r.FormValue("text")
+
+		if text != "" {
+			matches, err = searchIdomaTranslations(text)
+			if err != nil {
+				log.Printf("IDOMA translator database error: %v", err)
+				translationError = "Unable to search the IDOMA translation database."
+			}
+		}
+	}
+
+	data := struct {
+		Username string
+		Text     string
+		Matches  []TranslationMatch
+		Error    string
+	}{
+		Username: username,
+		Text:     text,
+		Matches:  matches,
+		Error:    translationError,
+	}
+
+	tmpl, err := template.ParseFiles("templates/translate.html")
+	if err != nil {
+		http.Error(w, "Unable to load IDOMA Translator page", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, "Unable to display IDOMA Translator page", http.StatusInternalServerError)
 		return
 	}
 }

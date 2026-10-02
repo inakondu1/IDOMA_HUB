@@ -170,6 +170,7 @@ func main() {
 	http.HandleFunc("/friends", friendsHandler)
 	http.HandleFunc("/learning", learningHandler)
 	http.HandleFunc("/ai", aiHandler)
+	http.HandleFunc("/ai/translate", aiTranslateHandler)
 	http.HandleFunc("/culture", cultureHandler)
 	http.HandleFunc("/lessons", lessonsHandler)
 	http.HandleFunc("/words", wordsHandler)
