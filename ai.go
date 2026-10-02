@@ -66,6 +66,7 @@ func searchIdomaTranslations(englishText string) ([]TranslationMatch, error) {
 		SELECT verse_key, idu, en
 		FROM translations
 		WHERE to_tsvector('simple', en) @@ plainto_tsquery('simple', $1)
+                OR LOWER(en) LIKE '%' || LOWER($1) || '%'
 		ORDER BY id
 		LIMIT 10
 	`, englishText)
