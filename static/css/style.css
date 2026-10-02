@@ -3956,3 +3956,270 @@ body:has(.auth-page) .auth-footer {
         text-align: center;
     }
 }
+
+/* ==============================
+   IDOMA BIBLE
+   ============================== */
+
+.bible-page {
+    padding: 35px 5% 60px;
+}
+
+.bible-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.bible-header h1 {
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-size: 2.4rem;
+}
+
+.bible-header p {
+    margin: 0 auto;
+    max-width: 700px;
+    color: #bdbdbd;
+    line-height: 1.7;
+}
+
+.bible-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    gap: 25px;
+    align-items: start;
+}
+
+.bible-card {
+    background: #0b0b0b;
+    border: 1px solid #292929;
+    border-top: 4px solid var(--idoma-red);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+}
+
+.bible-card h2 {
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-size: 1.45rem;
+}
+
+.bible-card > p {
+    color: #bdbdbd;
+    line-height: 1.7;
+}
+
+.bible-controls {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    flex-wrap: wrap;
+    margin: 25px 0 18px;
+}
+
+.bible-controls > div {
+    flex: 1 1 180px;
+}
+
+.bible-controls label {
+    display: block;
+    margin-bottom: 7px;
+    color: #d7d7d7;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.bible-controls select,
+.bible-search input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #383838;
+    border-radius: 10px;
+    background: #151515;
+    color: #ffffff;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.bible-controls select:focus,
+.bible-search input:focus {
+    border-color: var(--idoma-red);
+    box-shadow: 0 0 0 2px rgba(181, 18, 27, 0.15);
+}
+
+.bible-controls .ai-ask-button {
+    flex: 0 0 auto;
+    border: none;
+    cursor: pointer;
+}
+
+.bible-search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.bible-search input {
+    flex: 1;
+}
+
+.bible-search .ai-ask-button {
+    flex: 0 0 auto;
+    border: none;
+    cursor: pointer;
+}
+
+.bible-reading-area {
+    margin-top: 10px;
+}
+
+.bible-chapter-heading {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #292929;
+}
+
+.bible-chapter-heading h3 {
+    margin: 0 0 5px;
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+.bible-chapter-heading p {
+    margin: 0;
+    color: #888888;
+    font-size: 0.9rem;
+}
+
+.bible-verse {
+    margin-bottom: 18px;
+    padding: 20px;
+    background: #111111;
+    border: 1px solid #252525;
+    border-radius: 14px;
+}
+
+.bible-verse:last-child {
+    margin-bottom: 0;
+}
+
+.bible-verse h4 {
+    margin: 0 0 15px;
+    color: var(--idoma-red);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+}
+
+.bible-text {
+    margin-bottom: 15px;
+}
+
+.bible-text:last-child {
+    margin-bottom: 0;
+}
+
+.bible-text strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #ffffff;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.bible-text p {
+    margin: 0;
+    color: #e5e5e5;
+    line-height: 1.8;
+}
+
+.bible-text:first-of-type p {
+    color: #ffffff;
+    font-size: 1.02rem;
+}
+
+.bible-error {
+    padding: 20px;
+    border: 1px solid #4a2020;
+    border-radius: 12px;
+    background: #171010;
+}
+
+.bible-error p {
+    margin: 0;
+    color: #ffb3b3;
+    line-height: 1.6;
+}
+
+.bible-translator {
+    position: sticky;
+    top: 20px;
+}
+
+.bible-translator p {
+    margin-bottom: 22px;
+}
+
+.bible-translator .ai-ask-button {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+/* Bible mobile layout */
+@media (max-width: 900px) {
+    .bible-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .bible-translator {
+        position: static;
+    }
+}
+
+@media (max-width: 700px) {
+    .bible-page {
+        padding: 25px 5% 45px;
+    }
+
+    .bible-header h1 {
+        font-size: 2rem;
+    }
+
+    .bible-card {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .bible-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .bible-controls > div {
+        width: 100%;
+    }
+
+    .bible-controls .ai-ask-button {
+        width: 100%;
+    }
+
+    .bible-search {
+        flex-direction: column;
+    }
+
+    .bible-search .ai-ask-button {
+        width: 100%;
+    }
+
+    .bible-verse {
+        padding: 16px;
+    }
+
+    .bible-text p {
+        line-height: 1.75;
+    }
+}
