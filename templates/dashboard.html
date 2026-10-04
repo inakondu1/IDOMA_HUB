@@ -38,32 +38,7 @@
                         </p>
                 </section>
 
-		<div class="top-dashboard-cards">
 
-
-        <div class="dashboard-card">
-                <h2>👥 People You May Know</h2>
-
-                <p>Connect with Idoma people.</p>
-
-                <a href="/friends" class="secondary-button">
-                        👤 Find Friends
-                </a>
-        </div>
-
-        <div class="dashboard-card">
-                <h2>📚 Learn Idoma</h2>
-
-                <p>
-                        Learn, practice, and explore the Idoma language.
-                </p>
-
-                <a href="/learning" class="dashboard-link">
-                        📖 Start Learning
-                </a>
-        </div>
-
-</div>
 
 <div class="dashboard-layout">
 
@@ -185,27 +160,28 @@ function createTextStory() {
 
 				<div class="dashboard-card create-post-card">
 
-					<h2>📝 Create a Post</h2>
+        <h2>📝 Create a Post</h2>
 
-					<form action="/post" method="POST" enctype="multipart/form-data">
+        <form action="/post" method="POST" enctype="multipart/form-data">
 
-                                                <div class="create-post-user">
-                                                        {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="create-post-avatar">{{else}}<div class="create-post-avatar-fallback">{{printf "%.1s" .Username}}</div>{{end}}
-                                                </div>
+                <input type="file" id="photoInput" name="photo" accept="image/*" hidden>
+                <input type="file" id="videoInput" name="video" accept="video/*" hidden>
 
-						<input type="file" id="photoInput" name="photo" accept="image/*" hidden>
-                                                <input type="file" id="videoInput" name="video" accept="video/*" hidden>
+                <div class="create-post-composer">
 
-                                                
-                                                
+                        <div class="create-post-user">
+                                {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="create-post-avatar">{{else}}<div class="create-post-avatar-fallback">{{printf "%.1s" .Username}}</div>{{end}}
+                        </div>
 
-                                                <textarea
-							name="content"
-							placeholder="What is happening in your community?"
-							rows="4"
-						></textarea>
+                        <textarea
+                                name="content"
+                                placeholder="What is happening in your community?"
+                                rows="3"
+                        ></textarea>
 
-						<div id="mediaPreview" class="media-preview"></div>
+                </div>
+
+                <div id="mediaPreview" class="media-preview"></div>
 
 <div class="post-actions">
 
@@ -235,14 +211,18 @@ function createTextStory() {
                                             {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="post-avatar-image">{{else}}<div class="post-avatar">{{printf "%.1s" .Username}}</div>{{end}}
 
                                             <div>
-                                                    <span>{{.CreatedAt}}</span>
+                                                    <strong>{{.Username}}</strong><span>{{.CreatedAt}}</span>
                                             </div>
                                     </div>
 
-                                    <p>
+                                    {{if .Content}}
+                                    <div class="post-content">
                                             {{.Content}}
+                                    </div>
+                                    {{end}}
 
                                     {{if .MediaURL}}
+                                    <div class="post-media-container">
                                     {{if eq .MediaType "image"}}
                                     <img src="{{.MediaURL}}" alt="Post image" class="post-media">
                                     {{else if eq .MediaType "video"}}
@@ -251,54 +231,57 @@ function createTextStory() {
                                             Your browser does not support video playback.
                                     </video>
                                     {{end}}
+                                    </div>
                                     {{end}}
 
                                     <div class="post-actions">
 
-                                            <form action="/like" method="POST" style="display:inline;">
-    <input type="hidden" name="post_id" value="{{.ID}}">
-    {{if .LikedByMe}}
-    <button type="submit">💔 Unlike</button>
-{{else}}
-    <button type="submit">❤️ Like</button>
-{{end}}
-<span>
-        {{.LikeCount}}
-        {{if eq .LikeCount 1}}like{{else}}likes{{end}}
-</span>
-</form>
-                                            <div class="comments-section">
+                                            <form action="/like" method="POST">
+                                                    <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    {{if .LikedByMe}}
+                                                    <button type="submit">💔 Unlike</button>
+                                                    {{else}}
+                                                    <button type="submit">❤️ Like</button>
+                                                    {{end}}
+                                                    <span>
+                                                            {{.LikeCount}}
+                                                            {{if eq .LikeCount 1}}like{{else}}likes{{end}}
+                                                    </span>
+                                            </form>
 
-    <form action="/comment" method="POST" class="comment-form">
-        <input type="hidden" name="post_id" value="{{.ID}}">
-        <input type="text" name="content" placeholder="Write a comment..." required>
-        <button type="submit">💬 Comment {{.CommentCount}}</button>
-    </form>
+                                            <button type="button" class="comment-action">
+                                                    💬 Comment {{.CommentCount}}
+                                            </button>
 
-    {{range .Comments}}
-    <div class="comment">
-        {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="comment-avatar-image">{{else}}<div class="comment-avatar">{{printf "%.1s" .Username}}</div>{{end}}
-        <div class="comment-bubble">
-            <div class="comment-meta">
-                <span>{{.CreatedAt}}</span>
-            </div>
-            <p>{{.Content}}</p>
-        </div>
-    </div>
-    {{end}}
-
-</div>
-                                            <form action="/share" method="POST" style="display:inline;"><input type="hidden" name="post_id" value="{{.ID}}"><button type="submit">↗ Share {{.ShareCount}}</button></form>
+                                            <form action="/share" method="POST">
+                                                    <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    <button type="submit">↗ Share {{.ShareCount}}</button>
+                                            </form>
 
                                     </div>
 
-                            </div>
-                            {{else}}
-                            <div class="dashboard-card feed-post">
+                                    <div class="comments-section">
 
-                                    <p>
-                                            No posts yet. Be the first person to share
-                                            something with the IDOMA HUB community.
+                                            <form action="/comment" method="POST" class="comment-form">
+                                                    <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    <input type="text" name="content" class="comment-input" placeholder="Write a comment..." required>
+                                                    <button type="submit">💬 Comment</button>
+                                            </form>
+
+                                            {{range .Comments}}
+                                            <div class="comment">
+                                                    {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="comment-avatar-image">{{else}}<div class="comment-avatar">{{printf "%.1s" .Username}}</div>{{end}}
+                                                    <div class="comment-bubble">
+                                                            <div class="comment-meta">
+                                                                    <strong>{{.Username}}</strong>
+                                                                    <span>{{.CreatedAt}}</span>
+                                                            </div>
+                                                            <p>{{.Content}}</p>
+                                                    </div>
+                                            </div>
+                                            {{end}}
+
+                                    </div>
 
                             </div>
                             {{end}}
@@ -458,6 +441,18 @@ async function sharePost(postID) {
       storyCards.forEach(function (card, index) {
           card.addEventListener("click", function () {
               openStory(index);
+          });
+      });
+
+      document.querySelectorAll(".comment-action").forEach(function (button) {
+          button.addEventListener("click", function () {
+              const post = button.closest(".feed-post");
+              if (!post) return;
+
+              const input = post.querySelector(".comment-input");
+              if (input) {
+                  input.focus();
+              }
           });
       });
   });
