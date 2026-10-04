@@ -4504,3 +4504,13 @@ body:has(.auth-page) .auth-footer {
 .dashboard-layout > .stories-section .story-create-options {
         display: none;
 }
+
+
+
+/* Correct desktop dashboard layout */
+@media (min-width: 1001px) {
+    .dashboard-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr) 280px; gap: 22px; align-items: start; }
+    .dashboard-layout > .dashboard-sidebar { grid-column: 1; grid-row: 1; }
+    .dashboard-layout > .feed-section { grid-column: 2; grid-row: 1; min-width: 0; }
+    .dashboard-layout > .stories-section { grid-column: 3; grid-row: 1; min-width: 0; }
+}
