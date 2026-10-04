@@ -40,7 +40,11 @@ func importIdomaCSV(db *sql.DB, filename string, dataType string) error {
 		_, err = db.Exec(`
                         INSERT INTO idoma_language_data
                         (english, idoma, type, status, source, notes)
-                        VALUES ($1, $2, $3, $4, $5, $6)
+                        SELECT $1, $2, $3, $4, $5, $6
+                        WHERE NOT EXISTS (
+                                SELECT 1 FROM idoma_language_data
+                                WHERE english = $1 AND idoma = $2 AND type = $3
+                        )
                 `, record[0], record[1], dataType, record[2], record[3], record[4])
 
 		if err != nil {
