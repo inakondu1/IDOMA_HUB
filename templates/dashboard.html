@@ -98,10 +98,28 @@
 
         <div class="dashboard-card stories-section">
         <div class="stories-header">
-                <h2>Stories</h2>
+                <h2>Friends' Stories</h2>
         </div>
 
         <div class="stories-row">
+
+                {{range .Statuses}}
+                <div class="story-card">
+                        <div class="story-avatar-wrapper">
+                                {{if .ProfilePicture}}
+                                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar story-ring">
+                                {{else}}
+                                <div class="story-avatar story-avatar-fallback story-ring">{{printf "%.1s" .Username}}</div>
+                                {{end}}
+                        </div>
+                        <strong>{{.Username}}</strong>
+                </div>
+                {{end}}
+
+        </div>
+</div>
+
+<section class="feed-section">
 
                 <div class="story-card create-story">
                         <div class="story-avatar-wrapper">
@@ -137,23 +155,6 @@
                 }
                 </script>
 
-                {{range .Statuses}}
-                <div class="story-card">
-                        <div class="story-avatar-wrapper">
-                                {{if .ProfilePicture}}
-                                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar story-ring">
-                                {{else}}
-                                <div class="story-avatar story-avatar-fallback story-ring">{{printf "%.1s" .Username}}</div>
-                                {{end}}
-                        </div>
-                        <strong>{{.Username}}</strong>
-                </div>
-                {{end}}
-
-        </div>
-</div>
-
-<section class="feed-section">
 
 				<div class="dashboard-card create-post-card">
 

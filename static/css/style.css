@@ -4466,3 +4466,41 @@ body:has(.auth-page) .auth-footer {
                 display: flex;
         }
 }
+
+/* Create a Story in the main feed */
+.feed-section > .create-story {
+        display: block;
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 18px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-sizing: border-box;
+}
+
+.feed-section > .create-story .story-avatar-wrapper {
+        margin: 0 auto 8px;
+}
+
+.feed-section > .create-story .story-create-options {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 12px;
+}
+
+.feed-section > .create-story .story-create-options button {
+        flex: 1;
+        padding: 9px;
+        font-size: 13px;
+}
+
+/* Friends' stories stay in the thin right column */
+.dashboard-layout > .stories-section {
+        align-self: start;
+}
+
+.dashboard-layout > .stories-section .story-create-options {
+        display: none;
+}
