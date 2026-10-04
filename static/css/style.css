@@ -4355,3 +4355,114 @@ body:has(.auth-page) .auth-footer {
                 padding: 4px 5px;
         }
 }
+
+/* Dashboard: center feed with stories on the right */
+.dashboard-layout > .stories-section {
+        grid-column: 3;
+        grid-row: 1;
+        max-width: 280px;
+}
+
+.dashboard-layout > .feed-section {
+        grid-column: 2;
+        grid-row: 1;
+        min-width: 0;
+}
+
+/* Compact right-side stories */
+.stories-section {
+        padding: 16px;
+}
+
+.stories-row {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-x: visible;
+        padding: 4px 0;
+}
+
+.story-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        text-align: left;
+}
+
+.story-card strong {
+        margin-top: 0;
+        font-size: 13px;
+}
+
+.story-avatar-wrapper {
+        flex: 0 0 58px;
+        width: 58px;
+        height: 58px;
+}
+
+.story-avatar {
+        width: 58px;
+        height: 58px;
+}
+
+.create-story {
+        min-height: auto;
+}
+
+.story-create-options {
+        display: none;
+}
+
+/* Keep the + button visible on Your Story */
+.create-story .story-add {
+        display: flex;
+}
+
+/* Green ring for active friend stories */
+.story-ring {
+        border-color: #2e9b4b;
+}
+
+/* Mobile dashboard */
+@media (max-width: 900px) {
+        .dashboard-layout {
+                display: block;
+        }
+
+        .dashboard-layout > .stories-section {
+                max-width: none;
+                margin-bottom: 20px;
+        }
+
+        .stories-row {
+                flex-direction: row;
+                overflow-x: auto;
+        }
+
+        .story-card {
+                flex: 0 0 78px;
+                display: block;
+                text-align: center;
+        }
+
+        .story-avatar-wrapper {
+                width: 68px;
+                height: 68px;
+                margin: 0 auto;
+        }
+
+        .story-avatar {
+                width: 68px;
+                height: 68px;
+        }
+
+        .story-card strong {
+                display: block;
+                margin-top: 6px;
+        }
+
+        .story-create-options {
+                display: flex;
+        }
+}
