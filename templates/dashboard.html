@@ -101,7 +101,42 @@
                 <h2>Friends' Stories</h2>
         </div>
 
-        <div class="stories-row">
+        <div class="story-card create-story">
+        <div class="story-avatar-wrapper">
+                {{if .ProfilePicture}}
+                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
+                {{else}}
+                <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
+                {{end}}
+                <div class="story-add">+</div>
+        </div>
+        <strong>Your Story</strong>
+
+        <div class="story-create-options">
+                <button type="button" onclick="document.getElementById('story-photo').click()">📷 Photo</button>
+                <button type="button" onclick="document.getElementById('story-video').click()">🎥 Video</button>
+                <button type="button" onclick="createTextStory()">Aa Text</button>
+        </div>
+</div>
+
+<form id="story-form" action="/status" method="POST" enctype="multipart/form-data" style="display:none;">
+        <input type="file" id="story-photo" name="photo" accept="image/*" onchange="document.getElementById('story-form').submit()">
+        <input type="file" id="story-video" name="video" accept="video/*" onchange="document.getElementById('story-form').submit()">
+        <textarea id="story-text" name="content"></textarea>
+</form>
+
+<script>
+function createTextStory() {
+        const text = prompt("What do you want to share?");
+        if (text && text.trim() !== "") {
+                document.getElementById("story-text").value = text.trim();
+                document.getElementById("story-form").submit();
+        }
+}
+</script>
+
+
+<div class="stories-row">
 
                 {{range .Statuses}}
                 <div class="story-card">
@@ -121,39 +156,7 @@
 
 <section class="feed-section">
 
-                <div class="story-card create-story">
-                        <div class="story-avatar-wrapper">
-                                {{if .ProfilePicture}}
-                                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
-                                {{else}}
-                                <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
-                                {{end}}
-                                <div class="story-add">+</div>
-                        </div>
-                        <strong>Your Story</strong>
 
-                        <div class="story-create-options">
-                                <button type="button" onclick="document.getElementById('story-photo').click()">📷 Photo</button>
-                                <button type="button" onclick="document.getElementById('story-video').click()">🎥 Video</button>
-                                <button type="button" onclick="createTextStory()">Aa Text</button>
-                        </div>
-                </div>
-
-                <form id="story-form" action="/status" method="POST" enctype="multipart/form-data" style="display:none;">
-                        <input type="file" id="story-photo" name="photo" accept="image/*" onchange="document.getElementById('story-form').submit()">
-                        <input type="file" id="story-video" name="video" accept="video/*" onchange="document.getElementById('story-form').submit()">
-                        <textarea id="story-text" name="content"></textarea>
-                </form>
-
-                <script>
-                function createTextStory() {
-                        const text = prompt("What do you want to share?");
-                        if (text && text.trim() !== "") {
-                                document.getElementById("story-text").value = text.trim();
-                                document.getElementById("story-form").submit();
-                        }
-                }
-                </script>
 
 
 				<div class="dashboard-card create-post-card">
