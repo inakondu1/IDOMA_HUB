@@ -96,56 +96,62 @@
 
 			
 
-        <div class="dashboard-card status-create">
-        <h2>🟢 Create Status</h2>
-
-        <form action="/status" method="POST">
-                <textarea name="content" placeholder="What is on your mind?" required></textarea>
-                <button type="submit">Post Status</button>
-        </form>
-</div>
-
-{{if .Statuses}}
-        <div class="dashboard-card status-section">
-                <h2>🟢 Status</h2>
-
-                <div class="status-list">
-                        {{range .Statuses}}
-                        <div class="status-item">
-
-                                <div class="status-header">
-                                        {{if .ProfilePicture}}
-                                        <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="status-avatar">
-                                        {{else}}
-                                        <div class="status-avatar-fallback">{{printf "%.1s" .Username}}</div>
-                                        {{end}}
-
-                                        <div>
-                                                <strong>{{.Username}}</strong>
-                                                <small>{{.CreatedAt}}</small>
-                                        </div>
-                                </div>
-
-                                {{if .Content}}
-                                <p>{{.Content}}</p>
-                                {{end}}
-
-                                {{if .MediaURL}}
-                                        {{if eq .MediaType "image"}}
-                                        <img src="{{.MediaURL}}" alt="Status image" class="status-media">
-                                        {{else if eq .MediaType "video"}}
-                                        <video controls class="status-media">
-                                                <source src="{{.MediaURL}}">
-                                                Your browser does not support video playback.
-                                        </video>
-                                        {{end}}
-                                {{end}}
-
-                        </div>
-                        {{end}}
-                </div>
+        <div class="dashboard-card stories-section">
+        <div class="stories-header">
+                <h2>Stories</h2>
         </div>
-        {{end}}
+
+        <div class="stories-row">
+
+                <div class="story-card create-story">
+                        <div class="story-avatar-wrapper">
+                                {{if .ProfilePicture}}
+                                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
+                                {{else}}
+                                <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
+                                {{end}}
+                                <div class="story-add">+</div>
+                        </div>
+                        <strong>Your Story</strong>
+
+                        <div class="story-create-options">
+                                <button type="button" onclick="document.getElementById('story-photo').click()">📷 Photo</button>
+                                <button type="button" onclick="document.getElementById('story-video').click()">🎥 Video</button>
+                                <button type="button" onclick="createTextStory()">Aa Text</button>
+                        </div>
+                </div>
+
+                <form id="story-form" action="/status" method="POST" enctype="multipart/form-data" style="display:none;">
+                        <input type="file" id="story-photo" name="photo" accept="image/*" onchange="document.getElementById('story-form').submit()">
+                        <input type="file" id="story-video" name="video" accept="video/*" onchange="document.getElementById('story-form').submit()">
+                        <textarea id="story-text" name="content"></textarea>
+                </form>
+
+                <script>
+                function createTextStory() {
+                        const text = prompt("What do you want to share?");
+                        if (text && text.trim() !== "") {
+                                document.getElementById("story-text").value = text.trim();
+                                document.getElementById("story-form").submit();
+                        }
+                }
+                </script>
+
+                {{range .Statuses}}
+                <div class="story-card">
+                        <div class="story-avatar-wrapper">
+                                {{if .ProfilePicture}}
+                                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar story-ring">
+                                {{else}}
+                                <div class="story-avatar story-avatar-fallback story-ring">{{printf "%.1s" .Username}}</div>
+                                {{end}}
+                        </div>
+                        <strong>{{.Username}}</strong>
+                </div>
+                {{end}}
+
+        </div>
+</div>
 
 <section class="feed-section">
 
