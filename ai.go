@@ -34,15 +34,15 @@ type AICandidate struct {
 }
 
 func findIdomaTranslation(englishText string) (string, string, error) {
-	var verseKey string
-	var idu string
+	var english string
+	var idoma string
 
 	err := db.QueryRow(`
-		SELECT verse_key, idu
-		FROM translations
-		WHERE en = $1
+		SELECT english, idoma
+		FROM idoma_language_data
+		WHERE LOWER(english) = LOWER($1)
 		LIMIT 1
-	`, englishText).Scan(&verseKey, &idu)
+	`, englishText).Scan(&english, &idoma)
 
 	if err == sql.ErrNoRows {
 		return "", "", nil
@@ -52,21 +52,20 @@ func findIdomaTranslation(englishText string) (string, string, error) {
 		return "", "", err
 	}
 
-	return verseKey, idu, nil
+	return english, idoma, nil
 }
 
 type TranslationMatch struct {
-	VerseKey string
-	Idoma    string
-	English  string
+	Idoma   string
+	English string
 }
 
 func searchIdomaTranslations(englishText string) ([]TranslationMatch, error) {
 	rows, err := db.Query(`
-		SELECT verse_key, idu, en
-		FROM translations
-		WHERE to_tsvector('simple', en) @@ plainto_tsquery('simple', $1)
-                OR LOWER(en) LIKE '%' || LOWER($1) || '%'
+		SELECT idoma, english
+		FROM idoma_language_data
+		WHERE to_tsvector('simple', english) @@ plainto_tsquery('simple', $1)
+                OR LOWER(english) LIKE '%' || LOWER($1) || '%'
 		ORDER BY id
 		LIMIT 10
 	`, englishText)
@@ -81,7 +80,6 @@ func searchIdomaTranslations(englishText string) ([]TranslationMatch, error) {
 		var match TranslationMatch
 
 		if err := rows.Scan(
-			&match.VerseKey,
 			&match.Idoma,
 			&match.English,
 		); err != nil {
