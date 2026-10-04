@@ -2,11 +2,54 @@ package main
 
 import (
 	"database/sql"
+	"encoding/csv"
+	"io"
 	"log"
 	"os"
 
 	_ "github.com/lib/pq"
 )
+
+func importIdomaCSV(db *sql.DB, filename string, dataType string) error {
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+
+	_, err = reader.Read()
+	if err != nil {
+		return err
+	}
+
+	for {
+		record, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		if len(record) < 5 {
+			continue
+		}
+
+		_, err = db.Exec(`
+                        INSERT INTO idoma_language_data
+                        (english, idoma, type, status, source, notes)
+                        VALUES ($1, $2, $3, $4, $5, $6)
+                `, record[0], record[1], dataType, record[2], record[3], record[4])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
 
 func initDatabase() *sql.DB {
 	databaseURL := os.Getenv("DATABASE_URL")
@@ -200,6 +243,20 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create idoma_language_data table:", err)
 	}
 
+	var languageCount int
+	err = db.QueryRow("SELECT COUNT(*) FROM idoma_language_data").Scan(&languageCount)
+	if err != nil {
+		log.Fatal("Unable to check Idoma language data:", err)
+	}
+	if languageCount == 0 {
+		if err = importIdomaCSV(db, "verified_idoma.csv", "word"); err != nil {
+			log.Fatal("Unable to import verified Idoma words:", err)
+		}
+		if err = importIdomaCSV(db, "everyday_idoma_phrases.csv", "phrase"); err != nil {
+			log.Fatal("Unable to import Idoma phrases:", err)
+		}
+		log.Println("Idoma language data imported successfully.")
+	}
 	var farmProduceCount int
 	err = db.QueryRow("SELECT COUNT(*) FROM farm_produce").Scan(&farmProduceCount)
 	if err != nil {
