@@ -96,7 +96,16 @@
 
 			
 
-        {{if .Statuses}}
+        <div class="dashboard-card status-create">
+        <h2>🟢 Create Status</h2>
+
+        <form action="/status" method="POST">
+                <textarea name="content" placeholder="What is on your mind?" required></textarea>
+                <button type="submit">Post Status</button>
+        </form>
+</div>
+
+{{if .Statuses}}
         <div class="dashboard-card status-section">
                 <h2>🟢 Status</h2>
 
