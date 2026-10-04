@@ -272,6 +272,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		Username          string
 		ProfilePicture    string
 		Posts             []Post
+		Statuses          []Status
 		NotificationCount int
 		MessageCount      int
 		OnlineCount       int
@@ -280,6 +281,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		Username:          username,
 		ProfilePicture:    profilePicture,
 		Posts:             posts,
+		Statuses:          statuses,
 		NotificationCount: notificationCount,
 		MessageCount:      messageCount,
 		OnlineCount:       getOnlineCount(),
