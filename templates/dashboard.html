@@ -94,7 +94,51 @@
 
 			</aside>
 
-			<section class="feed-section">
+			
+
+        {{if .Statuses}}
+        <div class="dashboard-card status-section">
+                <h2>🟢 Status</h2>
+
+                <div class="status-list">
+                        {{range .Statuses}}
+                        <div class="status-item">
+
+                                <div class="status-header">
+                                        {{if .ProfilePicture}}
+                                        <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="status-avatar">
+                                        {{else}}
+                                        <div class="status-avatar-fallback">{{printf "%.1s" .Username}}</div>
+                                        {{end}}
+
+                                        <div>
+                                                <strong>{{.Username}}</strong>
+                                                <small>{{.CreatedAt}}</small>
+                                        </div>
+                                </div>
+
+                                {{if .Content}}
+                                <p>{{.Content}}</p>
+                                {{end}}
+
+                                {{if .MediaURL}}
+                                        {{if eq .MediaType "image"}}
+                                        <img src="{{.MediaURL}}" alt="Status image" class="status-media">
+                                        {{else if eq .MediaType "video"}}
+                                        <video controls class="status-media">
+                                                <source src="{{.MediaURL}}">
+                                                Your browser does not support video playback.
+                                        </video>
+                                        {{end}}
+                                {{end}}
+
+                        </div>
+                        {{end}}
+                </div>
+        </div>
+        {{end}}
+
+<section class="feed-section">
 
 				<div class="dashboard-card create-post-card">
 

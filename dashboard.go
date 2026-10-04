@@ -10,6 +10,16 @@ import (
 	"time"
 )
 
+type Status struct {
+	ID             int
+	Username       string
+	ProfilePicture string
+	Content        string
+	MediaURL       string
+	MediaType      string
+	CreatedAt      string
+}
+
 type Post struct {
 	ID             int
 	Username       string
@@ -185,6 +195,52 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		posts = append(posts, post)
+	}
+
+	var statuses []Status
+
+	statusRows, err := db.Query(`
+                SELECT statuses.id,
+                       users.username,
+                       COALESCE(users.profile_picture, ''),
+                       COALESCE(statuses.content, ''),
+                       COALESCE(statuses.media_url, ''),
+                       COALESCE(statuses.media_type, ''),
+                       statuses.created_at
+                FROM statuses
+                JOIN users ON users.id = statuses.user_id
+                WHERE statuses.expires_at > CURRENT_TIMESTAMP
+                ORDER BY statuses.created_at DESC
+        `)
+
+	if err != nil {
+		http.Error(w, "Unable to load statuses.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	defer statusRows.Close()
+
+	for statusRows.Next() {
+		var status Status
+
+		err := statusRows.Scan(
+			&status.ID,
+			&status.Username,
+			&status.ProfilePicture,
+			&status.Content,
+			&status.MediaURL,
+			&status.MediaType,
+			&status.CreatedAt,
+		)
+
+		if err != nil {
+			http.Error(w, "Unable to read statuses.", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		status.CreatedAt = formatDateTime(status.CreatedAt)
+		statuses = append(statuses, status)
 	}
 
 	var notificationCount int
@@ -539,7 +595,7 @@ func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
 	var oldPicture string
 
 	err = db.QueryRow(
-		"SELECT COALESCE(profile_picture, '' ) FROM users WHERE id = $1",
+		"SELECT COALESCE(profile_picture, '' FROM users WHERE id = $1",
 		userID,
 	).Scan(&oldPicture)
 

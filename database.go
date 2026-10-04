@@ -110,6 +110,22 @@ func initDatabase() *sql.DB {
 	}
 
 	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS statuses (
+                        id SERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL,
+                        content TEXT,
+                        media_url TEXT,
+                        media_type TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        expires_at TIMESTAMP NOT NULL,
+                        FOREIGN KEY (user_id) REFERENCES users(id)
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create statuses table:", err)
+	}
+
+	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS posts (
 			id SERIAL PRIMARY KEY,
 			user_id INTEGER NOT NULL,
