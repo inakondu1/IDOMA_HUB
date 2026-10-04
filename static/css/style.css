@@ -5266,3 +5266,54 @@ body:has(.auth-page) .auth-footer {
     }
 }
 
+
+.feed-heading {
+    margin: 4px 0 10px;
+    padding: 4px 2px;
+}
+
+.feed-heading h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #171717;
+}
+
+.feed-heading p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: #65676b;
+}
+
+@media (max-width: 700px) {
+    .feed-heading {
+        margin: 2px 2px 8px;
+    }
+
+    .feed-heading h2 {
+        font-size: 18px;
+    }
+
+    .feed-heading p {
+        font-size: 12px;
+    }
+}
+
+.posts-list-heading {
+    margin: 14px 2px 8px;
+}
+
+.posts-list-heading h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #171717;
+}
+
+@media (max-width: 700px) {
+    .posts-list-heading {
+        margin: 12px 2px 6px;
+    }
+
+    .posts-list-heading h3 {
+        font-size: 15px;
+    }
+}
