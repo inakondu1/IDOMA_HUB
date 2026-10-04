@@ -139,7 +139,11 @@ function createTextStory() {
 <div class="stories-row">
 
                 {{range .Statuses}}
-                <div class="story-card">
+                <div class="story-card story-view-card"
+                     data-username="{{.Username}}"
+                     data-media-url="{{.MediaURL}}"
+                     data-media-type="{{.MediaType}}"
+                     data-content="{{.Content}}">
                         <div class="story-avatar-wrapper">
                                 {{if .ProfilePicture}}
                                 <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar story-ring">
@@ -151,6 +155,26 @@ function createTextStory() {
                 </div>
                 {{end}}
 
+        </div>
+</div>
+
+<!-- Story Viewer -->
+<div id="storyViewer" class="story-viewer" style="display:none;">
+        <div class="story-viewer-backdrop" onclick="closeStory()"></div>
+
+        <div class="story-viewer-content">
+                <button type="button" class="story-viewer-close" onclick="closeStory()">×</button>
+
+                <div class="story-viewer-header">
+                        <strong id="storyViewerUsername"></strong>
+                </div>
+
+                <div id="storyViewerMedia" class="story-viewer-media"></div>
+
+                <div id="storyViewerText" class="story-viewer-text"></div>
+
+                <button type="button" class="story-nav story-prev" onclick="previousStory()">‹</button>
+                <button type="button" class="story-nav story-next" onclick="nextStory()">›</button>
         </div>
 </div>
 
@@ -347,6 +371,110 @@ async function sharePost(postID) {
         prompt("Copy this post link:", shareURL);
     }
 }
+
+  // Story viewer
+  let currentStoryIndex = 0;
+  let storyCards = [];
+
+  function loadStoryCards() {
+      storyCards = Array.from(document.querySelectorAll(".story-view-card"));
+  }
+
+  function openStory(index) {
+      loadStoryCards();
+
+      if (!storyCards.length) return;
+
+      currentStoryIndex = index;
+      showStory(currentStoryIndex);
+
+      document.getElementById("storyViewer").style.display = "flex";
+      document.body.style.overflow = "hidden";
+  }
+
+  function showStory(index) {
+      if (!storyCards.length) return;
+
+      if (index < 0) {
+          index = storyCards.length - 1;
+      }
+
+      if (index >= storyCards.length) {
+          index = 0;
+      }
+
+      currentStoryIndex = index;
+
+      const card = storyCards[index];
+
+      const username = card.dataset.username || "";
+      const mediaURL = card.dataset.mediaUrl || "";
+      const mediaType = card.dataset.mediaType || "";
+      const content = card.dataset.content || "";
+
+      document.getElementById("storyViewerUsername").textContent = username;
+
+      const mediaContainer = document.getElementById("storyViewerMedia");
+      const textContainer = document.getElementById("storyViewerText");
+
+      mediaContainer.innerHTML = "";
+      textContainer.textContent = content;
+
+      if (mediaURL && mediaType === "image") {
+          const image = document.createElement("img");
+          image.src = mediaURL;
+          image.alt = "Story by " + username;
+          mediaContainer.appendChild(image);
+      } else if (mediaURL && mediaType === "video") {
+          const video = document.createElement("video");
+          video.controls = true;
+          video.autoplay = true;
+          video.playsInline = true;
+
+          const source = document.createElement("source");
+          source.src = mediaURL;
+
+          video.appendChild(source);
+          mediaContainer.appendChild(video);
+      }
+  }
+
+  function nextStory() {
+      showStory(currentStoryIndex + 1);
+  }
+
+  function previousStory() {
+      showStory(currentStoryIndex - 1);
+  }
+
+  function closeStory() {
+      document.getElementById("storyViewer").style.display = "none";
+      document.body.style.overflow = "";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+      loadStoryCards();
+
+      storyCards.forEach(function (card, index) {
+          card.addEventListener("click", function () {
+              openStory(index);
+          });
+      });
+  });
+
+  document.addEventListener("keydown", function (event) {
+      const viewer = document.getElementById("storyViewer");
+
+      if (viewer.style.display !== "flex") return;
+
+      if (event.key === "Escape") {
+          closeStory();
+      } else if (event.key === "ArrowRight") {
+          nextStory();
+      } else if (event.key === "ArrowLeft") {
+          previousStory();
+      }
+  });
 </script>
 
 </body>
