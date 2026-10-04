@@ -184,6 +184,22 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create farm_produce table:", err)
 	}
 
+	_, err = db.Exec(`
+        CREATE TABLE IF NOT EXISTS idoma_language_data (
+            id SERIAL PRIMARY KEY,
+            english TEXT NOT NULL,
+            idoma TEXT NOT NULL,
+            type TEXT NOT NULL,
+            status TEXT NOT NULL,
+            source TEXT NOT NULL,
+            notes TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    `)
+	if err != nil {
+		log.Fatal("Unable to create idoma_language_data table:", err)
+	}
+
 	var farmProduceCount int
 	err = db.QueryRow("SELECT COUNT(*) FROM farm_produce").Scan(&farmProduceCount)
 	if err != nil {
