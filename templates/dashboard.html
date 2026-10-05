@@ -76,22 +76,22 @@
                 <h2>Friends' Stories</h2>
         </div>
 
-        <div class="story-card create-story">
-        <div class="story-avatar-wrapper">
-                {{if .ProfilePicture}}
-                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
-                {{else}}
-                <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
-                {{end}}
-                <div class="story-add">+</div>
-        </div>
-        <strong>Your Story</strong>
+        <div class="story-card create-story" onclick="openStoryOptions()">
+<div class="story-avatar-wrapper">
+        {{if .ProfilePicture}}
+        <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
+        {{else}}
+        <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
+        {{end}}
+        <div class="story-add">+</div>
+</div>
+<strong>Your Story</strong>
 
-        <div class="story-create-options">
-                <button type="button" onclick="document.getElementById('story-photo').click()">📷 Photo</button>
-                <button type="button" onclick="document.getElementById('story-video').click()">🎥 Video</button>
-                <button type="button" onclick="createTextStory()">Aa Text</button>
-        </div>
+<div class="story-create-options" id="story-create-options">
+        <button type="button" onclick="event.stopPropagation(); document.getElementById('story-photo').click()">📷 Photo</button>
+        <button type="button" onclick="event.stopPropagation(); document.getElementById('story-video').click()">🎥 Video</button>
+        <button type="button" onclick="event.stopPropagation(); createTextStory()">Aa Text</button>
+</div>
 </div>
 
 <form id="story-form" action="/status" method="POST" enctype="multipart/form-data" style="display:none;">
@@ -101,6 +101,13 @@
 </form>
 
 <script>
+function openStoryOptions() {
+        const options = document.getElementById("story-create-options");
+        if (options) {
+                options.classList.toggle("story-options-visible");
+        }
+}
+
 function createTextStory() {
         const text = prompt("What do you want to share?");
         if (text && text.trim() !== "") {
