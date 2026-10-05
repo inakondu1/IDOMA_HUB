@@ -18,8 +18,6 @@
 		<nav class="dashboard-nav">
 			<a href="/dashboard">Home</a>
 			<a href="/friends">Friends</a>
-			<a href="/messages">💬 Messages{{if .MessageCount}} <span class="notification-badge">{{.MessageCount}}</span>{{end}}</a>
-			<a href="/notifications">🔔 Notifications{{if .NotificationCount}} <span class="notification-badge">{{.NotificationCount}}</span>{{end}}</a>
 			<a href="/logout">Logout</a>
 		</nav>
 
@@ -48,8 +46,6 @@
 					<h2>🏠 Your IDOMA HUB</h2>
 
 					<a href="/profile">👤 My Profile</a>
-					<a href="/messages">💬 Messages{{if .MessageCount}} <span class="notification-badge">{{.MessageCount}}</span>{{end}}</a>
-					<a href="/notifications">🔔 Notifications{{if .NotificationCount}} <span class="notification-badge">{{.NotificationCount}}</span>{{end}}</a>
 				</div>
 
 				<div class="dashboard-card">
@@ -83,7 +79,7 @@
         {{else}}
         <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
         {{end}}
-        <div class="story-add">+</div>
+        <button type="button" class="story-add" onclick="event.stopPropagation(); openStoryOptions()" aria-label="Add story">+</button>
 </div>
 <strong>Your Story</strong>
 
