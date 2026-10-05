@@ -5876,7 +5876,6 @@ body:has(.auth-page) .auth-footer {
 }
 
 
-.dashboard-body { background: #f0f2f5; }
 
 .dashboard-navbar { position: sticky; top: 0; z-index: 1000; background: #fff; min-height: 56px; border-bottom: 1px solid #dddfe2; }
 
