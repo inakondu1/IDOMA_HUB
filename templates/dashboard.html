@@ -69,51 +69,111 @@
 			
 
         <div class="dashboard-card stories-section">
-        <div class="stories-header">
-                <h2>Stories</h2>
+
+<div class="stories-header">
+        <h2>Stories</h2>
+</div>
+
+<div class="story-create-wrapper">
+
+        <button type="button" class="story-create-card" onclick="toggleStoryMenu()">
+
+                <div class="story-avatar-wrapper">
+
+                        {{if .ProfilePicture}}
+                        <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
+                        {{else}}
+                        <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
+                        {{end}}
+
+                        <span class="story-add">+</span>
+
+                </div>
+
+                <strong>Your Story</strong>
+
+        </button>
+
+        <div id="story-create-menu" class="story-create-menu">
+
+                <button type="button" onclick="chooseStoryPhoto()">
+                        📷 Photo
+                </button>
+
+                <button type="button" onclick="chooseStoryVideo()">
+                        🎥 Video
+                </button>
+
+                <button type="button" onclick="createTextStory()">
+                        Aa Text
+                </button>
+
         </div>
 
-        <div class="story-card create-story" onclick="openStoryOptions()">
-<div class="story-avatar-wrapper">
-        {{if .ProfilePicture}}
-        <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
-        {{else}}
-        <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
-        {{end}}
-        <button type="button" class="story-add" onclick="event.stopPropagation(); openStoryOptions()" aria-label="Add story">+</button>
-</div>
-<strong>Your Story</strong>
-
-<div class="story-create-options" id="story-create-options">
-        <button type="button" onclick="event.stopPropagation(); document.getElementById('story-photo').click()">📷 Photo</button>
-        <button type="button" onclick="event.stopPropagation(); document.getElementById('story-video').click()">🎥 Video</button>
-        <button type="button" onclick="event.stopPropagation(); createTextStory()">Aa Text</button>
-</div>
 </div>
 
-<form id="story-form" action="/status" method="POST" enctype="multipart/form-data" style="display:none;">
-        <input type="file" id="story-photo" name="photo" accept="image/*" onchange="document.getElementById('story-form').submit()">
-        <input type="file" id="story-video" name="video" accept="video/*" onchange="document.getElementById('story-form').submit()">
+<form id="story-form"
+      action="/status"
+      method="POST"
+      enctype="multipart/form-data"
+      style="display:none;">
+
+        <input
+                type="file"
+                id="story-photo"
+                name="photo"
+                accept="image/*"
+                onchange="submitStoryForm()">
+
+        <input
+                type="file"
+                id="story-video"
+                name="video"
+                accept="video/*"
+                onchange="submitStoryForm()">
+
         <textarea id="story-text" name="content"></textarea>
+
 </form>
 
 <script>
-function openStoryOptions() {
-        const options = document.getElementById("story-create-options");
-        if (options) {
-                options.classList.toggle("story-options-visible");
+function toggleStoryMenu() {
+        const menu = document.getElementById("story-create-menu");
+
+        if (menu) {
+                menu.classList.toggle("story-menu-visible");
+        }
+}
+
+function chooseStoryPhoto() {
+        const input = document.getElementById("story-photo");
+
+        if (input) {
+                input.click();
+        }
+}
+
+function chooseStoryVideo() {
+        const input = document.getElementById("story-video");
+
+        if (input) {
+                input.click();
         }
 }
 
 function createTextStory() {
         const text = prompt("What do you want to share?");
+
         if (text && text.trim() !== "") {
                 document.getElementById("story-text").value = text.trim();
-                document.getElementById("story-form").submit();
+                submitStoryForm();
         }
 }
-</script>
 
+function submitStoryForm() {
+        document.getElementById("story-form").submit();
+}
+</script>
 
 <div class="stories-row">
 

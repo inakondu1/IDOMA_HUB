@@ -6596,3 +6596,142 @@ body:has(.auth-page) .auth-footer {
     }
 }
 
+
+/* =========================
+   STORY CREATOR FIX
+   ========================= */
+
+.story-create-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.story-create-card {
+    position: relative;
+    width: 105px;
+    height: 160px;
+    padding: 0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    overflow: hidden;
+    text-align: center;
+}
+
+.story-create-card:hover {
+    border-color: #b5121b;
+}
+
+.story-create-card .story-avatar-wrapper {
+    position: relative;
+    width: 100%;
+    height: 125px;
+}
+
+.story-create-card .story-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.story-create-card > strong {
+    display: block;
+    padding: 5px 3px;
+    font-size: 12px;
+    color: #222;
+}
+
+.story-create-card .story-add {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #b5121b;
+    color: #fff;
+    border: 3px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.story-create-menu {
+    display: none;
+    position: absolute;
+    top: 165px;
+    left: 0;
+    z-index: 100;
+    width: 180px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.18);
+}
+
+.story-create-menu.story-menu-visible {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.story-create-menu button {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    background: #b5121b;
+    color: #fff;
+    padding: 11px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.story-create-menu button:hover {
+    background: #850c13;
+}
+
+@media (max-width: 700px) {
+
+    .story-create-wrapper {
+        flex: 0 0 100px;
+    }
+
+    .story-create-card {
+        width: 100px;
+        height: 150px;
+    }
+
+    .story-create-card .story-avatar-wrapper {
+        height: 115px;
+    }
+
+    .story-create-menu {
+        position: fixed;
+        top: auto;
+        bottom: 20px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        z-index: 9999;
+        padding: 10px;
+        border-radius: 12px;
+    }
+
+    .story-create-menu.story-menu-visible {
+        display: flex;
+    }
+
+    .story-create-menu button {
+        padding: 14px;
+        font-size: 15px;
+    }
+}
+
