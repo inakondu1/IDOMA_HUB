@@ -300,6 +300,50 @@ func initDatabase() *sql.DB {
 		}
 	}
 
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS groups (
+                        id SERIAL PRIMARY KEY,
+                        name TEXT NOT NULL UNIQUE,
+                        description TEXT NOT NULL,
+                        creator_id INTEGER NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (creator_id) REFERENCES users(id)
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create groups table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS group_members (
+                        id SERIAL PRIMARY KEY,
+                        group_id INTEGER NOT NULL,
+                        user_id INTEGER NOT NULL,
+                        joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        UNIQUE(group_id, user_id),
+                        FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create group_members table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS group_posts (
+                        id SERIAL PRIMARY KEY,
+                        group_id INTEGER NOT NULL,
+                        user_id INTEGER NOT NULL,
+                        content TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create group_posts table:", err)
+	}
+
 	log.Println("PostgreSQL database connected successfully.")
 
 	return db

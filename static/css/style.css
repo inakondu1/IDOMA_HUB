@@ -6120,3 +6120,249 @@ body:has(.auth-page) .auth-footer {
     margin-right: 14px;
 }
 
+
+/* =========================
+   IDOMA HUB GROUPS
+   ========================= */
+
+.groups-page {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 16px 40px;
+}
+
+.groups-header {
+    background: #000;
+    color: #fff;
+    padding: 22px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.groups-header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+}
+
+.groups-header p {
+    margin: 0;
+    color: #ddd;
+}
+
+.groups-create-button {
+    display: inline-block;
+    background: #b5121b;
+    color: #fff;
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.groups-create-button:hover {
+    background: #850c13;
+}
+
+.groups-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.group-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.group-card h2 {
+    margin: 0 0 8px;
+    color: #000;
+}
+
+.group-card p {
+    margin: 0 0 12px;
+    color: #555;
+}
+
+.group-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    color: #777;
+    font-size: 14px;
+}
+
+.group-action form {
+    margin: 0;
+}
+
+.group-join-button,
+.group-leave-button {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 7px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.group-join-button {
+    background: #b5121b;
+    color: #fff;
+}
+
+.group-leave-button {
+    background: #eee;
+    color: #222;
+}
+
+.groups-empty {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.groups-empty h2 {
+    margin-top: 0;
+}
+
+@media (max-width: 700px) {
+    .groups-page {
+        margin: 15px auto;
+        padding: 0 10px 30px;
+    }
+
+    .groups-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .groups-header h1 {
+        font-size: 22px;
+    }
+
+    .groups-create-button {
+        text-align: center;
+    }
+
+    .group-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .group-action button {
+        width: 100%;
+    }
+}
+
+
+/* =========================
+   CREATE GROUP PAGE
+   ========================= */
+
+.group-create-page {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 0 16px 40px;
+}
+
+.group-create-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.group-create-card h1 {
+    margin-top: 0;
+    color: #000;
+}
+
+.group-create-intro {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.group-create-card label {
+    display: block;
+    font-weight: 700;
+    margin: 16px 0 7px;
+}
+
+.group-create-card input,
+.group-create-card textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.group-create-card textarea {
+    resize: vertical;
+}
+
+.group-create-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.group-cancel-button {
+    color: #555;
+    text-decoration: none;
+    padding: 10px 15px;
+}
+
+.group-create-submit {
+    border: none;
+    background: #b5121b;
+    color: #fff;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.group-create-submit:hover {
+    background: #850c13;
+}
+
+@media (max-width: 700px) {
+    .group-create-page {
+        margin: 15px auto;
+        padding: 0 10px 30px;
+    }
+
+    .group-create-card {
+        padding: 18px;
+    }
+
+    .group-create-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .group-create-submit,
+    .group-cancel-button {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}

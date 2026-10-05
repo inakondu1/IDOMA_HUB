@@ -169,6 +169,8 @@ func main() {
 	http.HandleFunc("/profile-view", profileViewHandler)
 	http.HandleFunc("/profile-picture", profilePictureUploadHandler)
 	http.HandleFunc("/friends", friendsHandler)
+	http.HandleFunc("/groups", groupsHandler)
+	http.HandleFunc("/groups/create", createGroupHandler)
 	http.HandleFunc("/learning", learningHandler)
 	http.HandleFunc("/ai", aiHandler)
 	http.HandleFunc("/ai/translate", aiTranslateHandler)

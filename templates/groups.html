@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groups - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="groups-page">
+
+    <header class="groups-header">
+        <div>
+            <h1>👥 Groups</h1>
+            <p>Find and join communities on IDOMA HUB.</p>
+        </div>
+
+        <a href="/groups/create" class="groups-create-button">
+            + Create a Group
+        </a>
+    </header>
+
+    <main class="groups-list">
+
+        {{if .Groups}}
+
+        {{range .Groups}}
+        <article class="group-card">
+
+            <div class="group-card-content">
+                <h2>{{.Name}}</h2>
+
+                <p>{{.Description}}</p>
+
+                <div class="group-meta">
+                    <span>👤 Created by {{.Creator}}</span>
+                    <span>👥 {{.MemberCount}} members</span>
+                </div>
+            </div>
+
+            <div class="group-action">
+                {{if .IsMember}}
+                <form action="/groups" method="POST">
+                    <input type="hidden" name="action" value="leave">
+                    <input type="hidden" name="group_id" value="{{.ID}}">
+                    <button type="submit" class="group-leave-button">
+                        Leave Group
+                    </button>
+                </form>
+                {{else}}
+                <form action="/groups" method="POST">
+                    <input type="hidden" name="action" value="join">
+                    <input type="hidden" name="group_id" value="{{.ID}}">
+                    <button type="submit" class="group-join-button">
+                        Join Group
+                    </button>
+                </form>
+                {{end}}
+            </div>
+
+        </article>
+        {{end}}
+
+        {{else}}
+
+        <div class="groups-empty">
+            <h2>No groups yet</h2>
+            <p>Be the first person to create an IDOMA HUB community.</p>
+
+            <a href="/groups/create" class="groups-create-button">
+                Create the First Group
+            </a>
+        </div>
+
+        {{end}}
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Group - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="group-create-page">
+
+    <div class="group-create-card">
+
+        <h1>👥 Create a Group</h1>
+
+        <p class="group-create-intro">
+            Create a community where Idoma people can connect, share ideas,
+            and talk about things they care about.
+        </p>
+
+        <form action="/groups/create" method="POST">
+
+            <label for="name">Group name</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="e.g. Idoma Farmers"
+                maxlength="100"
+                required
+            >
+
+            <label for="description">Description</label>
+            <textarea
+                id="description"
+                name="description"
+                rows="5"
+                placeholder="What is this group about?"
+                maxlength="500"
+                required
+            ></textarea>
+
+            <div class="group-create-actions">
+                <a href="/groups" class="group-cancel-button">Cancel</a>
+                <button type="submit" class="group-create-submit">
+                    Create Group
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
