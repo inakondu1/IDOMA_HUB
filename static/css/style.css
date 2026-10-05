@@ -6112,3 +6112,11 @@ body:has(.auth-page) .auth-footer {
     margin-right: 14px;
 }
 
+
+.dashboard-proverbs-link {
+    color: #b5121b !important;
+    font-weight: 800 !important;
+    text-decoration: none;
+    margin-right: 14px;
+}
+
