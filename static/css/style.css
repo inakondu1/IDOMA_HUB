@@ -7412,3 +7412,11 @@ body.dashboard-body .feed-heading {
 
 html, body.dashboard-body, body.dashboard-body .dashboard-container, body.dashboard-body .dashboard-layout, body.dashboard-body .welcome-section, body.dashboard-body .feed-section, body.dashboard-body .feed-heading, body.dashboard-body .stories-section { background:#000 !important; }
 body.dashboard-body .welcome-section, body.dashboard-body .feed-heading { color:#fff !important; }
+
+
+/* FINAL IDOMA HUB BLACK THEME — ALL DASHBOARD SECTIONS */
+.dashboard-body, .dashboard-body *, .dashboard-container, .dashboard-layout, .dashboard-sidebar, .dashboard-sidebar *, .dashboard-card, .stories-section, .feed-section, .feed-heading, .welcome-section { background-color:#000 !important; color:#fff !important; }
+.dashboard-body a { color:#fff !important; }
+.dashboard-body .dashboard-nav a:hover, .dashboard-body a:hover { color:#fff !important; background:#b5121b !important; }
+.dashboard-body input, .dashboard-body textarea { background:#111 !important; color:#fff !important; border-color:#333 !important; }
+.dashboard-body .post-actions button, .dashboard-body .comment-action { background:#000 !important; color:#fff !important; }
