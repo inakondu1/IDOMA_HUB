@@ -5929,3 +5929,115 @@ body:has(.auth-page) .auth-footer {
 .story-create-options { display: none; }
 .story-create-options.story-options-visible { display: flex; }
 .dashboard-learning-link, .dashboard-bible-link, .dashboard-ai-link { font-weight: 800 !important; }
+
+/* IDOMA HUB - Stories */
+.stories-section {
+    width: 100%;
+}
+
+.stories-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.stories-header h2 {
+    margin: 0;
+    font-weight: 800;
+}
+
+.stories-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 2px 10px;
+    scrollbar-width: none;
+}
+
+.stories-row::-webkit-scrollbar {
+    display: none;
+}
+
+.create-story {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.create-story .story-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #b5121b;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    border: 3px solid #fff;
+}
+
+.story-create-options {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.story-create-options.story-options-visible {
+    display: flex;
+}
+
+.story-create-options button {
+    border: 0;
+    border-radius: 8px;
+    padding: 7px 10px;
+    background: #b5121b;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.story-create-options button:hover {
+    background: #850c13;
+}
+
+.dashboard-learning-link,
+.dashboard-bible-link,
+.dashboard-ai-link {
+    font-weight: 800 !important;
+}
+
+@media (max-width: 700px) {
+    .stories-section {
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        margin: 0;
+    }
+
+    .stories-header {
+        padding: 10px 12px 4px;
+    }
+
+    .stories-header h2 {
+        font-size: 18px;
+    }
+
+    .stories-row {
+        padding: 6px 10px 12px;
+        gap: 8px;
+    }
+
+    .story-card {
+        flex: 0 0 105px;
+        width: 105px;
+        height: 160px;
+    }
+
+    .create-story {
+        min-width: 105px;
+    }
+}
