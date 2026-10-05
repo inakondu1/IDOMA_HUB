@@ -6075,3 +6075,40 @@ body:has(.auth-page) .auth-footer {
     background: #850c13;
 }
 
+
+.create-story .story-add {
+    border: 3px solid #fff;
+    background: #b5121b;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+}
+
+.create-story .story-add:hover {
+    background: #850c13;
+}
+
+
+/* Final IDOMA HUB dashboard navigation */
+.dashboard-navbar {
+    background: #000;
+    color: #fff;
+}
+
+.dashboard-navbar .dashboard-nav a {
+    color: #b5121b !important;
+}
+
+.dashboard-navbar .dashboard-nav a:hover {
+    color: #fff !important;
+}
+
+.dashboard-learning-link,
+.dashboard-bible-link,
+.dashboard-ai-link {
+    color: #b5121b !important;
+    font-weight: 800 !important;
+    text-decoration: none;
+    margin-right: 14px;
+}
+
