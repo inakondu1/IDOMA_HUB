@@ -171,6 +171,8 @@ func main() {
 	http.HandleFunc("/friends", friendsHandler)
 	http.HandleFunc("/groups", groupsHandler)
 	http.HandleFunc("/groups/create", createGroupHandler)
+	http.HandleFunc("/groups/view", groupViewHandler)
+	http.HandleFunc("/groups/post", groupPostHandler)
 	http.HandleFunc("/learning", learningHandler)
 	http.HandleFunc("/ai", aiHandler)
 	http.HandleFunc("/ai/translate", aiTranslateHandler)

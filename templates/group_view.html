@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Group.Name}} - IDOMA HUB</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="group-view-page">
+
+    <header class="group-view-header">
+        <a href="/groups" class="group-back-link">← Groups</a>
+
+        <h1>{{.Group.Name}}</h1>
+
+        <p>{{.Group.Description}}</p>
+
+        <div class="group-view-meta">
+            <span>👤 Created by {{.Group.Creator}}</span>
+            <span>👥 {{.Group.MemberCount}} members</span>
+        </div>
+
+        {{if .IsMember}}
+        <form action="/groups" method="POST">
+            <input type="hidden" name="action" value="leave">
+            <input type="hidden" name="group_id" value="{{.Group.ID}}">
+            <button type="submit" class="group-leave-button">
+                Leave Group
+            </button>
+        </form>
+        {{else}}
+        <form action="/groups" method="POST">
+            <input type="hidden" name="action" value="join">
+            <input type="hidden" name="group_id" value="{{.Group.ID}}">
+            <button type="submit" class="group-join-button">
+                Join Group
+            </button>
+        </form>
+        {{end}}
+    </header>
+
+    {{if .CanPost}}
+    <section class="group-post-box">
+
+        <div class="group-post-title">
+            <strong>Create a post</strong>
+        </div>
+
+        <form action="/groups/post" method="POST">
+            <input type="hidden" name="group_id" value="{{.Group.ID}}">
+
+            <textarea
+                name="content"
+                rows="4"
+                placeholder="Share something with this group..."
+                required
+            ></textarea>
+
+            <button type="submit" class="group-post-button">
+                Post
+            </button>
+        </form>
+
+    </section>
+    {{else}}
+
+    <section class="group-join-message">
+        <strong>Join this group</strong>
+        <p>You need to join the group before you can make posts.</p>
+    </section>
+
+    {{end}}
+
+    <section class="group-members-section">
+
+        <h2>Members</h2>
+
+        <div class="group-members-list">
+            {{range .Members}}
+            <div class="group-member">
+
+                {{if .ProfilePicture}}
+                <img
+                    src="{{.ProfilePicture}}"
+                    alt="{{.Username}}"
+                    class="group-member-avatar"
+                >
+                {{else}}
+                <div class="group-member-avatar group-member-fallback">
+                    {{printf "%.1s" .Username}}
+                </div>
+                {{end}}
+
+                <strong>{{.Username}}</strong>
+
+            </div>
+            {{end}}
+        </div>
+
+    </section>
+
+    <section class="group-posts-section">
+
+        <h2>Group Posts</h2>
+
+        {{if .Posts}}
+
+            {{range .Posts}}
+
+            <article class="group-post">
+
+                <div class="group-post-author">
+
+                    {{if .ProfilePicture}}
+                    <img
+                        src="{{.ProfilePicture}}"
+                        alt="{{.Username}}"
+                        class="group-post-avatar"
+                    >
+                    {{else}}
+                    <div class="group-post-avatar group-member-fallback">
+                        {{printf "%.1s" .Username}}
+                    </div>
+                    {{end}}
+
+                    <div>
+                        <strong>{{.Username}}</strong>
+                        <small>{{.CreatedAt}}</small>
+                    </div>
+
+                </div>
+
+                <div class="group-post-content">
+                    {{.Content}}
+                </div>
+
+            </article>
+
+            {{end}}
+
+        {{else}}
+
+        <div class="group-no-posts">
+            <p>No posts yet.</p>
+
+            {{if .CanPost}}
+            <p>Be the first person to post in this group.</p>
+            {{end}}
+        </div>
+
+        {{end}}
+
+    </section>
+
+</div>
+
+</body>
+</html>
