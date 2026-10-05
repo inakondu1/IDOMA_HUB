@@ -513,6 +513,20 @@ async function sharePost(postID) {
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+
+      document.querySelectorAll(".create-post-card form").forEach(function (form) {
+          form.addEventListener("submit", function () {
+              const button = form.querySelector(".post-button");
+
+              if (!button) return;
+
+              button.disabled = true;
+              button.textContent = "Posting...";
+              button.style.opacity = "0.7";
+              button.style.cursor = "wait";
+          });
+      });
+
       loadStoryCards();
 
       storyCards.forEach(function (card, index) {
