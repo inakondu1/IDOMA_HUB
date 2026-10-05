@@ -7357,3 +7357,58 @@ body.dashboard-body .feed-heading {
     background: #fff;
 }
 
+
+/* =========================================================
+   IDOMA HUB — ALL DASHBOARD BACKGROUND BLACK
+   ========================================================= */
+
+html,
+body,
+body.dashboard-body,
+body.dashboard-body .dashboard-container,
+body.dashboard-body .dashboard-layout,
+body.dashboard-body .welcome-section {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+/* Remove white background from dashboard sections */
+body.dashboard-body .feed-section,
+body.dashboard-body .feed-heading,
+body.dashboard-body .stories-section {
+    background: #000 !important;
+}
+
+/* Keep actual post/composer cards readable */
+body.dashboard-body .create-post-card,
+body.dashboard-body .feed-post {
+    background: #fff !important;
+    color: #171717 !important;
+}
+
+
+
+/* FINAL: BLACK DASHBOARD BACKGROUND EVERYWHERE */
+html,
+body.dashboard-body,
+body.dashboard-body .dashboard-container,
+body.dashboard-body .dashboard-layout,
+body.dashboard-body .welcome-section,
+body.dashboard-body .feed-section,
+body.dashboard-body .feed-heading,
+body.dashboard-body .stories-section {
+    background: #000 !important;
+}
+
+body.dashboard-body .welcome-section {
+    color: #fff !important;
+}
+
+body.dashboard-body .feed-heading {
+    color: #fff !important;
+}
+
+
+
+html, body.dashboard-body, body.dashboard-body .dashboard-container, body.dashboard-body .dashboard-layout, body.dashboard-body .welcome-section, body.dashboard-body .feed-section, body.dashboard-body .feed-heading, body.dashboard-body .stories-section { background:#000 !important; }
+body.dashboard-body .welcome-section, body.dashboard-body .feed-heading { color:#fff !important; }
