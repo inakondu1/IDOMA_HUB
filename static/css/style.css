@@ -5874,3 +5874,25 @@ body:has(.auth-page) .auth-footer {
         font-size: 14px;
     }
 }
+
+
+.dashboard-body { background: #f0f2f5; }
+
+.dashboard-navbar { position: sticky; top: 0; z-index: 1000; background: #fff; min-height: 56px; border-bottom: 1px solid #dddfe2; }
+
+.dashboard-logo { font-size: 21px; font-weight: 800; color: #b5121b; }
+
+.dashboard-nav { display: flex; align-items: center; gap: 4px; }
+
+.dashboard-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 300px; gap: 14px; align-items: start; }
+
+.dashboard-sidebar { grid-column: 1; grid-row: 1; }
+
+.feed-section { grid-column: 2; grid-row: 1; min-width: 0; }
+
+.stories-section { grid-column: 3; grid-row: 1; }
+
+@media (max-width: 700px) { .dashboard-container { padding: 8px 0; } .dashboard-layout { display: flex; flex-direction: column; gap: 8px; } .stories-section { order: 1; width: 100%; } .feed-section { order: 2; width: 100%; } .dashboard-sidebar { display: none; } }
+@media (max-width: 700px) { .stories-row { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: none; } .stories-row::-webkit-scrollbar { display: none; } .story-card { flex: 0 0 100px; width: 100px; height: 155px; } }
+@media (max-width: 700px) { .create-post-card { border-radius: 0; border-left: 0; border-right: 0; padding: 12px; margin-bottom: 8px; } .create-post-card h2 { font-size: 0; margin: 0; } .create-post-composer { display: flex; align-items: center; gap: 8px; } .create-post-card textarea { min-height: 40px; height: 40px; border-radius: 20px; font-size: 14px; } .post-actions { display: flex; gap: 2px; margin-top: 8px; padding-top: 8px; } .post-actions button { font-size: 13px; padding: 8px 4px; } }
+@media (max-width: 700px) { .feed-post { border-radius: 0; border-left: 0; border-right: 0; padding: 12px; margin-bottom: 8px; background: #fff; } .post-header { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; } .post-content { font-size: 15px; line-height: 1.5; margin: 8px 0 12px; } .feed-post img, .feed-post video { width: calc(100% + 24px); max-width: none; margin-left: -12px; border-radius: 0; } }
