@@ -7314,3 +7314,46 @@ body:has(.auth-page) .auth-footer {
     }
 }
 
+
+/* =========================================================
+   IDOMA HUB — TRUE BLACK PAGE BACKGROUND
+   ========================================================= */
+
+html,
+body.dashboard-body {
+    background: #000 !important;
+}
+
+body.dashboard-body .dashboard-container {
+    background: #000 !important;
+}
+
+body.dashboard-body .dashboard-layout {
+    background: #000 !important;
+}
+
+/* Keep the main content cards white */
+body.dashboard-body .dashboard-card,
+body.dashboard-body .stories-section,
+body.dashboard-body .welcome-section,
+body.dashboard-body .feed-heading {
+    background: #fff;
+}
+
+
+body.dashboard-body .dashboard-container {
+    background: #000 !important;
+}
+
+body.dashboard-body .dashboard-layout {
+    background: #000 !important;
+}
+
+/* Keep content cards white */
+body.dashboard-body .dashboard-card,
+body.dashboard-body .stories-section,
+body.dashboard-body .welcome-section,
+body.dashboard-body .feed-heading {
+    background: #fff;
+}
+
