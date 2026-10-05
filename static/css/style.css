@@ -4599,7 +4599,7 @@ body:has(.auth-page) .auth-footer {
         position: absolute;
         left: 20px;
         right: 20px;
-        top: 120px;
+        top: 60px;
         z-index: 4;
         color: white;
         text-align: center;
@@ -4650,8 +4650,8 @@ body:has(.auth-page) .auth-footer {
         }
 
         .story-viewer-text {
-                font-size: 16px;
-                bottom: 30px;
+                font-size: 18px;
+                top: 60px;
         }
 
         .story-nav {
