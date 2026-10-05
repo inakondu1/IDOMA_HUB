@@ -4599,11 +4599,12 @@ body:has(.auth-page) .auth-footer {
         position: absolute;
         left: 20px;
         right: 20px;
-        bottom: 25px;
+        top: 120px;
         z-index: 4;
         color: white;
         text-align: center;
-        font-size: 18px;
+        font-size: 22px;
+        font-weight: 600;
         line-height: 1.5;
         text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
         white-space: pre-wrap;
