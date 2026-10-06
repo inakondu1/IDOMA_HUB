@@ -447,40 +447,75 @@ async function sharePost(postID) {
     }
 }
 
-  // Story viewer
-  let currentStoryIndex = 0;
+  // WhatsApp-style Story viewer
   let storyCards = [];
+  let storyGroups = [];
+  let currentGroupIndex = 0;
+  let currentGroupStoryIndex = 0;
 
   function loadStoryCards() {
       storyCards = Array.from(document.querySelectorAll(".story-view-card"));
+
+      const groups = new Map();
+
+      storyCards.forEach(function (card) {
+          const userID = card.dataset.userId || "";
+
+          if (!groups.has(userID)) {
+              groups.set(userID, []);
+          }
+
+          groups.get(userID).push(card);
+      });
+
+      storyGroups = Array.from(groups.entries()).map(function (entry) {
+          return {
+              userID: entry[0],
+              cards: entry[1]
+          };
+      });
   }
 
   function openStory(index) {
       loadStoryCards();
 
-      if (!storyCards.length) return;
+      if (!storyGroups.length) return;
 
-      currentStoryIndex = index;
-      showStory(currentStoryIndex);
+      const clickedCard = storyCards[index];
+      if (!clickedCard) return;
+
+      const userID = clickedCard.dataset.userId || "";
+
+      currentGroupIndex = storyGroups.findIndex(function (group) {
+          return group.userID === userID;
+      });
+
+      if (currentGroupIndex < 0) {
+          currentGroupIndex = 0;
+      }
+
+      currentGroupStoryIndex = storyGroups[currentGroupIndex].cards.indexOf(clickedCard);
+
+      if (currentGroupStoryIndex < 0) {
+          currentGroupStoryIndex = 0;
+      }
+
+      showStory();
 
       document.getElementById("storyViewer").style.display = "flex";
       document.body.style.overflow = "hidden";
   }
 
-  function showStory(index) {
-      if (!storyCards.length) return;
+  function showStory() {
+      if (!storyGroups.length) return;
 
-      if (index < 0) {
-          index = storyCards.length - 1;
-      }
+      const group = storyGroups[currentGroupIndex];
 
-      if (index >= storyCards.length) {
-          index = 0;
-      }
+      if (!group || !group.cards.length) return;
 
-      currentStoryIndex = index;
+      const card = group.cards[currentGroupStoryIndex];
 
-      const card = storyCards[index];
+      if (!card) return;
 
       const username = card.dataset.username || "";
       const mediaURL = card.dataset.mediaUrl || "";
@@ -518,11 +553,45 @@ async function sharePost(postID) {
   }
 
   function nextStory() {
-      showStory(currentStoryIndex + 1);
+      const group = storyGroups[currentGroupIndex];
+
+      if (!group) return;
+
+      if (currentGroupStoryIndex < group.cards.length - 1) {
+          currentGroupStoryIndex++;
+          showStory();
+          return;
+      }
+
+      if (currentGroupIndex < storyGroups.length - 1) {
+          currentGroupIndex++;
+          currentGroupStoryIndex = 0;
+          showStory();
+          return;
+      }
+
+      closeStory();
   }
 
   function previousStory() {
-      showStory(currentStoryIndex - 1);
+      const group = storyGroups[currentGroupIndex];
+
+      if (!group) return;
+
+      if (currentGroupStoryIndex > 0) {
+          currentGroupStoryIndex--;
+          showStory();
+          return;
+      }
+
+      if (currentGroupIndex > 0) {
+          currentGroupIndex--;
+          currentGroupStoryIndex = storyGroups[currentGroupIndex].cards.length - 1;
+          showStory();
+          return;
+      }
+
+      closeStory();
   }
 
   function closeStory() {
@@ -547,7 +616,18 @@ async function sharePost(postID) {
 
       loadStoryCards();
 
+      const visibleUsers = new Set();
+
       storyCards.forEach(function (card, index) {
+          const userID = card.dataset.userId || "";
+
+          if (visibleUsers.has(userID)) {
+              card.style.display = "none";
+              return;
+          }
+
+          visibleUsers.add(userID);
+
           card.addEventListener("click", function () {
               openStory(index);
           });
