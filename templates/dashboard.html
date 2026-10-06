@@ -179,7 +179,7 @@ function submitStoryForm() {
 
                 {{range .Statuses}}
                 <div class="story-card story-view-card"
-                     data-username="{{.Username}}"
+                     data-user-id="{{.UserID}}" data-username="{{.Username}}"
                      data-media-url="{{.MediaURL}}"
                      data-media-type="{{.MediaType}}"
                      data-content="{{.Content}}">
@@ -211,6 +211,20 @@ function submitStoryForm() {
                 <div id="storyViewerMedia" class="story-viewer-media"></div>
 
                 <div id="storyViewerText" class="story-viewer-text"></div>
+
+                <form id="storyReplyForm" class="story-reply-form" action="/story-reply" method="POST">
+                        <input type="hidden" id="storyReplyStatusID" name="status_id">
+
+                        <input
+                                type="text"
+                                id="storyReplyInput"
+                                name="content"
+                                placeholder="Reply to this story..."
+                                maxlength="1000"
+                                autocomplete="off">
+
+                        <button type="submit" aria-label="Send story reply">➤</button>
+                </form>
 
                 <button type="button" class="story-nav story-prev" onclick="previousStory()">‹</button>
                 <button type="button" class="story-nav story-next" onclick="nextStory()">›</button>
@@ -471,8 +485,11 @@ async function sharePost(postID) {
       const mediaURL = card.dataset.mediaUrl || "";
       const mediaType = card.dataset.mediaType || "";
       const content = card.dataset.content || "";
+      const statusID = card.dataset.statusId || "";
 
       document.getElementById("storyViewerUsername").textContent = username;
+      document.getElementById("storyReplyStatusID").value = statusID;
+      document.getElementById("storyReplyInput").value = "";
 
       const mediaContainer = document.getElementById("storyViewerMedia");
       const textContainer = document.getElementById("storyViewerText");
@@ -552,6 +569,14 @@ async function sharePost(postID) {
       const viewer = document.getElementById("storyViewer");
 
       if (viewer.style.display !== "flex") return;
+
+      if (
+          event.target &&
+          (event.target.tagName === "INPUT" ||
+           event.target.tagName === "TEXTAREA")
+      ) {
+          return;
+      }
 
       if (event.key === "Escape") {
           closeStory();

@@ -187,6 +187,7 @@ func main() {
 	http.HandleFunc("/farm-produce", farmProduceHandler)
 	http.HandleFunc("/notifications", notificationsHandler)
 	http.HandleFunc("/messages", messagesHandler)
+	http.HandleFunc("/story-reply", storyReplyHandler)
 	http.HandleFunc("/post", createPostHandler)
 	http.HandleFunc("/like", likePostHandler)
 	http.HandleFunc("/share", sharePostHandler)

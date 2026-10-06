@@ -12,6 +12,7 @@ import (
 
 type Status struct {
 	ID             int
+	UserID         int
 	Username       string
 	ProfilePicture string
 	Content        string
@@ -201,6 +202,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 	statusRows, err := db.Query(`
                 SELECT statuses.id,
+                       statuses.user_id,
                        users.username,
                        COALESCE(users.profile_picture, ''),
                        COALESCE(statuses.content, ''),
@@ -225,6 +227,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := statusRows.Scan(
 			&status.ID,
+			&status.UserID,
 			&status.Username,
 			&status.ProfilePicture,
 			&status.Content,

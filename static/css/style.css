@@ -8168,3 +8168,83 @@ body.dashboard-body ~ footer {
         color: #fff !important;
     }
 }
+
+/* IDOMA HUB — Story Reply */
+body.dashboard-body .story-reply-form {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 18px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: #000 !important;
+    border: 1px solid #b5121b;
+    border-radius: 28px;
+    box-sizing: border-box;
+}
+
+body.dashboard-body .story-reply-form input {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+    padding: 0 15px;
+    border: 1px solid #b5121b !important;
+    border-radius: 22px;
+    background: #000 !important;
+    color: #fff !important;
+    outline: none;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+body.dashboard-body .story-reply-form input::placeholder {
+    color: #aaa !important;
+}
+
+body.dashboard-body .story-reply-form input:focus {
+    border-color: #b5121b !important;
+    box-shadow: 0 0 0 1px #b5121b;
+}
+
+body.dashboard-body .story-reply-form button {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: none !important;
+    border-radius: 50%;
+    background: #b5121b !important;
+    color: #fff !important;
+    font-size: 20px;
+    line-height: 42px;
+    text-align: center;
+    cursor: pointer;
+}
+
+body.dashboard-body .story-reply-form button:hover {
+    background: #850c13 !important;
+}
+
+@media (max-width: 600px) {
+    body.dashboard-body .story-reply-form {
+        left: 10px;
+        right: 10px;
+        bottom: 12px;
+        padding: 6px;
+    }
+
+    body.dashboard-body .story-reply-form input {
+        height: 40px;
+        font-size: 14px;
+    }
+
+    body.dashboard-body .story-reply-form button {
+        flex-basis: 40px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+    }
+}
