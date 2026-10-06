@@ -20,12 +20,12 @@ type GroupsPageData struct {
 
 func groupsHandler(w http.ResponseWriter, r *http.Request) {
 	userID, loggedIn := getUserIDFromSession(r)
-	if !loggedIn {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
 
 	if r.Method == http.MethodPost {
+		if !loggedIn {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
 		action := r.FormValue("action")
 		groupID := r.FormValue("group_id")
 
