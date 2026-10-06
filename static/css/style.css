@@ -7869,3 +7869,302 @@ footer {
         background: #000 !important;
     }
 }
+
+/* =========================================================
+   IDOMA HUB — RED + BLACK THEME
+   Whole dashboard uses only Idoma red and black.
+   ========================================================= */
+
+:root {
+    --idoma-red: #b5121b;
+    --idoma-dark-red: #850c13;
+    --idoma-black: #000000;
+}
+
+/* Main dashboard */
+html,
+body.dashboard-body {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+/* Every major dashboard area */
+body.dashboard-body header,
+body.dashboard-body main,
+body.dashboard-body section,
+body.dashboard-body aside,
+body.dashboard-body article,
+body.dashboard-body div,
+body.dashboard-body footer {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+/* Header */
+body.dashboard-body .dashboard-navbar {
+    background: #b5121b !important;
+    border-bottom: 2px solid #850c13 !important;
+}
+
+body.dashboard-body .dashboard-logo {
+    background: #b5121b !important;
+    color: #fff !important;
+}
+
+body.dashboard-body .dashboard-nav a {
+    background: #b5121b !important;
+    color: #fff !important;
+}
+
+body.dashboard-body .dashboard-nav a:hover {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+/* Welcome area */
+body.dashboard-body .welcome-section {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #b5121b !important;
+}
+
+body.dashboard-body .welcome-section h1 {
+    color: #b5121b !important;
+}
+
+body.dashboard-body .online-status {
+    color: #fff !important;
+}
+
+/* Sidebar */
+body.dashboard-body .dashboard-sidebar {
+    background: #000 !important;
+}
+
+body.dashboard-body .dashboard-sidebar .dashboard-card {
+    background: #000 !important;
+    border: 1px solid #b5121b !important;
+    color: #fff !important;
+}
+
+body.dashboard-body .dashboard-sidebar a {
+    color: #fff !important;
+}
+
+body.dashboard-body .dashboard-sidebar a:hover {
+    background: #b5121b !important;
+    color: #fff !important;
+}
+
+/* Stories */
+body.dashboard-body .stories-section,
+body.dashboard-body .story-card,
+body.dashboard-body .story-create-card {
+    background: #000 !important;
+    border-color: #b5121b !important;
+    color: #fff !important;
+}
+
+body.dashboard-body .stories-section h2,
+body.dashboard-body .stories-section h3 {
+    color: #b5121b !important;
+}
+
+/* Story buttons */
+body.dashboard-body .story-create-card button,
+body.dashboard-body .story-create-menu button {
+    background: #b5121b !important;
+    color: #fff !important;
+    border: 1px solid #850c13 !important;
+}
+
+body.dashboard-body .story-create-card button:hover,
+body.dashboard-body .story-create-menu button:hover {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #b5121b !important;
+}
+
+/* Feed heading */
+body.dashboard-body .feed-heading {
+    background: #000 !important;
+    border: 1px solid #b5121b !important;
+    color: #fff !important;
+}
+
+/* Feed links */
+body.dashboard-body .feed-heading a {
+    background: #b5121b !important;
+    color: #fff !important;
+    border: 1px solid #850c13 !important;
+}
+
+body.dashboard-body .feed-heading a:hover {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+/* Create post */
+body.dashboard-body .create-post-card {
+    background: #000 !important;
+    border: 1px solid #b5121b !important;
+    color: #fff !important;
+}
+
+body.dashboard-body .create-post-card h2,
+body.dashboard-body .create-post-card h3 {
+    color: #b5121b !important;
+}
+
+/* ALL writing areas */
+body.dashboard-body input,
+body.dashboard-body textarea,
+body.dashboard-body select {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #b5121b !important;
+    caret-color: #b5121b !important;
+}
+
+body.dashboard-body input::placeholder,
+body.dashboard-body textarea::placeholder {
+    color: #aaa !important;
+}
+
+body.dashboard-body input:focus,
+body.dashboard-body textarea:focus,
+body.dashboard-body select:focus {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #b5121b !important;
+    outline: 2px solid #850c13 !important;
+}
+
+/* Buttons */
+body.dashboard-body button,
+body.dashboard-body .button,
+body.dashboard-body input[type="submit"] {
+    background: #b5121b !important;
+    color: #fff !important;
+    border: 1px solid #850c13 !important;
+}
+
+body.dashboard-body button:hover,
+body.dashboard-body .button:hover,
+body.dashboard-body input[type="submit"]:hover {
+    background: #850c13 !important;
+    color: #fff !important;
+}
+
+/* Posts */
+body.dashboard-body .feed-post {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #b5121b !important;
+}
+
+body.dashboard-body .feed-post h3,
+body.dashboard-body .feed-post strong {
+    color: #b5121b !important;
+}
+
+/* Post action buttons */
+body.dashboard-body .feed-post button {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #b5121b !important;
+}
+
+body.dashboard-body .feed-post button:hover {
+    background: #b5121b !important;
+    color: #fff !important;
+}
+
+/* Comments */
+body.dashboard-body .comment-bubble,
+body.dashboard-body .comment-form,
+body.dashboard-body .comments-section {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #b5121b !important;
+}
+
+body.dashboard-body .comment-form button {
+    background: #b5121b !important;
+    color: #fff !important;
+}
+
+/* Story viewer */
+body.dashboard-body .story-viewer,
+body.dashboard-body .story-viewer-content,
+body.dashboard-body .story-viewer-backdrop {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+body.dashboard-body .story-viewer button {
+    background: #b5121b !important;
+    color: #fff !important;
+}
+
+/* Links */
+body.dashboard-body a {
+    color: #fff !important;
+}
+
+body.dashboard-body a:hover {
+    color: #b5121b !important;
+}
+
+/* Red separators */
+body.dashboard-body hr {
+    border-color: #b5121b !important;
+}
+
+/* Footer */
+body.dashboard-body footer,
+body.dashboard-body ~ footer {
+    background: #000 !important;
+    color: #fff !important;
+    border-top: 2px solid #b5121b !important;
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+
+    body.dashboard-body {
+        background: #000 !important;
+    }
+
+    body.dashboard-body .dashboard-navbar {
+        background: #b5121b !important;
+    }
+
+    body.dashboard-body .dashboard-container,
+    body.dashboard-body .dashboard-layout,
+    body.dashboard-body .dashboard-sidebar,
+    body.dashboard-body .feed-section {
+        background: #000 !important;
+    }
+
+    body.dashboard-body .dashboard-card,
+    body.dashboard-body .stories-section,
+    body.dashboard-body .feed-heading,
+    body.dashboard-body .create-post-card,
+    body.dashboard-body .feed-post {
+        background: #000 !important;
+        border-color: #b5121b !important;
+    }
+
+    body.dashboard-body input,
+    body.dashboard-body textarea {
+        background: #000 !important;
+        color: #fff !important;
+        border-color: #b5121b !important;
+    }
+
+    body.dashboard-body button {
+        background: #b5121b !important;
+        color: #fff !important;
+    }
+}
