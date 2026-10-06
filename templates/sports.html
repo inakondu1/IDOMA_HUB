@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sports - IDOMA HUB</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+
+	<style>
+		.sports-page {
+			max-width: 760px;
+			margin: 0 auto;
+			padding: 20px 14px 50px;
+		}
+
+		.sports-header {
+			background: #111;
+			color: white;
+			border-radius: 14px;
+			padding: 20px;
+			margin-bottom: 18px;
+		}
+
+		.sports-header h1 {
+			margin: 0 0 6px;
+			font-size: 25px;
+		}
+
+		.sports-header p {
+			margin: 0;
+			opacity: .85;
+		}
+
+		.sports-back {
+			display: inline-block;
+			margin-bottom: 14px;
+			color: #b5121b;
+			text-decoration: none;
+			font-weight: 600;
+		}
+
+		.sports-post {
+			background: white;
+			border-radius: 14px;
+			padding: 16px;
+			margin-bottom: 16px;
+			box-shadow: 0 2px 10px rgba(0,0,0,.08);
+		}
+
+		.sports-post-user {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 12px;
+		}
+
+		.sports-avatar {
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			object-fit: cover;
+			background: #ddd;
+		}
+
+		.sports-avatar-fallback {
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background: #b5121b;
+			color: white;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: bold;
+		}
+
+		.sports-username {
+			font-weight: 700;
+		}
+
+		.sports-date {
+			font-size: 12px;
+			color: #777;
+		}
+
+		.sports-content {
+			white-space: pre-wrap;
+			line-height: 1.55;
+			margin-bottom: 12px;
+		}
+
+		.sports-media {
+			width: 100%;
+			max-height: 500px;
+			object-fit: cover;
+			border-radius: 10px;
+			margin-bottom: 12px;
+		}
+
+		.sports-actions {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+			border-top: 1px solid #eee;
+			padding-top: 10px;
+		}
+
+		.sports-actions form {
+			margin: 0;
+		}
+
+		.sports-actions button,
+		.sports-login-button {
+			border: 0;
+			border-radius: 8px;
+			padding: 8px 12px;
+			background: #f1f1f1;
+			cursor: pointer;
+			text-decoration: none;
+			color: #222;
+			font-size: 14px;
+		}
+
+		.sports-actions button:hover,
+		.sports-login-button:hover {
+			background: #e5e5e5;
+		}
+
+		.sports-liked {
+			color: #b5121b;
+			font-weight: 700;
+		}
+
+		.sports-comments {
+			margin-top: 14px;
+			border-top: 1px solid #eee;
+			padding-top: 12px;
+		}
+
+		.sports-comment {
+			display: flex;
+			gap: 8px;
+			margin-bottom: 10px;
+		}
+
+		.sports-comment-avatar {
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			object-fit: cover;
+			background: #ddd;
+		}
+
+		.sports-comment-body {
+			background: #f4f4f4;
+			border-radius: 10px;
+			padding: 7px 10px;
+			flex: 1;
+		}
+
+		.sports-comment-body strong {
+			display: block;
+			font-size: 13px;
+		}
+
+		.sports-comment-body span {
+			font-size: 14px;
+			white-space: pre-wrap;
+		}
+
+		.sports-comment-form {
+			display: flex;
+			gap: 8px;
+			margin-top: 12px;
+		}
+
+		.sports-comment-form input {
+			flex: 1;
+			border: 1px solid #ddd;
+			border-radius: 20px;
+			padding: 9px 13px;
+		}
+
+		.sports-comment-form button {
+			border: 0;
+			border-radius: 20px;
+			padding: 9px 15px;
+			background: #b5121b;
+			color: white;
+			cursor: pointer;
+		}
+
+		.sports-empty {
+			background: white;
+			border-radius: 14px;
+			padding: 30px 20px;
+			text-align: center;
+			color: #666;
+		}
+
+		.sports-create {
+			background: white;
+			border-radius: 14px;
+			padding: 16px;
+			margin-bottom: 18px;
+			box-shadow: 0 2px 10px rgba(0,0,0,.08);
+		}
+
+		.sports-create textarea {
+			width: 100%;
+			box-sizing: border-box;
+			resize: vertical;
+			border: 1px solid #ddd;
+			border-radius: 10px;
+			padding: 12px;
+			font: inherit;
+			margin-bottom: 10px;
+		}
+
+		.sports-create button {
+			background: #b5121b;
+			color: white;
+			border: 0;
+			border-radius: 8px;
+			padding: 10px 16px;
+			cursor: pointer;
+		}
+
+		@media (max-width: 600px) {
+			.sports-page {
+				padding: 12px 8px 40px;
+			}
+
+			.sports-post,
+			.sports-create,
+			.sports-header {
+				border-radius: 10px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+<div class="sports-page">
+
+	<a href="/dashboard" class="sports-back">← Back to IDOMA HUB</a>
+
+	<div class="sports-header">
+		<h1>⚽ Sports</h1>
+		<p>Talk about sports, teams, matches and athletes with the Idoma community.</p>
+	</div>
+
+	{{if .LoggedIn}}
+	<div class="sports-create">
+		<form action="/post" method="POST">
+			<input type="hidden" name="category" value="sports">
+
+			<textarea
+				name="content"
+				rows="3"
+				placeholder="Share something about sports..."
+				required
+			></textarea>
+
+			<button type="submit">Post to Sports</button>
+		</form>
+	</div>
+	{{else}}
+	<div class="sports-create">
+		<p>Log in to create Sports posts, like posts and comment.</p>
+		<a href="/login" class="sports-login-button">Log in</a>
+	</div>
+	{{end}}
+
+	{{if .Posts}}
+		{{range .Posts}}
+		<article class="sports-post">
+
+			<div class="sports-post-user">
+				{{if .ProfilePicture}}
+					<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="sports-avatar">
+				{{else}}
+					<div class="sports-avatar-fallback">{{printf "%.1s" .Username}}</div>
+				{{end}}
+
+				<div>
+					<div class="sports-username">{{.Username}}</div>
+					<div class="sports-date">{{.CreatedAt}}</div>
+				</div>
+			</div>
+
+			{{if .Content}}
+				<div class="sports-content">{{.Content}}</div>
+			{{end}}
+
+			{{if eq .MediaType "image"}}
+				<img src="{{.MediaURL}}" alt="Sports post image" class="sports-media">
+			{{else if eq .MediaType "video"}}
+				<video controls class="sports-media">
+					<source src="{{.MediaURL}}">
+				</video>
+			{{end}}
+
+			<div class="sports-actions">
+
+				{{if $.LoggedIn}}
+				<form action="/like" method="POST">
+                            <input type="hidden" name="return_to" value="/sports">
+					<input type="hidden" name="post_id" value="{{.ID}}">
+					<button type="submit" class="{{if .LikedByMe}}sports-liked{{end}}">
+						{{if .LikedByMe}}❤️ Liked{{else}}👍 Like{{end}} ({{.LikeCount}})
+					</button>
+				</form>
+				{{else}}
+					<a href="/login" class="sports-login-button">👍 Like ({{.LikeCount}})</a>
+				{{end}}
+
+				<span class="sports-login-button">
+					💬 {{.CommentCount}}
+				</span>
+
+			</div>
+
+			<div class="sports-comments">
+
+				{{range .Comments}}
+				<div class="sports-comment">
+					{{if .ProfilePicture}}
+						<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="sports-comment-avatar">
+					{{else}}
+						<div class="sports-comment-avatar"></div>
+					{{end}}
+
+					<div class="sports-comment-body">
+						<strong>{{.Username}}</strong>
+						<span>{{.Content}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				{{if $.LoggedIn}}
+				<form action="/comment" method="POST" class="sports-comment-form">
+                                    <input type="hidden" name="return_to" value="/sports">
+					<input type="hidden" name="post_id" value="{{.ID}}">
+					<input type="text" name="content" placeholder="Write a comment..." required>
+					<button type="submit">Send</button>
+				</form>
+				{{else}}
+					<a href="/login" class="sports-login-button">Log in to comment</a>
+				{{end}}
+
+			</div>
+
+		</article>
+		{{end}}
+	{{else}}
+		<div class="sports-empty">
+			<h3>No Sports posts yet.</h3>
+			<p>Be the first person to start a Sports conversation.</p>
+		</div>
+	{{end}}
+
+</div>
+
+</body>
+</html>

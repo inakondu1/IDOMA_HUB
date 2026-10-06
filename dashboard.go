@@ -343,6 +343,11 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	content := strings.TrimSpace(r.FormValue("content"))
 
+	category := strings.TrimSpace(r.FormValue("category"))
+	if category != "sports" && category != "gossip" {
+		category = "general"
+	}
+
 	var mediaURL string
 	var mediaType string
 
@@ -402,11 +407,12 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = db.Exec(
-		"INSERT INTO posts (user_id, content, media_url, media_type) VALUES ($1, $2, $3, $4)",
+		"INSERT INTO posts (user_id, content, media_url, media_type, category) VALUES ($1, $2, $3, $4, $5)",
 		userID,
 		content,
 		mediaURL,
 		mediaType,
+		category,
 	)
 
 	if err != nil {
@@ -547,7 +553,12 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+	returnTo := r.FormValue("return_to")
+	if returnTo != "/sports" && returnTo != "/gossip" {
+		returnTo = "/dashboard"
+	}
+
+	http.Redirect(w, r, returnTo, http.StatusSeeOther)
 }
 
 func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
@@ -753,5 +764,10 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 		createPostNotification(postOwnerID, userID, postID, "comment")
 	}
 
-	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+	returnTo := r.FormValue("return_to")
+	if returnTo != "/sports" && returnTo != "/gossip" {
+		returnTo = "/dashboard"
+	}
+
+	http.Redirect(w, r, returnTo, http.StatusSeeOther)
 }

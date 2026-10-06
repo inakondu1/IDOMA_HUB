@@ -170,6 +170,7 @@ func main() {
 	http.HandleFunc("/profile-picture", profilePictureUploadHandler)
 	http.HandleFunc("/friends", friendsHandler)
 	http.HandleFunc("/groups", groupsHandler)
+	http.HandleFunc("/sports", sportsHandler)
 	http.HandleFunc("/anonymous", anonymousHandler)
 	http.HandleFunc("/anonymous/online", anonymousOnlineHandler)
 	http.HandleFunc("/groups/create", createGroupHandler)
