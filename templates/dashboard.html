@@ -179,6 +179,7 @@ function submitStoryForm() {
 
                 {{range .Statuses}}
                 <div class="story-card story-view-card"
+                     data-status-id="{{.ID}}"
                      data-user-id="{{.UserID}}" data-username="{{.Username}}"
                      data-media-url="{{.MediaURL}}"
                      data-media-type="{{.MediaType}}"
