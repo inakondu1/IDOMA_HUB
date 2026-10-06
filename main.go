@@ -171,6 +171,7 @@ func main() {
 	http.HandleFunc("/friends", friendsHandler)
 	http.HandleFunc("/groups", groupsHandler)
 	http.HandleFunc("/anonymous", anonymousHandler)
+	http.HandleFunc("/anonymous/online", anonymousOnlineHandler)
 	http.HandleFunc("/groups/create", createGroupHandler)
 	http.HandleFunc("/groups/view", groupViewHandler)
 	http.HandleFunc("/groups/post", groupPostHandler)

@@ -380,21 +380,39 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create anonymous_messages table:", err)
 	}
 
-	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS anonymous_views (
-				id SERIAL PRIMARY KEY,
-				session_hash TEXT NOT NULL,
-				message_id INTEGER NOT NULL,
-				viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-				UNIQUE(session_hash, message_id),
-				FOREIGN KEY (message_id)
-						REFERENCES anonymous_messages(id)
-						ON DELETE CASCADE
-		)
-	`)
-	if err != nil {
-		log.Fatal("Unable to create anonymous_views table:", err)
-	}
+    // Add parent_id so Anonymous messages can have direct replies.
+    _, err = db.Exec(`
+            ALTER TABLE anonymous_messages
+            ADD COLUMN IF NOT EXISTS parent_id INTEGER
+    `)
+    if err != nil {
+            log.Fatal("Unable to add Anonymous reply column:", err)
+    }
+
+    _, err = db.Exec(`
+            CREATE INDEX IF NOT EXISTS idx_anonymous_messages_parent_id
+            ON anonymous_messages(parent_id)
+    `)
+    if err != nil {
+            log.Fatal("Unable to create Anonymous reply index:", err)
+    }
+
+    _, err = db.Exec(`
+            CREATE TABLE IF NOT EXISTS anonymous_views (
+                            id SERIAL PRIMARY KEY,
+                            session_hash TEXT NOT NULL,
+                            message_id INTEGER NOT NULL,
+                            viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            UNIQUE(session_hash, message_id),
+                            FOREIGN KEY (message_id)
+                                            REFERENCES anonymous_messages(id)
+                                            ON DELETE CASCADE
+            )
+    `)
+    if err != nil {
+            log.Fatal("Unable to create anonymous_views table:", err)
+    }
+
 
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS anonymous_presence (

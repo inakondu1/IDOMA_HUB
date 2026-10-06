@@ -15,88 +15,237 @@
 
     <header class="anonymous-header">
 
-        <div class="anonymous-header-top">
+        <div class="anonymous-topbar">
+
             <a href="/dashboard" class="anonymous-back">
                 ← Dashboard
             </a>
 
+            <div class="anonymous-brand">
+                IDOMA HUB
+            </div>
+
             <div class="anonymous-title">
                 <h1>Anonymous</h1>
-                <span id="anonymousOnline">
-                    �� {{.OnlineCount}} online
+
+                <span class="anonymous-online">
+                    <span class="anonymous-online-dot"></span>
+                    <span id="anonymousOnlineCount">{{.OnlineCount}}</span> online
                 </span>
             </div>
+
         </div>
 
-        <p class="anonymous-description">
-            A private space where IDOMA HUB members can speak anonymously.
-        </p>
+        <div class="anonymous-intro">
 
-        <div class="anonymous-identity">
-            You are <strong>{{.AnonymousName}}</strong>
+            <h2>Speak freely.</h2>
+
+            <p>
+                A private space for IDOMA HUB members to share their thoughts
+                without revealing their real identity.
+            </p>
+
+        </div>
+
+        <div class="anonymous-identity-card">
+
+            <div class="anonymous-avatar">
+                A
+            </div>
+
+            <div class="anonymous-identity-text">
+
+                <span class="anonymous-small-label">
+                    Your Anonymous identity
+                </span>
+
+                <strong>{{.AnonymousName}}</strong>
+
+                <span class="anonymous-privacy-note">
+                    Your real account identity is not shown here.
+                </span>
+
+            </div>
+
         </div>
 
     </header>
 
     <main class="anonymous-content">
 
-        <section class="anonymous-messages" id="anonymousMessages">
+        <section class="anonymous-composer">
+
+            <div class="anonymous-composer-heading">
+                <strong>Share something</strong>
+
+                <span>
+                    Anonymous
+                </span>
+            </div>
+
+            <form action="/anonymous" method="POST" id="anonymousMainForm">
+
+                <textarea
+                    name="content"
+                    rows="4"
+                    maxlength="2000"
+                    placeholder="What would you like to say?"
+                    required
+                ></textarea>
+
+                <div class="anonymous-composer-footer">
+
+                    <small>
+                        Messages disappear after 48 hours.
+                    </small>
+
+                    <button type="submit">
+                        Post anonymously
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <section class="anonymous-feed">
+
+            <div class="anonymous-feed-heading">
+
+                <div>
+                    <h2>Community</h2>
+                    <span>Anonymous conversations</span>
+                </div>
+
+                <span class="anonymous-message-count">
+                    {{len .Messages}} posts
+                </span>
+
+            </div>
 
             {{if .Messages}}
 
-                {{range .Messages}}
+                <div class="anonymous-message-list">
 
-                <article class="anonymous-message">
+                    {{range .Messages}}
 
-                    <div class="anonymous-message-name">
-                        <span class="anonymous-name-button"
-                              onclick="anonymousNoUser()">
-                            {{.AnonymousName}}
-                        </span>
-                    </div>
+                    <article class="anonymous-message" id="anonymous-message-{{.ID}}">
 
-                    {{if .Content}}
-                    <div class="anonymous-message-text">
-                        {{.Content}}
-                    </div>
+                        <div class="anonymous-message-header">
+
+                            <div class="anonymous-message-avatar">
+                                A
+                            </div>
+
+                            <div class="anonymous-message-author">
+
+                                <strong>
+                                    {{.AnonymousName}}
+                                </strong>
+
+                                <small>
+                                    {{.CreatedAt}}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <div class="anonymous-message-text">
+                            {{.Content}}
+                        </div>
+
+                        <div class="anonymous-message-actions">
+
+                            <button
+                                type="button"
+                                class="anonymous-reply-button"
+                                onclick="startAnonymousReply({{.ID}}, '{{.AnonymousName}}')"
+                            >
+                                Reply
+                            </button>
+
+                        </div>
+
+                        {{if .Replies}}
+
+                        <div class="anonymous-replies">
+
+                            {{range .Replies}}
+
+                            <div
+                                class="anonymous-reply"
+                                id="anonymous-message-{{.ID}}"
+                            >
+
+                                <div class="anonymous-message-header">
+
+                                    <div class="anonymous-message-avatar small">
+                                        A
+                                    </div>
+
+                                    <div class="anonymous-message-author">
+
+                                        <strong>
+                                            {{.AnonymousName}}
+                                        </strong>
+
+                                        <small>
+                                            {{.CreatedAt}}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="anonymous-message-text">
+                                    {{.Content}}
+                                </div>
+
+                                <div class="anonymous-message-actions">
+
+                                    <button
+                                        type="button"
+                                        class="anonymous-reply-button"
+                                        onclick="startAnonymousReply({{.ID}}, '{{.AnonymousName}}')"
+                                    >
+                                        Reply
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            {{end}}
+
+                        </div>
+
+                        {{end}}
+
+                    </article>
+
                     {{end}}
 
-                    <small class="anonymous-message-time">
-                        {{.CreatedAt}}
-                    </small>
-
-                </article>
-
-                {{end}}
+                </div>
 
             {{else}}
 
                 <div class="anonymous-empty">
-                    <strong>No anonymous posts yet.</strong>
-                    <p>Be the first person to say something.</p>
+
+                    <div class="anonymous-empty-icon">
+                        A
+                    </div>
+
+                    <h3>No conversations yet</h3>
+
+                    <p>
+                        Be the first person to share something with the community.
+                    </p>
+
                 </div>
 
             {{end}}
-
-        </section>
-
-        <section class="anonymous-post-box">
-
-            <form action="/anonymous" method="POST">
-
-                <textarea
-                    name="content"
-                    rows="3"
-                    maxlength="2000"
-                    placeholder="Say something anonymously..."
-                    required
-                ></textarea>
-
-                <button type="submit">
-                    Post Anonymously
-                </button>
-
-            </form>
 
         </section>
 
@@ -104,20 +253,109 @@
 
 </div>
 
+<div class="anonymous-reply-bar" id="anonymousReplyBar">
+
+    <div class="anonymous-reply-bar-inner">
+
+        <div class="anonymous-reply-heading">
+
+            <div>
+                <strong>Replying to</strong>
+                <span id="anonymousReplyName"></span>
+            </div>
+
+            <button
+                type="button"
+                onclick="cancelAnonymousReply()"
+                aria-label="Cancel reply"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <form action="/anonymous" method="POST" id="anonymousReplyForm">
+
+            <input
+                type="hidden"
+                name="parent_id"
+                id="anonymousReplyParent"
+            >
+
+            <textarea
+                name="content"
+                id="anonymousReplyContent"
+                rows="3"
+                maxlength="2000"
+                placeholder="Write your reply..."
+                required
+            ></textarea>
+
+            <div class="anonymous-reply-footer">
+
+                <small>
+                    Your reply will also be anonymous.
+                </small>
+
+                <button type="submit">
+                    Send Reply
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 <script>
-function anonymousNoUser() {
-    alert("No user with such name.");
+function startAnonymousReply(messageID, anonymousName) {
+    var replyBar = document.getElementById("anonymousReplyBar");
+    var parentInput = document.getElementById("anonymousReplyParent");
+    var replyName = document.getElementById("anonymousReplyName");
+    var replyContent = document.getElementById("anonymousReplyContent");
+
+    parentInput.value = messageID;
+    replyName.textContent = anonymousName;
+    replyBar.classList.add("visible");
+
+    replyContent.focus();
+
+    replyBar.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
+
+function cancelAnonymousReply() {
+    var replyBar = document.getElementById("anonymousReplyBar");
+    var parentInput = document.getElementById("anonymousReplyParent");
+    var replyContent = document.getElementById("anonymousReplyContent");
+
+    replyBar.classList.remove("visible");
+    parentInput.value = "";
+    replyContent.value = "";
 }
 
 function updateAnonymousOnlineCount() {
-    fetch("/anonymous", {
+    fetch("/anonymous/online", {
         method: "GET",
-        headers: {
-            "X-Anonymous-Count": "1"
-        }
+        credentials: "same-origin"
     })
     .then(function(response) {
-        return response.text();
+        if (!response.ok) {
+            throw new Error("Unable to update online count");
+        }
+
+        return response.json();
+    })
+    .then(function(data) {
+        var count = document.getElementById("anonymousOnlineCount");
+
+        if (count && typeof data.count !== "undefined") {
+            count.textContent = data.count;
+        }
     })
     .catch(function() {
         // Ignore temporary network errors.

@@ -4,8 +4,11 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -40,9 +43,11 @@ var anonymousNouns = []string{
 
 type AnonymousMessage struct {
 	ID            int
+	ParentID      *int
 	AnonymousName string
 	Content       string
 	CreatedAt     string
+	Replies       []AnonymousMessage
 }
 
 type AnonymousPageData struct {
@@ -215,9 +220,47 @@ func anonymousOnlineCount() int {
 	return count
 }
 
+func refreshAnonymousPresence(sessionHash string) error {
+	_, err := db.Exec(`
+		INSERT INTO anonymous_presence (session_hash, expires_at)
+		VALUES ($1, CURRENT_TIMESTAMP + INTERVAL '2 minutes')
+		ON CONFLICT (session_hash)
+		DO UPDATE SET expires_at = CURRENT_TIMESTAMP + INTERVAL '2 minutes'
+	`, sessionHash)
+
+	return err
+}
+
+func anonymousOnlineHandler(w http.ResponseWriter, r *http.Request) {
+	_, loggedIn := getUserIDFromSession(r)
+
+	if !loggedIn {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	cleanupAnonymousData()
+
+	sessionHash, _, err := getAnonymousSession(w, r)
+
+	if err != nil {
+		http.Error(w, "Unable to create Anonymous session", http.StatusInternalServerError)
+		return
+	}
+
+	if err := refreshAnonymousPresence(sessionHash); err != nil {
+		http.Error(w, "Unable to update Anonymous presence", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	_ = json.NewEncoder(w).Encode(map[string]int{
+		"count": anonymousOnlineCount(),
+	})
+}
+
 func anonymousHandler(w http.ResponseWriter, r *http.Request) {
-	// Authentication is required, but the real account ID is deliberately
-	// discarded and is never written into Anonymous data.
 	_, loggedIn := getUserIDFromSession(r)
 
 	if !loggedIn {
@@ -234,14 +277,7 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = db.Exec(`
-		INSERT INTO anonymous_presence (session_hash, expires_at)
-		VALUES ($1, CURRENT_TIMESTAMP + INTERVAL '2 minutes')
-		ON CONFLICT (session_hash)
-		DO UPDATE SET expires_at = CURRENT_TIMESTAMP + INTERVAL '2 minutes'
-	`, sessionHash)
-
-	if err != nil {
+	if err := refreshAnonymousPresence(sessionHash); err != nil {
 		http.Error(w, "Unable to update Anonymous presence", http.StatusInternalServerError)
 		return
 	}
@@ -254,18 +290,55 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if len([]rune(content)) > 2000 {
+			http.Error(w, "Anonymous message is too long.", http.StatusBadRequest)
+			return
+		}
+
+		parentIDText := strings.TrimSpace(r.FormValue("parent_id"))
+		var parentID *int
+
+		if parentIDText != "" {
+			parsedParentID, err := strconv.Atoi(parentIDText)
+
+			if err != nil || parsedParentID <= 0 {
+				http.Error(w, "Invalid reply target.", http.StatusBadRequest)
+				return
+			}
+
+			var exists bool
+
+			err = db.QueryRow(`
+				SELECT EXISTS (
+					SELECT 1
+					FROM anonymous_messages
+					WHERE id = $1
+					  AND expires_at > CURRENT_TIMESTAMP
+				)
+			`, parsedParentID).Scan(&exists)
+
+			if err != nil {
+				http.Error(w, "Unable to verify reply target.", http.StatusInternalServerError)
+				return
+			}
+
+			if !exists {
+				http.Error(w, "That Anonymous message is no longer available.", http.StatusBadRequest)
+				return
+			}
+
+			parentID = &parsedParentID
+		}
+
 		_, err = db.Exec(`
 			INSERT INTO anonymous_messages (
 				anonymous_name,
 				content,
+				parent_id,
 				expires_at
 			)
-			VALUES (
-				$1,
-				$2,
-				CURRENT_TIMESTAMP + INTERVAL '48 hours'
-			)
-		`, anonymousName, content)
+			VALUES ($1, $2, $3, CURRENT_TIMESTAMP + INTERVAL '48 hours')
+		`, anonymousName, content, parentID)
 
 		if err != nil {
 			http.Error(w, "Unable to post anonymously", http.StatusInternalServerError)
@@ -279,6 +352,7 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query(`
 		SELECT
 			id,
+			parent_id,
 			anonymous_name,
 			content,
 			TO_CHAR(created_at, 'Mon DD, YYYY HH24:MI')
@@ -293,22 +367,58 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	data := AnonymousPageData{
-		AnonymousName: anonymousName,
-		OnlineCount:   anonymousOnlineCount(),
-	}
+	var allMessages []AnonymousMessage
 
 	for rows.Next() {
 		var message AnonymousMessage
 
 		if err := rows.Scan(
 			&message.ID,
+			&message.ParentID,
 			&message.AnonymousName,
 			&message.Content,
 			&message.CreatedAt,
-		); err == nil {
-			data.Messages = append(data.Messages, message)
+		); err != nil {
+			continue
 		}
+
+		allMessages = append(allMessages, message)
+	}
+
+	if err := rows.Err(); err != nil {
+		http.Error(w, "Unable to read Anonymous messages", http.StatusInternalServerError)
+		return
+	}
+
+	messagesByID := make(map[int]*AnonymousMessage)
+
+	for i := range allMessages {
+		messagesByID[allMessages[i].ID] = &allMessages[i]
+	}
+
+	var topLevelMessages []AnonymousMessage
+
+	for i := range allMessages {
+		message := &allMessages[i]
+
+		if message.ParentID == nil {
+			topLevelMessages = append(topLevelMessages, *message)
+			continue
+		}
+
+		parent, exists := messagesByID[*message.ParentID]
+
+		if exists {
+			parent.Replies = append(parent.Replies, *message)
+		} else {
+			topLevelMessages = append(topLevelMessages, *message)
+		}
+	}
+
+	data := AnonymousPageData{
+		AnonymousName: anonymousName,
+		OnlineCount:   anonymousOnlineCount(),
+		Messages:      topLevelMessages,
 	}
 
 	tmpl, err := template.ParseFiles("templates/anonymous.html")
@@ -319,7 +429,7 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := tmpl.Execute(w, data); err != nil {
-		http.Error(w, "Unable to display Anonymous page", http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Unable to display Anonymous page: %v", err), http.StatusInternalServerError)
 		return
 	}
 }

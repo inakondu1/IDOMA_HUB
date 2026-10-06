@@ -8248,3 +8248,572 @@ body.dashboard-body .story-reply-form button:hover {
         line-height: 40px;
     }
 }
+
+
+/* =========================================================
+   IDOMA HUB — ANONYMOUS COMMUNITY
+   Professional mobile-first social feed
+   ========================================================= */
+
+.anonymous-body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0b0b0b;
+    color: #f5f5f5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.anonymous-page {
+    min-height: 100vh;
+    background: #0b0b0b;
+}
+
+/* Header */
+
+.anonymous-header {
+    background: #111111;
+    border-bottom: 1px solid #292929;
+    padding-bottom: 22px;
+}
+
+.anonymous-topbar {
+    min-height: 62px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid #252525;
+}
+
+.anonymous-back {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.anonymous-back:hover {
+    color: #e21b2d;
+}
+
+.anonymous-brand {
+    display: none;
+}
+
+.anonymous-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.anonymous-title h1 {
+    margin: 0;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.anonymous-online {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #a9a9a9;
+    font-size: 12px;
+}
+
+.anonymous-online-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #25c76f;
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(37, 199, 111, 0.12);
+}
+
+.anonymous-intro {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 25px 18px 12px;
+}
+
+.anonymous-intro h2 {
+    margin: 0 0 7px;
+    font-size: 26px;
+    color: #ffffff;
+}
+
+.anonymous-intro p {
+    margin: 0;
+    color: #a7a7a7;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.anonymous-identity-card {
+    max-width: 760px;
+    margin: 14px auto 0;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #181818;
+    border: 1px solid #2c2c2c;
+    border-radius: 12px;
+}
+
+.anonymous-avatar,
+.anonymous-message-avatar {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 50%;
+    background: #b5121b;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.anonymous-message-avatar.small {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    font-size: 13px;
+}
+
+.anonymous-identity-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.anonymous-small-label {
+    color: #888888;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+.anonymous-identity-text strong {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.anonymous-privacy-note {
+    margin-top: 3px;
+    color: #777777;
+    font-size: 11px;
+}
+
+/* Main */
+
+.anonymous-content {
+    width: min(760px, 100%);
+    margin: 0 auto;
+    padding: 18px;
+    box-sizing: border-box;
+}
+
+/* Composer */
+
+.anonymous-composer {
+    background: #151515;
+    border: 1px solid #292929;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 22px;
+}
+
+.anonymous-composer-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.anonymous-composer-heading strong {
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.anonymous-composer-heading span {
+    color: #b5121b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.anonymous-composer textarea,
+.anonymous-reply-bar textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 95px;
+    border: 1px solid #303030;
+    border-radius: 10px;
+    background: #0e0e0e;
+    color: #ffffff;
+    padding: 13px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    outline: none;
+}
+
+.anonymous-composer textarea:focus,
+.anonymous-reply-bar textarea:focus {
+    border-color: #b5121b;
+}
+
+.anonymous-composer textarea::placeholder,
+.anonymous-reply-bar textarea::placeholder {
+    color: #686868;
+}
+
+.anonymous-composer-footer,
+.anonymous-reply-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 11px;
+}
+
+.anonymous-composer-footer small,
+.anonymous-reply-footer small {
+    color: #777777;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.anonymous-composer button,
+.anonymous-reply-footer button {
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: #b5121b;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.anonymous-composer button:hover,
+.anonymous-reply-footer button:hover {
+    background: #d01824;
+}
+
+/* Feed */
+
+.anonymous-feed-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.anonymous-feed-heading h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 19px;
+}
+
+.anonymous-feed-heading span {
+    color: #777777;
+    font-size: 12px;
+}
+
+.anonymous-feed-heading > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.anonymous-message-count {
+    white-space: nowrap;
+}
+
+/* Posts */
+
+.anonymous-message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.anonymous-message {
+    background: #151515;
+    border: 1px solid #292929;
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.anonymous-message-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.anonymous-message-author {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.anonymous-message-author strong {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.anonymous-message-author small {
+    margin-top: 3px;
+    color: #737373;
+    font-size: 11px;
+}
+
+.anonymous-message-text {
+    margin: 14px 0;
+    color: #e5e5e5;
+    font-size: 14px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.anonymous-message-actions {
+    border-top: 1px solid #242424;
+    padding-top: 10px;
+}
+
+.anonymous-reply-button {
+    border: 0;
+    background: transparent;
+    color: #b5121b;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 0;
+    cursor: pointer;
+}
+
+.anonymous-reply-button:hover {
+    color: #ed2634;
+}
+
+/* Replies */
+
+.anonymous-replies {
+    margin-top: 14px;
+    margin-left: 12px;
+    padding-left: 14px;
+    border-left: 2px solid #333333;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.anonymous-reply {
+    background: #101010;
+    border: 1px solid #252525;
+    border-radius: 11px;
+    padding: 13px;
+}
+
+.anonymous-reply .anonymous-message-text {
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+/* Empty state */
+
+.anonymous-empty {
+    text-align: center;
+    background: #151515;
+    border: 1px solid #292929;
+    border-radius: 14px;
+    padding: 42px 20px;
+}
+
+.anonymous-empty-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 13px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #b5121b;
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.anonymous-empty h3 {
+    margin: 0 0 7px;
+    color: #ffffff;
+    font-size: 17px;
+}
+
+.anonymous-empty p {
+    margin: 0;
+    color: #777777;
+    font-size: 13px;
+}
+
+/* Fixed reply composer */
+
+.anonymous-reply-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(10, 10, 10, 0.97);
+    border-top: 1px solid #333333;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+    transform: translateY(110%);
+    transition: transform 0.2s ease;
+}
+
+.anonymous-reply-bar.visible {
+    transform: translateY(0);
+}
+
+.anonymous-reply-bar-inner {
+    width: min(760px, 100%);
+    margin: 0 auto;
+    padding: 13px 18px 15px;
+    box-sizing: border-box;
+}
+
+.anonymous-reply-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 9px;
+}
+
+.anonymous-reply-heading div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.anonymous-reply-heading strong {
+    color: #ffffff;
+    font-size: 13px;
+}
+
+.anonymous-reply-heading span {
+    color: #b5121b;
+    font-size: 12px;
+}
+
+.anonymous-reply-heading > button {
+    border: 0;
+    background: transparent;
+    color: #888888;
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+/* Desktop */
+
+@media (min-width: 700px) {
+
+    .anonymous-topbar {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .anonymous-brand {
+        display: block;
+        margin-left: auto;
+        color: #b5121b;
+        font-weight: 900;
+        letter-spacing: 0.8px;
+        font-size: 13px;
+    }
+
+    .anonymous-title {
+        margin-left: 0;
+    }
+
+    .anonymous-intro,
+    .anonymous-identity-card {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .anonymous-identity-card {
+        border-radius: 12px;
+    }
+}
+
+/* Small phones */
+
+@media (max-width: 420px) {
+
+    .anonymous-topbar {
+        gap: 9px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .anonymous-back {
+        font-size: 12px;
+    }
+
+    .anonymous-title {
+        gap: 7px;
+    }
+
+    .anonymous-title h1 {
+        font-size: 18px;
+    }
+
+    .anonymous-online {
+        font-size: 10px;
+    }
+
+    .anonymous-content {
+        padding: 12px;
+    }
+
+    .anonymous-intro {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .anonymous-identity-card {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+
+    .anonymous-composer,
+    .anonymous-message,
+    .anonymous-empty {
+        border-radius: 11px;
+        padding: 13px;
+    }
+
+    .anonymous-composer-footer,
+    .anonymous-reply-footer {
+        align-items: flex-end;
+    }
+
+    .anonymous-composer-footer small,
+    .anonymous-reply-footer small {
+        max-width: 48%;
+    }
+
+    .anonymous-composer button,
+    .anonymous-reply-footer button {
+        padding: 9px 12px;
+        font-size: 12px;
+    }
+
+    .anonymous-replies {
+        margin-left: 5px;
+        padding-left: 10px;
+    }
+}
