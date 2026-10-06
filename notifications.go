@@ -4,6 +4,9 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type NotificationRequest struct {
@@ -27,6 +30,57 @@ type NotificationsPageData struct {
 	Title    string
 	Requests []NotificationRequest
 	Count    int
+}
+
+func formatNotificationTime(createdAt string) string {
+	createdAt = strings.TrimSpace(createdAt)
+
+	layouts := []string{
+		time.RFC3339,
+		"2006-01-02 15:04:05 -0700 MST",
+		"2006-01-02 15:04:05",
+	}
+
+	var created time.Time
+	var err error
+
+	for _, layout := range layouts {
+		created, err = time.Parse(layout, createdAt)
+		if err == nil {
+			break
+		}
+	}
+
+	if err != nil {
+		return createdAt
+	}
+
+	seconds := int(time.Since(created).Seconds())
+
+	if seconds < 0 {
+		seconds = 0
+	}
+
+	if seconds < 60 {
+		return strconv.Itoa(seconds) + "s"
+	}
+
+	minutes := seconds / 60
+	if minutes < 60 {
+		return strconv.Itoa(minutes) + "m"
+	}
+
+	hours := minutes / 60
+	if hours < 24 {
+		return strconv.Itoa(hours) + "h"
+	}
+
+	days := hours / 24
+	if days == 1 {
+		return "Yesterday"
+	}
+
+	return strconv.Itoa(days) + "d"
 }
 
 func notificationsHandler(w http.ResponseWriter, r *http.Request) {
@@ -140,6 +194,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		activity.CreatedAt = formatNotificationTime(activity.CreatedAt)
 		activities = append(activities, activity)
 	}
 

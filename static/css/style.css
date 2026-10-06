@@ -8855,3 +8855,12 @@ body.dashboard-body .story-reply-form button:hover {
 .notification-post-link .notification-content {
     color: inherit;
 }
+
+/* Notification timestamps */
+.notification-time {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    opacity: 0.65;
+    font-weight: 500;
+}
