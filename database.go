@@ -219,6 +219,14 @@ func initDatabase() *sql.DB {
 	}
 
 	_, err = db.Exec(`
+		ALTER TABLE posts
+		ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'general'
+	`)
+	if err != nil {
+		log.Fatal("Unable to add post category column:", err)
+	}
+
+	_, err = db.Exec(`
                 CREATE TABLE IF NOT EXISTS messages (
                         id SERIAL PRIMARY KEY,
                         sender_id INTEGER NOT NULL,
