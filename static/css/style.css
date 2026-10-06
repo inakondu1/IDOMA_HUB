@@ -8817,3 +8817,19 @@ body.dashboard-body .story-reply-form button:hover {
         padding-left: 10px;
     }
 }
+
+
+/* Anonymous online count in Explore */
+.explore-anonymous-link {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.anonymous-online-preview {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.9;
+    padding-left: 24px;
+}

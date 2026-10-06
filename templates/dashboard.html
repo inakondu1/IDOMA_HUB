@@ -51,7 +51,12 @@
 
         <div class="dashboard-card">
                 <h2>🌍 Explore</h2>
-                <a href="/anonymous">👤 Anonymous</a>
+                <a href="/anonymous" class="explore-anonymous-link">
+                        <span>👤 Anonymous</span>
+                        <small class="anonymous-online-preview">
+                                🟢 {{.AnonymousOnlineCount}} people online
+                        </small>
+                </a>
                 <a href="/sports">⚽ Sports</a>
                 <a href="/gossip">💬 Gossip</a>
                 <a href="/groups">👥 Groups</a>

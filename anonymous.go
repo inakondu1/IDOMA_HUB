@@ -72,17 +72,41 @@ func anonymousSessionHash(token string) string {
 }
 
 func generateAnonymousName() string {
-	random, err := anonymousRandomBytes(4)
+	for attempt := 0; attempt < 20; attempt++ {
+		random, err := anonymousRandomBytes(4)
 
+		if err != nil {
+			return "Anonymous"
+		}
+
+		adj := anonymousAdjectives[int(random[0])%len(anonymousAdjectives)]
+		noun := anonymousNouns[int(random[1])%len(anonymousNouns)]
+		number := int(random[2])*256 + int(random[3])
+
+		name := adj + " " + noun + " " + formatAnonymousNumber(number)
+
+		var exists bool
+		err = db.QueryRow(`
+			SELECT EXISTS (
+				SELECT 1
+				FROM anonymous_sessions
+				WHERE anonymous_name = $1
+				  AND expires_at > CURRENT_TIMESTAMP
+			)
+		`, name).Scan(&exists)
+
+		if err == nil && !exists {
+			return name
+		}
+	}
+
+	// Extremely unlikely fallback if all generated names collide.
+	random, err := anonymousRandomBytes(8)
 	if err != nil {
 		return "Anonymous"
 	}
 
-	adj := anonymousAdjectives[int(random[0])%len(anonymousAdjectives)]
-	noun := anonymousNouns[int(random[1])%len(anonymousNouns)]
-	number := int(random[2])*256 + int(random[3])
-
-	return adj + " " + noun + " " + formatAnonymousNumber(number)
+	return "Anonymous " + hex.EncodeToString(random)
 }
 
 func formatAnonymousNumber(number int) string {
@@ -135,6 +159,35 @@ func getAnonymousSession(w http.ResponseWriter, r *http.Request) (string, string
 		`, sessionHash).Scan(&anonymousName, &expiresAt)
 
 		if err == nil {
+			var nameCount int
+
+			err = db.QueryRow(`
+				SELECT COUNT(*)
+				FROM anonymous_sessions
+				WHERE anonymous_name = $1
+				  AND expires_at > CURRENT_TIMESTAMP
+			`, anonymousName).Scan(&nameCount)
+
+			if err != nil {
+				return "", "", err
+			}
+
+			if nameCount > 1 {
+				newName := generateAnonymousName()
+
+				_, err = db.Exec(`
+					UPDATE anonymous_sessions
+					SET anonymous_name = $1
+					WHERE session_hash = $2
+				`, newName, sessionHash)
+
+				if err != nil {
+					return "", "", err
+				}
+
+				anonymousName = newName
+			}
+
 			return sessionHash, anonymousName, nil
 		}
 	}

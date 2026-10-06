@@ -271,23 +271,25 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Title             string
-		Username          string
-		ProfilePicture    string
-		Posts             []Post
-		Statuses          []Status
-		NotificationCount int
-		MessageCount      int
-		OnlineCount       int
+		Title                string
+		Username             string
+		ProfilePicture       string
+		Posts                []Post
+		Statuses             []Status
+		NotificationCount    int
+		MessageCount         int
+		OnlineCount          int
+		AnonymousOnlineCount int
 	}{
-		Title:             "IDOMA HUB - Dashboard",
-		Username:          username,
-		ProfilePicture:    profilePicture,
-		Posts:             posts,
-		Statuses:          statuses,
-		NotificationCount: notificationCount,
-		MessageCount:      messageCount,
-		OnlineCount:       getOnlineCount(),
+		Title:                "IDOMA HUB - Dashboard",
+		Username:             username,
+		ProfilePicture:       profilePicture,
+		Posts:                posts,
+		Statuses:             statuses,
+		NotificationCount:    notificationCount,
+		MessageCount:         messageCount,
+		OnlineCount:          getOnlineCount(),
+		AnonymousOnlineCount: anonymousOnlineCount(),
 	}
 
 	err = tmpl.Execute(w, data)
