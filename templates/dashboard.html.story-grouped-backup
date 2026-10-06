@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{.Title}}</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="dashboard-body">
+
+	<header class="dashboard-navbar">
+
+		<div class="dashboard-logo">
+			IDOMA HUB
+		</div>
+
+		<nav class="dashboard-nav">
+			<a href="/dashboard">Home</a>
+			<a href="/friends">Friends</a>
+                        <a href="/messages">Messages</a>
+                        <a href="/notifications">Notifications</a>
+			<a href="/logout">Logout</a>
+		</nav>
+
+	</header>
+
+	<main class="dashboard-container">
+
+		<section class="welcome-section">
+                        <h1>Welcome {{.Username}}!</h1>
+                        <p>
+                                This is your IDOMA HUB community space.
+                        </p>
+
+                        <p class="online-status">
+                                🟢 {{.OnlineCount}} people online
+                        </p>
+                </section>
+
+
+
+<div class="dashboard-layout">
+
+			<aside class="dashboard-sidebar">
+
+        <div class="dashboard-card">
+                <h2>🏠 Your IDOMA HUB</h2>
+                <a href="/profile">👤 My Profile</a>
+        </div>
+
+        <div class="dashboard-card">
+                <h2>🌍 Explore</h2>
+                <a href="/anonymous">👤 Anonymous</a>
+                <a href="/sports">⚽ Sports</a>
+                <a href="/gossip">💬 Gossip</a>
+                <a href="/groups">👥 Groups</a>
+                <a href="/groups/create">➕ Create a Group</a>
+        </div>
+
+        <div class="dashboard-card">
+                <h2>🌾 Our Land</h2>
+                <a href="#">👨🏾‍🌾 Idoma Farmers</a>
+                <a href="#">🛍️ Marketplace</a>
+        </div>
+
+</aside>
+
+			
+
+        <div class="dashboard-card stories-section">
+
+<div class="stories-header">
+        <h2>Stories</h2>
+</div>
+
+<div class="story-create-wrapper">
+
+        <button type="button" class="story-create-card" onclick="toggleStoryMenu()">
+
+                <div class="story-avatar-wrapper">
+
+                        {{if .ProfilePicture}}
+                        <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
+                        {{else}}
+                        <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
+                        {{end}}
+
+                        <span class="story-add">+</span>
+
+                </div>
+
+                <strong>Your Story</strong>
+
+        </button>
+
+        <div id="story-create-menu" class="story-create-menu">
+
+                <button type="button" onclick="chooseStoryPhoto()">
+                        📷 Photo
+                </button>
+
+                <button type="button" onclick="chooseStoryVideo()">
+                        🎥 Video
+                </button>
+
+                <button type="button" onclick="createTextStory()">
+                        Aa Text
+                </button>
+
+        </div>
+
+</div>
+
+<form id="story-form"
+      action="/status"
+      method="POST"
+      enctype="multipart/form-data"
+      style="display:none;">
+
+        <input
+                type="file"
+                id="story-photo"
+                name="photo"
+                accept="image/*"
+                onchange="submitStoryForm()">
+
+        <input
+                type="file"
+                id="story-video"
+                name="video"
+                accept="video/*"
+                onchange="submitStoryForm()">
+
+        <textarea id="story-text" name="content"></textarea>
+
+</form>
+
+<script>
+function toggleStoryMenu() {
+        const menu = document.getElementById("story-create-menu");
+
+        if (menu) {
+                menu.classList.toggle("story-menu-visible");
+        }
+}
+
+function chooseStoryPhoto() {
+        const input = document.getElementById("story-photo");
+
+        if (input) {
+                input.click();
+        }
+}
+
+function chooseStoryVideo() {
+        const input = document.getElementById("story-video");
+
+        if (input) {
+                input.click();
+        }
+}
+
+function createTextStory() {
+        const text = prompt("What do you want to share?");
+
+        if (text && text.trim() !== "") {
+                document.getElementById("story-text").value = text.trim();
+                submitStoryForm();
+        }
+}
+
+function submitStoryForm() {
+        document.getElementById("story-form").submit();
+}
+</script>
+
+<div class="stories-row">
+
+                {{range .Statuses}}
+                <div class="story-card story-view-card"
+                     data-status-id="{{.ID}}"
+                     data-user-id="{{.UserID}}" data-username="{{.Username}}"
+                     data-media-url="{{.MediaURL}}"
+                     data-media-type="{{.MediaType}}"
+                     data-content="{{.Content}}">
+                        <div class="story-avatar-wrapper">
+                                {{if .ProfilePicture}}
+                                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar story-ring">
+                                {{else}}
+                                <div class="story-avatar story-avatar-fallback story-ring">{{printf "%.1s" .Username}}</div>
+                                {{end}}
+                        </div>
+                        <strong>{{.Username}}</strong>
+                </div>
+                {{end}}
+
+        </div>
+</div>
+
+<!-- Story Viewer -->
+<div id="storyViewer" class="story-viewer" style="display:none;">
+        <div class="story-viewer-backdrop" onclick="closeStory()"></div>
+
+        <div class="story-viewer-content">
+                <button type="button" class="story-viewer-close" onclick="closeStory()">×</button>
+
+                <div class="story-viewer-header">
+                        <strong id="storyViewerUsername"></strong>
+                </div>
+
+                <div id="storyViewerMedia" class="story-viewer-media"></div>
+
+                <div id="storyViewerText" class="story-viewer-text"></div>
+
+                <form id="storyReplyForm" class="story-reply-form" action="/story-reply" method="POST">
+                        <input type="hidden" id="storyReplyStatusID" name="status_id">
+
+                        <input
+                                type="text"
+                                id="storyReplyInput"
+                                name="content"
+                                placeholder="Reply to this story..."
+                                maxlength="1000"
+                                autocomplete="off">
+
+                        <button type="submit" aria-label="Send story reply">➤</button>
+                </form>
+
+                <button type="button" class="story-nav story-prev" onclick="previousStory()">‹</button>
+                <button type="button" class="story-nav story-next" onclick="nextStory()">›</button>
+        </div>
+</div>
+
+<section class="feed-section">
+
+                                <div class="feed-heading">
+                                        <h2>📚 Learn Idoma</h2>
+                                        <p>Learn the Idoma language and explore our culture.</p>
+                                        <a href="/learning" class="dashboard-learning-link">Learn Idoma</a>
+                                        <a href="/bible" class="dashboard-bible-link">📖 Idoma Bible</a>
+                                        <a href="/proverbs" class="dashboard-proverbs-link">💡 Proverbs</a>
+                                          <a href="/ai" class="dashboard-ai-link">🤖 IDOMA AI</a>
+                                </div>
+
+
+
+
+				<div class="dashboard-card create-post-card">
+
+        <h2>📝 Create a Post</h2>
+
+        <form action="/post" method="POST" enctype="multipart/form-data">
+
+                <input type="file" id="photoInput" name="photo" accept="image/*" hidden>
+                <input type="file" id="videoInput" name="video" accept="video/*" hidden>
+
+                <div class="create-post-composer">
+
+                        <div class="create-post-user">
+                                {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="create-post-avatar">{{else}}<div class="create-post-avatar-fallback">{{printf "%.1s" .Username}}</div>{{end}}
+                        </div>
+
+                        <textarea
+                                name="content"
+                                placeholder="What is happening in your community?"
+                                rows="3"
+                        ></textarea>
+
+                </div>
+
+                <div id="mediaPreview" class="media-preview"></div>
+
+<div class="post-actions">
+
+							<button type="button" onclick="document.getElementById('photoInput').click()">
+                                                                📷 Photo
+							</button>
+
+							<button type="button" onclick="document.getElementById('videoInput').click()">
+                                                                🎥 Video
+							</button>
+
+
+							<button type="submit" class="post-button">
+								Post
+							</button>
+
+						</div>
+
+					</form>
+
+				</div>
+
+                            <div class="posts-list-heading">
+        <h3>Posts from the community</h3>
+</div>
+
+{{range .Posts}}
+                            <div class="dashboard-card feed-post">
+
+                                    <div class="post-header">
+                                            {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="post-avatar-image">{{else}}<div class="post-avatar">{{printf "%.1s" .Username}}</div>{{end}}
+
+                                            <div>
+                                                    <strong>{{.Username}}</strong><span>{{.CreatedAt}}</span>
+                                            </div>
+                                    </div>
+
+                                    {{if .Content}}
+                                    <div class="post-content">
+                                            {{.Content}}
+                                    </div>
+                                    {{end}}
+
+                                    {{if .MediaURL}}
+                                    <div class="post-media-container">
+                                    {{if eq .MediaType "image"}}
+                                    <img src="{{.MediaURL}}" alt="Post image" class="post-media">
+                                    {{else if eq .MediaType "video"}}
+                                    <video controls class="post-media">
+                                            <source src="{{.MediaURL}}">
+                                            Your browser does not support video playback.
+                                    </video>
+                                    {{end}}
+                                    </div>
+                                    {{end}}
+
+                                    <div class="post-actions">
+
+                                            <form action="/like" method="POST">
+                                                    <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    {{if .LikedByMe}}
+                                                    <button type="submit">💔 Unlike</button>
+                                                    {{else}}
+                                                    <button type="submit">❤️ Like</button>
+                                                    {{end}}
+                                                    <span>
+                                                            {{.LikeCount}}
+                                                            {{if eq .LikeCount 1}}like{{else}}likes{{end}}
+                                                    </span>
+                                            </form>
+
+                                            <button type="button" class="comment-action">
+                                                    💬 Comment {{.CommentCount}}
+                                            </button>
+
+                                            <form action="/share" method="POST">
+                                                    <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    <button type="submit">↗ Share {{.ShareCount}}</button>
+                                            </form>
+
+                                    </div>
+
+                                    <div class="comments-section">
+
+                                            <form action="/comment" method="POST" class="comment-form">
+                                                    <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    <input type="text" name="content" class="comment-input" placeholder="Write a comment..." required>
+                                                    <button type="submit">💬 Comment</button>
+                                            </form>
+
+                                            {{range .Comments}}
+                                            <div class="comment">
+                                                    {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="comment-avatar-image">{{else}}<div class="comment-avatar">{{printf "%.1s" .Username}}</div>{{end}}
+                                                    <div class="comment-bubble">
+                                                            <div class="comment-meta">
+                                                                    <strong>{{.Username}}</strong>
+                                                                    <span>{{.CreatedAt}}</span>
+                                                            </div>
+                                                            <p>{{.Content}}</p>
+                                                    </div>
+                                            </div>
+                                            {{end}}
+
+                                    </div>
+
+                            </div>
+                            {{end}}
+
+					</div>
+
+				</div>
+
+			</section>
+
+			
+
+		</div>
+
+	</main>
+
+	<footer>
+		<p>© 2026 IDOMA HUB. Our People. Our Culture. Our Land.</p>
+	</footer>
+
+<script>
+const photoInput = document.getElementById("photoInput");
+const videoInput = document.getElementById("videoInput");
+const mediaPreview = document.getElementById("mediaPreview");
+
+photoInput.addEventListener("change", function () {
+    if (!this.files.length) return;
+
+    videoInput.value = "";
+    const file = this.files[0];
+    const url = URL.createObjectURL(file);
+
+    mediaPreview.innerHTML = `<img src="${url}" alt="Photo preview" class="post-media-preview">`;
+});
+
+videoInput.addEventListener("change", function () {
+    if (!this.files.length) return;
+
+    photoInput.value = "";
+    const file = this.files[0];
+    const url = URL.createObjectURL(file);
+
+    mediaPreview.innerHTML = `<video controls class="post-media-preview"><source src="${url}"></video>`;
+});
+
+async function sharePost(postID) {
+    const shareURL = window.location.origin + "/dashboard#post-" + postID;
+    const shareData = {
+        title: "IDOMA HUB",
+        text: "Check out this post on IDOMA HUB.",
+        url: shareURL
+    };
+
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+        } catch (error) {
+            if (error.name !== "AbortError") {
+                console.error("Sharing failed:", error);
+            }
+        }
+    } else if (navigator.clipboard) {
+        try {
+            await navigator.clipboard.writeText(shareURL);
+            alert("Post link copied to clipboard!");
+        } catch (error) {
+            alert("Unable to copy the post link.");
+        }
+    } else {
+        prompt("Copy this post link:", shareURL);
+    }
+}
+
+  // WhatsApp-style Story viewer
+  let currentStoryIndex = 0;
+  let storyCards = [];
+  let storyGroups = [];
+  let currentGroupIndex = 0;
+  let currentGroupStoryIndex = 0;
+
+  function loadStoryCards() {
+      storyCards = Array.from(document.querySelectorAll(".story-view-card"));
+
+      const groups = new Map();
+
+      storyCards.forEach(function (card) {
+          const userID = card.dataset.userId || "";
+
+          if (!groups.has(userID)) {
+              groups.set(userID, []);
+          }
+
+          groups.get(userID).push(card);
+      });
+
+      storyGroups = Array.from(groups.entries()).map(function (entry) {
+          return {
+              userID: entry[0],
+              cards: entry[1]
+          };
+      });
+  }
+
+  function openStory(index) {
+      loadStoryCards();
+
+      if (!storyGroups.length) return;
+
+      const clickedCard = storyCards[index];
+      if (!clickedCard) return;
+
+      const userID = clickedCard.dataset.userId || "";
+
+      currentGroupIndex = storyGroups.findIndex(function (group) {
+          return group.userID === userID;
+      });
+
+      if (currentGroupIndex < 0) {
+          currentGroupIndex = 0;
+      }
+
+      currentGroupStoryIndex = storyGroups[currentGroupIndex].cards.indexOf(clickedCard);
+
+      if (currentGroupStoryIndex < 0) {
+          currentGroupStoryIndex = 0;
+      }
+
+      showStory();
+
+      document.getElementById("storyViewer").style.display = "flex";
+      document.body.style.overflow = "hidden";
+  }
+
+  function showStory() {
+      if (!storyGroups.length) return;
+
+      const group = storyGroups[currentGroupIndex];
+
+      if (!group || !group.cards.length) return;
+
+      const card = group.cards[currentGroupStoryIndex];
+
+      if (!card) return;
+
+      const username = card.dataset.username || "";
+      const mediaURL = card.dataset.mediaUrl || "";
+      const mediaType = card.dataset.mediaType || "";
+      const content = card.dataset.content || "";
+      const statusID = card.dataset.statusId || "";
+
+      document.getElementById("storyViewerUsername").textContent = username;
+      document.getElementById("storyReplyStatusID").value = statusID;
+      document.getElementById("storyReplyInput").value = "";
+
+      const mediaContainer = document.getElementById("storyViewerMedia");
+      const textContainer = document.getElementById("storyViewerText");
+
+      mediaContainer.innerHTML = "";
+      textContainer.textContent = content;
+
+      if (mediaURL && mediaType === "image") {
+          const image = document.createElement("img");
+          image.src = mediaURL;
+          image.alt = "Story by " + username;
+          mediaContainer.appendChild(image);
+      } else if (mediaURL && mediaType === "video") {
+          const video = document.createElement("video");
+          video.controls = true;
+          video.autoplay = true;
+          video.playsInline = true;
+
+          const source = document.createElement("source");
+          source.src = mediaURL;
+
+          video.appendChild(source);
+          mediaContainer.appendChild(video);
+      }
+  }
+
+  function nextStory() {
+      const group = storyGroups[currentGroupIndex];
+
+      if (!group) return;
+
+      if (currentGroupStoryIndex < group.cards.length - 1) {
+          currentGroupStoryIndex++;
+          showStory();
+          return;
+      }
+
+      if (currentGroupIndex < storyGroups.length - 1) {
+          currentGroupIndex++;
+          currentGroupStoryIndex = 0;
+          showStory();
+          return;
+      }
+
+      closeStory();
+  }
+
+  function previousStory() {
+      const group = storyGroups[currentGroupIndex];
+
+      if (!group) return;
+
+      if (currentGroupStoryIndex > 0) {
+          currentGroupStoryIndex--;
+          showStory();
+          return;
+      }
+
+      if (currentGroupIndex > 0) {
+          currentGroupIndex--;
+          currentGroupStoryIndex = storyGroups[currentGroupIndex].cards.length - 1;
+          showStory();
+          return;
+      }
+
+      closeStory();
+  }
+
+  function closeStory() {
+      document.getElementById("storyViewer").style.display = "none";
+      document.body.style.overflow = "";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+
+      document.querySelectorAll(".create-post-card form").forEach(function (form) {
+          form.addEventListener("submit", function () {
+              const button = form.querySelector(".post-button");
+
+              if (!button) return;
+
+              button.disabled = true;
+              button.textContent = "Posting...";
+              button.style.opacity = "0.7";
+              button.style.cursor = "wait";
+          });
+      });
+
+      loadStoryCards();
+
+      storyCards.forEach(function (card, index) {
+          card.addEventListener("click", function () {
+              openStory(index);
+          });
+      });
+
+      document.querySelectorAll(".comment-action").forEach(function (button) {
+          button.addEventListener("click", function () {
+              const post = button.closest(".feed-post");
+              if (!post) return;
+
+              const input = post.querySelector(".comment-input");
+              if (input) {
+                  input.focus();
+              }
+          });
+      });
+  });
+
+  document.addEventListener("keydown", function (event) {
+      const viewer = document.getElementById("storyViewer");
+
+      if (viewer.style.display !== "flex") return;
+
+      if (
+          event.target &&
+          (event.target.tagName === "INPUT" ||
+           event.target.tagName === "TEXTAREA")
+      ) {
+          return;
+      }
+
+      if (event.key === "Escape") {
+          closeStory();
+      } else if (event.key === "ArrowRight") {
+          nextStory();
+      } else if (event.key === "ArrowLeft") {
+          previousStory();
+      }
+  });
+</script>
+
+</body>
+</html>

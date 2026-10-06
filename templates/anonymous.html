@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Anonymous - IDOMA HUB</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="anonymous-body">
+
+<div class="anonymous-page">
+
+    <header class="anonymous-header">
+
+        <div class="anonymous-header-top">
+            <a href="/dashboard" class="anonymous-back">
+                ← Dashboard
+            </a>
+
+            <div class="anonymous-title">
+                <h1>Anonymous</h1>
+                <span id="anonymousOnline">
+                    �� {{.OnlineCount}} online
+                </span>
+            </div>
+        </div>
+
+        <p class="anonymous-description">
+            A private space where IDOMA HUB members can speak anonymously.
+        </p>
+
+        <div class="anonymous-identity">
+            You are <strong>{{.AnonymousName}}</strong>
+        </div>
+
+    </header>
+
+    <main class="anonymous-content">
+
+        <section class="anonymous-messages" id="anonymousMessages">
+
+            {{if .Messages}}
+
+                {{range .Messages}}
+
+                <article class="anonymous-message">
+
+                    <div class="anonymous-message-name">
+                        <span class="anonymous-name-button"
+                              onclick="anonymousNoUser()">
+                            {{.AnonymousName}}
+                        </span>
+                    </div>
+
+                    {{if .Content}}
+                    <div class="anonymous-message-text">
+                        {{.Content}}
+                    </div>
+                    {{end}}
+
+                    <small class="anonymous-message-time">
+                        {{.CreatedAt}}
+                    </small>
+
+                </article>
+
+                {{end}}
+
+            {{else}}
+
+                <div class="anonymous-empty">
+                    <strong>No anonymous posts yet.</strong>
+                    <p>Be the first person to say something.</p>
+                </div>
+
+            {{end}}
+
+        </section>
+
+        <section class="anonymous-post-box">
+
+            <form action="/anonymous" method="POST">
+
+                <textarea
+                    name="content"
+                    rows="3"
+                    maxlength="2000"
+                    placeholder="Say something anonymously..."
+                    required
+                ></textarea>
+
+                <button type="submit">
+                    Post Anonymously
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+function anonymousNoUser() {
+    alert("No user with such name.");
+}
+
+function updateAnonymousOnlineCount() {
+    fetch("/anonymous", {
+        method: "GET",
+        headers: {
+            "X-Anonymous-Count": "1"
+        }
+    })
+    .then(function(response) {
+        return response.text();
+    })
+    .catch(function() {
+        // Ignore temporary network errors.
+    });
+}
+
+setInterval(updateAnonymousOnlineCount, 60000);
+</script>
+
+</body>
+</html>
