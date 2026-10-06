@@ -8864,3 +8864,25 @@ body.dashboard-body .story-reply-form button:hover {
     opacity: 0.65;
     font-weight: 500;
 }
+
+/* Facebook-style notification badge */
+.dashboard-notification-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.notification-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #b5121b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
