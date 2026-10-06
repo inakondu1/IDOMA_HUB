@@ -7414,9 +7414,333 @@ html, body.dashboard-body, body.dashboard-body .dashboard-container, body.dashbo
 body.dashboard-body .welcome-section, body.dashboard-body .feed-heading { color:#fff !important; }
 
 
-/* FINAL IDOMA HUB BLACK THEME — ALL DASHBOARD SECTIONS */
-.dashboard-body, .dashboard-body *, .dashboard-container, .dashboard-layout, .dashboard-sidebar, .dashboard-sidebar *, .dashboard-card, .stories-section, .feed-section, .feed-heading, .welcome-section { background-color:#000 !important; color:#fff !important; }
-.dashboard-body a { color:#fff !important; }
-.dashboard-body .dashboard-nav a:hover, .dashboard-body a:hover { color:#fff !important; background:#b5121b !important; }
-.dashboard-body input, .dashboard-body textarea { background:#111 !important; color:#fff !important; border-color:#333 !important; }
-.dashboard-body .post-actions button, .dashboard-body .comment-action { background:#000 !important; color:#fff !important; }
+
+
+/* =========================================================
+   IDOMA HUB — FINAL DARK FACEBOOK-STYLE DASHBOARD
+   ========================================================= */
+
+html,
+body.dashboard-body {
+    background: #000 !important;
+    color: #fff;
+}
+
+.dashboard-body .dashboard-container,
+.dashboard-body .dashboard-layout,
+.dashboard-body .feed-section {
+    background: #000 !important;
+}
+
+/* Header */
+.dashboard-body .dashboard-navbar {
+    background: #111 !important;
+    color: #fff !important;
+    border-bottom: 1px solid #292929;
+}
+
+.dashboard-body .dashboard-logo,
+.dashboard-body .dashboard-nav a {
+    color: #fff !important;
+}
+
+/* Welcome */
+.dashboard-body .welcome-section {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid #292929;
+}
+
+/* Sidebar */
+.dashboard-body .dashboard-sidebar {
+    background: #000 !important;
+}
+
+.dashboard-body .dashboard-sidebar .dashboard-card {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid #292929;
+}
+
+/* Stories */
+.dashboard-body .stories-section {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+.dashboard-body .story-card,
+.dashboard-body .story-create-card {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid #292929;
+}
+
+.dashboard-body .story-create-card:hover {
+    background: #181818 !important;
+}
+
+/* Learn Idoma */
+.dashboard-body .feed-heading {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid #292929;
+}
+
+.dashboard-body .feed-heading p {
+    color: #ccc !important;
+}
+
+/* Create post */
+.dashboard-body .create-post-card {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid #292929;
+}
+
+.dashboard-body .create-post-card textarea {
+    background: #181818 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+}
+
+.dashboard-body .create-post-card textarea::placeholder {
+    color: #aaa !important;
+}
+
+/* Community posts */
+.dashboard-body .feed-post {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid #292929;
+}
+
+.dashboard-body .post-content {
+    color: #fff !important;
+}
+
+.dashboard-body .posts-list-heading {
+    color: #fff !important;
+}
+
+/* Post buttons */
+.dashboard-body .post-actions button,
+.dashboard-body .comment-action {
+    background: #181818 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+}
+
+.dashboard-body .post-actions button:hover,
+.dashboard-body .comment-action:hover {
+    background: #b5121b !important;
+    border-color: #b5121b !important;
+}
+
+/* Comment area */
+.dashboard-body .comment-input,
+.dashboard-body .comment-form input {
+    background: #181818 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+}
+
+.dashboard-body .comment-input::placeholder,
+.dashboard-body .comment-form input::placeholder {
+    color: #999 !important;
+}
+
+/* Links */
+.dashboard-body a {
+    color: #fff;
+}
+
+.dashboard-body a:hover {
+    color: #fff !important;
+}
+
+/* =========================================================
+   PHONE — FACEBOOK-STYLE LAYOUT
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .dashboard-body .dashboard-navbar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        min-height: 52px;
+        padding: 6px 8px;
+        gap: 5px;
+    }
+
+    .dashboard-body .dashboard-logo {
+        font-size: .95rem;
+        white-space: nowrap;
+    }
+
+    .dashboard-body .dashboard-nav {
+        gap: 2px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .dashboard-body .dashboard-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .dashboard-body .dashboard-nav a {
+        font-size: .68rem;
+        padding: 6px 7px;
+        white-space: nowrap;
+    }
+
+    .dashboard-body .dashboard-container {
+        width: 100%;
+        padding: 0 0 30px;
+    }
+
+    .dashboard-body .welcome-section {
+        margin: 0;
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+        padding: 11px 12px;
+    }
+
+    .dashboard-body .welcome-section h1 {
+        font-size: 1.05rem;
+    }
+
+    .dashboard-body .welcome-section p {
+        font-size: .82rem;
+    }
+
+    .dashboard-body .dashboard-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .dashboard-body .dashboard-sidebar {
+        display: none;
+    }
+
+    .dashboard-body .stories-section {
+        order: 1;
+        width: 100%;
+        padding: 10px 8px;
+        margin: 0;
+        border-bottom: 1px solid #292929;
+        border-radius: 0;
+    }
+
+    .dashboard-body .stories-header h2 {
+        font-size: .9rem;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-body .stories-row {
+        display: flex;
+        overflow-x: auto;
+        gap: 9px;
+        padding-bottom: 3px;
+        scrollbar-width: none;
+    }
+
+    .dashboard-body .stories-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .dashboard-body .story-card {
+        flex: 0 0 68px;
+        border-radius: 9px;
+        padding: 5px;
+    }
+
+    .dashboard-body .story-avatar,
+    .dashboard-body .story-avatar-wrapper {
+        width: 52px;
+        height: 52px;
+    }
+
+    .dashboard-body .story-card strong {
+        display: block;
+        margin-top: 4px;
+        font-size: .68rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dashboard-body .feed-section {
+        order: 2;
+        width: 100%;
+    }
+
+    .dashboard-body .feed-heading,
+    .dashboard-body .create-post-card,
+    .dashboard-body .feed-post {
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+    }
+
+    .dashboard-body .feed-heading {
+        margin-bottom: 6px;
+        padding: 12px;
+    }
+
+    .dashboard-body .create-post-card,
+    .dashboard-body .feed-post {
+        margin-bottom: 6px;
+        padding: 12px;
+    }
+
+    .dashboard-body .create-post-card textarea {
+        min-height: 52px;
+    }
+
+    .dashboard-body .post-actions {
+        display: flex;
+        width: 100%;
+        gap: 4px;
+    }
+
+    .dashboard-body .post-actions button {
+        flex: 1;
+        min-width: 0;
+        padding: 7px 4px;
+        font-size: .72rem;
+    }
+
+    .dashboard-body .post-media {
+        max-height: 480px;
+        border-radius: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .dashboard-body .dashboard-logo {
+        font-size: .88rem;
+    }
+
+    .dashboard-body .dashboard-nav a {
+        font-size: .64rem;
+        padding: 5px 6px;
+    }
+
+    .dashboard-body .story-card {
+        flex-basis: 64px;
+    }
+
+    .dashboard-body .story-avatar,
+    .dashboard-body .story-avatar-wrapper {
+        width: 50px;
+        height: 50px;
+    }
+
+    .dashboard-body .post-actions button {
+        font-size: .68rem;
+    }
+}
