@@ -91,7 +91,7 @@
 
                         {{if .Activity}}
                                 {{range .Activity}}
-                                        <div class="notification-item">
+                                        <a href="/dashboard?post_id={{.PostID}}" class="notification-item notification-post-link">
                                                 <div class="notification-avatar">
                                                         {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="notification-avatar-image">{{else}}{{printf "%.1s" .Username}}{{end}}
                                                 </div>
@@ -107,7 +107,7 @@
                                                                 <span>shared your post.</span>
                                                         {{end}}
                                                 </div>
-                                        </div>
+                                        </a>
                                 {{end}}
                         {{else}}
                                 <p class="empty-message">

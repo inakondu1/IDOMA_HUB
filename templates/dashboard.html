@@ -302,7 +302,7 @@ function submitStoryForm() {
 </div>
 
 {{range .Posts}}
-                            <div class="dashboard-card feed-post">
+                            <div class="dashboard-card feed-post" id="post-{{.ID}}">
 
                                     <div class="post-header">
                                             {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="post-avatar-image">{{else}}<div class="post-avatar">{{printf "%.1s" .Username}}</div>{{end}}
@@ -620,6 +620,27 @@ async function sharePost(postID) {
       });
 
       loadStoryCards();
+
+      const targetPostID = new URLSearchParams(window.location.search).get("post_id");
+
+      if (targetPostID) {
+          const targetPost = document.getElementById("post-" + targetPostID);
+
+          if (targetPost) {
+              setTimeout(function () {
+                  targetPost.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center"
+                  });
+
+                  targetPost.classList.add("notification-highlight");
+
+                  setTimeout(function () {
+                      targetPost.classList.remove("notification-highlight");
+                  }, 3000);
+              }, 300);
+          }
+      }
 
       const visibleUsers = new Set();
 

@@ -8833,3 +8833,25 @@ body.dashboard-body .story-reply-form button:hover {
     opacity: 0.9;
     padding-left: 24px;
 }
+
+/* Notification target post highlight */
+.feed-post.notification-highlight {
+    outline: 3px solid #b5121b;
+    box-shadow: 0 0 0 6px rgba(181, 18, 27, 0.15);
+    transition: outline 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Clickable post notifications */
+.notification-post-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.notification-post-link:hover {
+    background: rgba(181, 18, 27, 0.06);
+}
+
+.notification-post-link .notification-content {
+    color: inherit;
+}
