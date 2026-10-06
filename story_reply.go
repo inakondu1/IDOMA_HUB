@@ -50,11 +50,6 @@ func storyReplyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if ownerID == userID {
-		http.Error(w, "You cannot reply to your own story.", http.StatusBadRequest)
-		return
-	}
-
 	message := "Reply to your story: " + content
 
 	_, err = db.Exec(`
