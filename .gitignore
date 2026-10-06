@@ -9,3 +9,9 @@ static/uploads/
 
 # Idoma translation database
 idoma_translation_db/
+
+# Local development backups
+*.anonymous-backup
+*.anonymous-db-backup
+*.story-backup
+*.story-grouped-backup
