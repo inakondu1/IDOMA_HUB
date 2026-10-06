@@ -7744,3 +7744,128 @@ body.dashboard-body {
         font-size: .68rem;
     }
 }
+
+/* =========================================================
+   IDOMA HUB — PURE BLACK DASHBOARD
+   Everything on the dashboard uses black backgrounds.
+   ========================================================= */
+
+html,
+body.dashboard-body,
+body.dashboard-body .dashboard-container,
+body.dashboard-body .dashboard-layout,
+body.dashboard-body .dashboard-sidebar,
+body.dashboard-body .feed-section,
+body.dashboard-body .stories-section,
+body.dashboard-body .welcome-section,
+body.dashboard-body .dashboard-card,
+body.dashboard-body .feed-heading,
+body.dashboard-body .create-post-card,
+body.dashboard-body .feed-post,
+body.dashboard-body .story-card,
+body.dashboard-body .story-create-card,
+body.dashboard-body .stories-row,
+body.dashboard-body .posts-list-heading {
+    background: #000 !important;
+}
+
+/* Black all dashboard sections and containers */
+body.dashboard-body header,
+body.dashboard-body main,
+body.dashboard-body section,
+body.dashboard-body aside,
+body.dashboard-body article,
+body.dashboard-body div {
+    background-color: #000 !important;
+}
+
+/* Keep all dashboard text readable */
+body.dashboard-body,
+body.dashboard-body h1,
+body.dashboard-body h2,
+body.dashboard-body h3,
+body.dashboard-body p,
+body.dashboard-body strong,
+body.dashboard-body span,
+body.dashboard-body label {
+    color: #fff !important;
+}
+
+/* Inputs */
+body.dashboard-body input,
+body.dashboard-body textarea,
+body.dashboard-body select {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #333 !important;
+}
+
+/* Buttons */
+body.dashboard-body button {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #333 !important;
+}
+
+/* Red hover */
+body.dashboard-body button:hover,
+body.dashboard-body .dashboard-nav a:hover,
+body.dashboard-body .dashboard-sidebar a:hover {
+    background: #b5121b !important;
+    color: #fff !important;
+}
+
+/* Borders separate the black sections */
+body.dashboard-body .welcome-section,
+body.dashboard-body .dashboard-card,
+body.dashboard-body .feed-heading,
+body.dashboard-body .feed-post,
+body.dashboard-body .create-post-card {
+    border-color: #292929 !important;
+}
+
+/* Story creation menu */
+body.dashboard-body .story-create-menu {
+    background: #000 !important;
+    border-color: #333 !important;
+}
+
+body.dashboard-body .story-create-menu button {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+/* Comments */
+body.dashboard-body .comment-bubble,
+body.dashboard-body .comment-form,
+body.dashboard-body .comments-section {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+/* Story viewer remains black */
+body.dashboard-body .story-viewer,
+body.dashboard-body .story-viewer-content,
+body.dashboard-body .story-viewer-backdrop {
+    background: #000 !important;
+}
+
+/* Footer */
+body.dashboard-body + footer,
+body.dashboard-body ~ footer,
+footer {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+/* Phone: remove any remaining light card backgrounds */
+@media (max-width: 760px) {
+    body.dashboard-body .welcome-section,
+    body.dashboard-body .stories-section,
+    body.dashboard-body .feed-heading,
+    body.dashboard-body .create-post-card,
+    body.dashboard-body .feed-post,
+    body.dashboard-body .story-card {
+        background: #000 !important;
+    }
+}
