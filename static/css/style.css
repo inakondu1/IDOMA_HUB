@@ -9610,3 +9610,115 @@ body.dashboard-body .story-reply-form button:hover {
     }
 
 }
+
+/* =========================================================
+   IDOMA HUB — CLEAN MOBILE DASHBOARD NAVIGATION
+   Desktop sidebar remains unchanged.
+   ========================================================= */
+
+.mobile-dashboard-navigation {
+        display: none;
+}
+
+@media (max-width: 768px) {
+
+        /* Hide the large desktop sidebar on phones */
+        body.dashboard-body .dashboard-sidebar {
+                display: none !important;
+        }
+
+        /* Clean mobile navigation */
+        body.dashboard-body .mobile-dashboard-navigation {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                width: calc(100% - 16px);
+                margin: 0 8px 12px 8px;
+                order: 2 !important;
+        }
+
+        .mobile-dashboard-nav-card {
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 78px;
+                padding: 10px 8px;
+                box-sizing: border-box;
+                text-decoration: none;
+                border-radius: 12px;
+                background: #ffffff;
+                border: 1px solid #e5e5e5;
+                color: #171717;
+                text-align: center;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .mobile-dashboard-nav-card span {
+                font-size: 23px;
+                line-height: 1;
+                margin-bottom: 5px;
+        }
+
+        .mobile-dashboard-nav-card strong {
+                font-size: 14px;
+                line-height: 1.2;
+        }
+
+        .mobile-dashboard-nav-card small {
+                margin-top: 3px;
+                font-size: 10px;
+                color: #777;
+                line-height: 1.2;
+        }
+
+        /* Make Learn Idoma the main/first card */
+        .mobile-dashboard-nav-card:first-child {
+                grid-column: 1 / -1;
+                min-height: 72px;
+        }
+
+        .mobile-dashboard-nav-card:first-child span {
+                font-size: 25px;
+        }
+
+        /* Feed comes immediately after the mobile navigation */
+        body.dashboard-body .feed-section {
+                order: 3 !important;
+                width: 100% !important;
+        }
+
+        /* Only the main Learn Idoma heading remains on the dashboard */
+        body.dashboard-body .dashboard-bible-link,
+        body.dashboard-body .dashboard-proverbs-link,
+        body.dashboard-body .dashboard-ai-link {
+                display: none !important;
+        }
+
+        body.dashboard-body .feed-heading {
+                margin: 0 8px 10px 8px !important;
+                padding: 12px 14px !important;
+                border-radius: 12px;
+        }
+
+        body.dashboard-body .feed-heading h2 {
+                margin: 0 !important;
+                font-size: 18px !important;
+        }
+
+        body.dashboard-body .feed-heading p {
+                margin: 4px 0 0 !important;
+                font-size: 12px !important;
+        }
+
+        /* The old Learn Idoma link is no longer needed here */
+        body.dashboard-body .dashboard-learning-link {
+                display: none !important;
+        }
+
+        /* Give Create a Post some breathing room */
+        body.dashboard-body .create-post-card {
+                margin-left: 8px !important;
+                margin-right: 8px !important;
+        }
+}
