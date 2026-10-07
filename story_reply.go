@@ -62,6 +62,11 @@ func storyReplyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if ownerID == userID {
+		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		return
+	}
+
 	http.Redirect(
 		w,
 		r,
