@@ -161,8 +161,9 @@
         .friend-info {
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 12px;
             min-width: 0;
+            flex: 1;
         }
 
         .friend-info a {
@@ -186,10 +187,13 @@
         }
 
         .friend-name {
-            color: #fff;
-            font-size: 16px;
+            font-size: 1rem;
             font-weight: 700;
-            word-break: break-word;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
         }
 
         .friend-actions {
@@ -599,91 +603,9 @@
             {{end}}
         </section>
 
-        <section class="friends-section">
-            <h2>Following ({{len .Following}})</h2>
 
-            {{if .Following}}
-                <div class="friend-list">
-                    {{range .Following}}
-                        <div class="friend-card">
-                            <div class="friend-info">
-                                <a href="/profile-view?id={{.ID}}" style="text-decoration:none;">
-                                    <div class="friend-avatar">
-                                        {{if .ProfilePicture}}
-                                            <img src="{{.ProfilePicture}}" alt="{{.Username}}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-                                        {{else}}
-                                            {{printf "%.1s" .Username}}
-                                        {{end}}
-                                    </div>
-                                </a>
 
-                                <a href="/profile-view?id={{.ID}}" style="text-decoration:none;">
-                                    <div class="friend-name">
-                                        {{.Username}}
-                                    </div>
-                                </a>
-                            </div>
 
-                            <div class="friend-actions">
-                                <a
-                                    class="friend-button"
-                                    href="/profile-view?id={{.ID}}"
-                                >
-                                    View Profile
-                                </a>
-                            </div>
-                        </div>
-                    {{end}}
-                </div>
-            {{else}}
-                <p class="empty-message">
-                    You are not following anyone yet.
-                </p>
-            {{end}}
-        </section>
-
-        <section class="friends-section">
-            <h2>Followers ({{len .Followers}})</h2>
-
-            {{if .Followers}}
-                <div class="friend-list">
-                    {{range .Followers}}
-                        <div class="friend-card">
-                            <div class="friend-info">
-                                <a href="/profile-view?id={{.ID}}" style="text-decoration:none;">
-                                    <div class="friend-avatar">
-                                        {{if .ProfilePicture}}
-                                            <img src="{{.ProfilePicture}}" alt="{{.Username}}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-                                        {{else}}
-                                            {{printf "%.1s" .Username}}
-                                        {{end}}
-                                    </div>
-                                </a>
-
-                                <a href="/profile-view?id={{.ID}}" style="text-decoration:none;">
-                                    <div class="friend-name">
-                                        {{.Username}}
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="friend-actions">
-                                <a
-                                    class="friend-button"
-                                    href="/profile-view?id={{.ID}}"
-                                >
-                                    View Profile
-                                </a>
-                            </div>
-                        </div>
-                    {{end}}
-                </div>
-            {{else}}
-                <p class="empty-message">
-                    You don't have any followers yet.
-                </p>
-            {{end}}
-        </section>
 
         <p class="friends-back">
             <a href="/dashboard">← Back to Dashboard</a>
