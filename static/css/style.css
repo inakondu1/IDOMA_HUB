@@ -10073,3 +10073,17 @@ body.dashboard-body .dashboard-notification-link:hover {
         min-width: 0 !important;
     }
 }
+
+/* FINAL MOBILE FEED TEXT ALIGNMENT */
+@media (max-width: 768px) {
+    body.dashboard-body .feed-post {
+        padding: 10px !important;
+    }
+
+    body.dashboard-body .feed-post .post-content {
+        margin: 8px 0 12px !important;
+        padding: 0 !important;
+        text-align: left !important;
+        text-indent: 0 !important;
+    }
+}
