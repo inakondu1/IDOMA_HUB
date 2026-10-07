@@ -10231,3 +10231,40 @@ body.dashboard-body .comment-meta span {
     }
 }
 
+
+/* =========================================================
+   FINAL MOBILE COMMENT POSITION
+   Comments should use the left side of the screen normally.
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    body.dashboard-body .comments-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .comment {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        box-sizing: border-box !important;
+        justify-content: flex-start !important;
+    }
+
+    body.dashboard-body .comment-bubble {
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        max-width: calc(100% - 45px) !important;
+        box-sizing: border-box !important;
+    }
+}
+
