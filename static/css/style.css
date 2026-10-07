@@ -10016,3 +10016,18 @@ body.dashboard-body .dashboard-notification-link:hover {
     color: #ffffff !important;
     background: #222222 !important;
 }
+
+/* FINAL MOBILE POST TEXT ALIGNMENT */
+@media (max-width: 768px) {
+    body.dashboard-body .feed-post .post-content {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 4px 0 10px 0 !important;
+        text-align: left !important;
+        box-sizing: border-box !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+    }
+}
