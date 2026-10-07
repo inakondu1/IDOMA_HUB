@@ -9265,3 +9265,256 @@ body.dashboard-body .story-reply-form button:hover {
         visibility: visible !important;
     }
 }
+
+/* =========================================================
+   IDOMA HUB — CLEAN PHONE DASHBOARD
+   This is the final mobile override.
+   It intentionally overrides older dashboard rules.
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    body.dashboard-body {
+        background: #000 !important;
+        color: #fff !important;
+        overflow-x: hidden !important;
+    }
+
+    body.dashboard-body .dashboard-container {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 8px 0 70px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .welcome-section {
+        display: none !important;
+    }
+
+    /* One simple vertical mobile layout */
+    body.dashboard-body .dashboard-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 10px !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Stories first */
+    body.dashboard-body .stories-section {
+        display: block !important;
+        order: 1 !important;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        margin: 0 !important;
+        padding: 10px 8px !important;
+        background: #000 !important;
+        color: #fff !important;
+        border: 1px solid #b5121b !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+    }
+
+    /* Feed second — FORCE IT TO EXIST */
+    body.dashboard-body .feed-section {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        order: 2 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100px !important;
+        margin: 0 !important;
+        padding: 0 0 10px !important;
+        background: #000 !important;
+        color: #fff !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+    }
+
+    /* Learn Idoma section */
+    body.dashboard-body .feed-heading {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+        min-height: 100px !important;
+        margin: 0 8px 10px !important;
+        padding: 14px !important;
+        background: #111 !important;
+        color: #fff !important;
+        border: 1px solid #b5121b !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .feed-heading h2,
+    body.dashboard-body .feed-heading p {
+        display: block !important;
+        visibility: visible !important;
+        color: #fff !important;
+    }
+
+    body.dashboard-body .feed-heading h2 {
+        margin: 0 0 6px !important;
+        font-size: 20px !important;
+    }
+
+    body.dashboard-body .feed-heading p {
+        margin: 0 0 10px !important;
+        font-size: 14px !important;
+    }
+
+    body.dashboard-body .feed-heading a {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin: 3px 4px 3px 0 !important;
+        padding: 8px 10px !important;
+        background: #b5121b !important;
+        color: #fff !important;
+        border-radius: 6px !important;
+        text-decoration: none !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Create Post */
+    body.dashboard-body .create-post-card {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+        min-height: 150px !important;
+        margin: 0 8px 10px !important;
+        padding: 14px !important;
+        background: #111 !important;
+        color: #fff !important;
+        border: 1px solid #b5121b !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .create-post-card h2 {
+        display: block !important;
+        color: #fff !important;
+        margin: 0 0 10px !important;
+        font-size: 18px !important;
+    }
+
+    body.dashboard-body .create-post-composer {
+        display: flex !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .create-post-composer textarea {
+        display: block !important;
+        width: 100% !important;
+        min-height: 75px !important;
+        background: #222 !important;
+        color: #fff !important;
+        border: 1px solid #555 !important;
+        border-radius: 8px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .post-actions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        margin-top: 8px !important;
+        gap: 6px !important;
+    }
+
+    /* Community heading */
+    body.dashboard-body .posts-list-heading {
+        display: block !important;
+        visibility: visible !important;
+        width: calc(100% - 16px) !important;
+        margin: 0 8px !important;
+        padding: 8px 0 !important;
+        color: #fff !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .posts-list-heading h3 {
+        display: block !important;
+        color: #fff !important;
+        margin: 0 !important;
+    }
+
+    /* Posts */
+    body.dashboard-body .feed-post {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+        min-height: 100px !important;
+        margin: 0 8px 10px !important;
+        padding: 12px !important;
+        background: #111 !important;
+        color: #fff !important;
+        border: 1px solid #b5121b !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+    }
+
+    body.dashboard-body .feed-post * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    body.dashboard-body .post-content,
+    body.dashboard-body .post-header,
+    body.dashboard-body .comments-section {
+        color: #fff !important;
+    }
+
+    /* Sidebar comes last */
+    body.dashboard-body .dashboard-sidebar {
+        display: block !important;
+        order: 3 !important;
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+        margin: 0 8px !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .dashboard-sidebar .dashboard-card {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Footer stays at the very bottom */
+    body.dashboard-body footer {
+        display: block !important;
+        margin-top: 10px !important;
+        padding: 15px 8px !important;
+        color: #aaa !important;
+        text-align: center !important;
+    }
+}
+
