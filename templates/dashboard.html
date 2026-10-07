@@ -381,7 +381,7 @@
                                                     </span>
                                             </form>
 
-                                            <button type="button" class="comment-action">
+                                            <button type="button" class="comment-action" onclick="toggleComments(this)">
                                                     💬 Comment {{.CommentCount}}
                                             </button>
 
@@ -393,7 +393,7 @@
 
                                     </div>
 
-                                    <div class="comments-section">
+                                    <div class="comments-section" style="display: none;">
 
                                             <form action="/comment" method="POST" class="comment-form">
                                                     <input type="hidden" name="post_id" value="{{.ID}}">
@@ -730,5 +730,23 @@ async function sharePost(postID) {
   });
 </script>
 
+
+<script>
+function toggleComments(button) {
+    const commentsSection = button.closest(".feed-post").querySelector(".comments-section");
+
+    if (!commentsSection) {
+        return;
+    }
+
+    if (commentsSection.style.display === "none" || commentsSection.style.display === "") {
+        commentsSection.style.display = "block";
+    } else {
+        commentsSection.style.display = "none";
+    }
+}
+</script>
+
 </body>
 </html>
+
