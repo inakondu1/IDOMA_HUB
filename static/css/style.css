@@ -10159,3 +10159,75 @@ body.dashboard-body .dashboard-notification-link:hover {
     }
 }
 
+
+/* =========================================================
+   FINAL FIX — ENGLISH POST AND COMMENT WRITING DIRECTION
+   English text must begin from the LEFT.
+   ========================================================= */
+
+body.dashboard-body .feed-post .post-content,
+body.dashboard-body .feed-post .post-content *,
+body.dashboard-body .comments-section,
+body.dashboard-body .comments-section *,
+body.dashboard-body .comment,
+body.dashboard-body .comment-bubble,
+body.dashboard-body .comment-bubble p,
+body.dashboard-body .comment-meta,
+body.dashboard-body .comment-meta strong,
+body.dashboard-body .comment-meta span {
+    direction: ltr !important;
+    text-align: left !important;
+    text-indent: 0 !important;
+}
+
+/* Post writing */
+@media (max-width: 768px) {
+    body.dashboard-body .feed-post .post-content {
+        display: block !important;
+        width: 100% !important;
+        margin: 8px 0 12px !important;
+        padding: 0 !important;
+        direction: ltr !important;
+        text-align: left !important;
+        text-indent: 0 !important;
+        unicode-bidi: normal !important;
+        overflow-wrap: break-word !important;
+        word-break: normal !important;
+        white-space: normal !important;
+    }
+
+    /* Comment writing */
+    body.dashboard-body .comment-bubble {
+        direction: ltr !important;
+        text-align: left !important;
+        unicode-bidi: normal !important;
+    }
+
+    body.dashboard-body .comment-bubble p {
+        direction: ltr !important;
+        text-align: left !important;
+        text-indent: 0 !important;
+        unicode-bidi: normal !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        overflow-wrap: break-word !important;
+        word-break: normal !important;
+        white-space: normal !important;
+    }
+
+    /* Comment input */
+    body.dashboard-body .comment-input,
+    body.dashboard-body .comment-form input {
+        direction: ltr !important;
+        text-align: left !important;
+        text-indent: 0 !important;
+    }
+
+    body.dashboard-body .comment-input::placeholder,
+    body.dashboard-body .comment-form input::placeholder {
+        text-align: left !important;
+    }
+}
+
