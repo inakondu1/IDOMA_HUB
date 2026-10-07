@@ -10426,3 +10426,36 @@ body.dashboard-body .comment-meta span {
         }
 }
 
+
+/* =========================================================
+   IDOMA HUB — STORY VIEWER PROGRESS BAR
+   ========================================================= */
+
+.story-progress {
+        position: absolute;
+        top: 10px;
+        left: 16px;
+        right: 16px;
+        height: 4px;
+        background: #3a3a3a;
+        border-radius: 999px;
+        overflow: hidden;
+        z-index: 20;
+}
+
+.story-progress-bar {
+        width: 0;
+        height: 100%;
+        background: #b5121b;
+        border-radius: inherit;
+        transform-origin: left center;
+}
+
+@media (max-width: 600px) {
+        .story-progress {
+                top: 8px;
+                left: 10px;
+                right: 10px;
+                height: 3px;
+        }
+}

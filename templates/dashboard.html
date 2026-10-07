@@ -224,6 +224,10 @@
         <div class="story-viewer-content">
                 <button type="button" class="story-viewer-close" onclick="closeStory()">×</button>
 
+                <div class="story-progress">
+                        <div id="storyProgressBar" class="story-progress-bar"></div>
+                </div>
+
                 <div class="story-viewer-header">
                         <strong id="storyViewerUsername"></strong>
                 </div>
@@ -493,6 +497,70 @@ async function sharePost(postID) {
   let storyGroups = [];
   let currentGroupIndex = 0;
   let currentGroupStoryIndex = 0;
+  let storyTimer = null;
+  let storyFinished = false;
+  const STORY_DURATION = 5000;
+
+  function clearStoryTimer() {
+      if (storyTimer) {
+          clearTimeout(storyTimer);
+          storyTimer = null;
+      }
+
+      const progressBar = document.getElementById("storyProgressBar");
+
+      if (progressBar) {
+          progressBar.style.transition = "none";
+          progressBar.style.width = "0%";
+      }
+  }
+
+  function startStoryTimer(duration) {
+      clearStoryTimer();
+
+      const progressBar = document.getElementById("storyProgressBar");
+
+      if (!progressBar) return;
+
+      storyFinished = false;
+      progressBar.style.transition = "none";
+      progressBar.style.width = "0%";
+
+      requestAnimationFrame(function () {
+          progressBar.style.transition = "width " + duration + "ms linear";
+          progressBar.style.width = "100%";
+      });
+
+      storyTimer = setTimeout(function () {
+          if (storyFinished) return;
+
+          storyFinished = true;
+          storyTimer = null;
+          nextStory();
+      }, duration);
+  }
+
+  function finishVideoStory() {
+      if (storyFinished) return;
+
+      storyFinished = true;
+
+      if (storyTimer) {
+          clearTimeout(storyTimer);
+          storyTimer = null;
+      }
+
+      const progressBar = document.getElementById("storyProgressBar");
+
+      if (progressBar) {
+          progressBar.style.transition = "width 150ms linear";
+          progressBar.style.width = "100%";
+      }
+
+      setTimeout(function () {
+          nextStory();
+      }, 150);
+  }
 
   function loadStoryCards() {
       storyCards = Array.from(document.querySelectorAll(".story-view-card"));
@@ -558,6 +626,9 @@ async function sharePost(postID) {
 
       if (!card) return;
 
+      clearStoryTimer();
+      storyFinished = false;
+
       const username = card.dataset.username || "";
       const mediaURL = card.dataset.mediaUrl || "";
       const mediaType = card.dataset.mediaType || "";
@@ -579,6 +650,8 @@ async function sharePost(postID) {
           image.src = mediaURL;
           image.alt = "Story by " + username;
           mediaContainer.appendChild(image);
+
+          startStoryTimer(STORY_DURATION);
       } else if (mediaURL && mediaType === "video") {
           const video = document.createElement("video");
           video.controls = true;
@@ -590,6 +663,16 @@ async function sharePost(postID) {
 
           video.appendChild(source);
           mediaContainer.appendChild(video);
+
+          video.addEventListener("loadedmetadata", function () {
+              if (video.duration && Number.isFinite(video.duration)) {
+                  startStoryTimer(video.duration * 1000);
+              }
+          });
+
+          video.addEventListener("ended", finishVideoStory);
+      } else {
+          startStoryTimer(STORY_DURATION);
       }
   }
 
@@ -636,6 +719,9 @@ async function sharePost(postID) {
   }
 
   function closeStory() {
+      clearStoryTimer();
+      storyFinished = true;
+
       document.getElementById("storyViewer").style.display = "none";
       document.body.style.overflow = "";
   }
