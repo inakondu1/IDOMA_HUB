@@ -10388,3 +10388,41 @@ body.dashboard-body .comment-meta span {
     }
 }
 
+
+/* =========================================================
+   IDOMA HUB — TEXT STORY PREVIEW
+   Show text-only Stories directly on the Story card.
+   ========================================================= */
+
+.story-text-preview {
+        flex: 1;
+        min-width: 0;
+        color: #ffffff;
+        font-size: 13px;
+        line-height: 1.35;
+        text-align: left;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        word-break: break-word;
+}
+
+.story-text-preview + strong {
+        flex: 0 0 auto;
+        color: #ffffff;
+        margin-top: 0;
+        max-width: 90px;
+}
+
+@media (max-width: 900px) {
+        .story-text-preview {
+                font-size: 12px;
+                -webkit-line-clamp: 2;
+        }
+
+        .story-text-preview + strong {
+                max-width: 80px;
+        }
+}
+

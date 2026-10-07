@@ -207,6 +207,7 @@
 
                         </div>
 
+                        {{if and .Content (not .MediaURL)}}<div class="story-text-preview">{{.Content}}</div>{{end}}
                         <strong>{{.Username}}</strong>
 
                 </div>
