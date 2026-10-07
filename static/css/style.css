@@ -10268,3 +10268,123 @@ body.dashboard-body .comment-meta span {
     }
 }
 
+/* =========================================================
+   IDOMA HUB — PROFILE HEADER POLISH
+   ========================================================= */
+
+.profile-header-card {
+    background: #0b0b0b;
+    border: 1px solid #242424;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.profile-identity {
+    background: #0b0b0b;
+    color: #ffffff;
+    padding: 28px 30px 24px;
+}
+
+.profile-identity-info h1 {
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
+.profile-identity-info p {
+    color: #b5121b;
+    font-weight: 700;
+}
+
+.profile-identity-info span {
+    color: #a7a7a7;
+}
+
+.profile-actions {
+    margin-left: auto;
+}
+
+.profile-picture-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: 1px solid #b5121b;
+    border-radius: 8px;
+    background: transparent;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.profile-picture-button:hover {
+    background: #b5121b;
+}
+
+.profile-upload-button {
+    margin-left: 8px;
+}
+
+.profile-tabs {
+    background: #111111;
+    border-top: 1px solid #292929;
+}
+
+.profile-tab {
+    color: #a7a7a7;
+}
+
+.profile-tab strong {
+    color: #ffffff;
+}
+
+.profile-tab.active {
+    color: #ffffff;
+}
+
+.profile-tab.active strong {
+    color: #b5121b;
+}
+
+@media (max-width: 600px) {
+
+    .profile-identity {
+        padding: 20px 16px 18px;
+        align-items: flex-start;
+    }
+
+    .profile-avatar-new {
+        width: 95px;
+        height: 95px;
+        min-width: 95px;
+        margin-top: -65px;
+        font-size: 2.3rem;
+    }
+
+    .profile-identity-info h1 {
+        font-size: 1.45rem;
+    }
+
+    .profile-identity-info span {
+        font-size: 0.8rem;
+    }
+
+    .profile-actions {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 12px;
+    }
+
+    .profile-actions form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .profile-picture-button,
+    .profile-upload-button {
+        margin-left: 0;
+    }
+}
+

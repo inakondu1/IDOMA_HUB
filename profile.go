@@ -42,6 +42,21 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 		profilePictureURL = profilePicture.String
 	}
 
+	var friendCount int
+
+	err = db.QueryRow(`
+                SELECT COUNT(*)
+                FROM friend_requests
+                WHERE (sender_id = $1 OR receiver_id = $1)
+                AND status = 'accepted'
+        `, userID).Scan(&friendCount)
+
+	if err != nil {
+		http.Error(w, "Unable to load your friend count.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
 	rows, err := db.Query(`
 		SELECT posts.id, posts.content, posts.created_at,
                        posts.media_url, posts.media_type,
@@ -82,6 +97,7 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 
 		post.CreatedAt = formatDateTime(post.CreatedAt)
 		posts = append(posts, post)
+
 	}
 
 	tmpl, err := template.ParseFiles("templates/profile.html")
@@ -98,11 +114,13 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 		ProfilePicture string
 		Email          string
 		Posts          []ProfilePost
+		FriendsCount   int
 	}{
 		Title:          "My Profile - IDOMA HUB",
 		Username:       username,
 		ProfilePicture: profilePictureURL,
 		Email:          email,
+		FriendsCount:   friendCount,
 		Posts:          posts,
 	}
 
