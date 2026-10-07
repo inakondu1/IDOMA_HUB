@@ -10087,3 +10087,75 @@ body.dashboard-body .dashboard-notification-link:hover {
         text-indent: 0 !important;
     }
 }
+
+/* =========================================================
+   FINAL MOBILE POST ACTIONS
+   Keep Like, Comment and Share clean and usable
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    body.dashboard-body .feed-post .post-actions {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        gap: 4px !important;
+        margin-top: 10px !important;
+        padding-top: 8px !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions form {
+        display: flex !important;
+        align-items: center !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions > .comment-action {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions button {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 38px !important;
+        padding: 7px 4px !important;
+        font-size: 13px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions form span {
+        flex: 0 0 auto !important;
+        margin-left: 3px !important;
+        white-space: nowrap !important;
+        font-size: 12px !important;
+    }
+}
+
+/* Extra-small phones */
+@media (max-width: 380px) {
+
+    body.dashboard-body .feed-post .post-actions {
+        gap: 2px !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions button {
+        font-size: 11px !important;
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions form span {
+        font-size: 11px !important;
+        margin-left: 2px !important;
+    }
+}
+
