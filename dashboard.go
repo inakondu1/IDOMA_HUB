@@ -686,6 +686,14 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = db.Exec(
+		"DELETE FROM notifications WHERE post_id = $1", postID)
+	if err != nil {
+		http.Error(w, "Unable to delete post notifications.", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	_, err = db.Exec(
 		"DELETE FROM posts WHERE id = $1 AND user_id = $2",
 		postID,
 		userID,
