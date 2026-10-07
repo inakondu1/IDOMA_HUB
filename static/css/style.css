@@ -8886,3 +8886,574 @@ body.dashboard-body .story-reply-form button:hover {
     font-weight: 700;
     line-height: 1;
 }
+
+/* =========================================================
+   IDOMA HUB — FINAL MOBILE DASHBOARD REDESIGN
+   This section intentionally comes LAST so it overrides
+   older dashboard/mobile rules.
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    /* ---------- PAGE ---------- */
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    .dashboard-body {
+        background: #000;
+        color: #fff;
+        min-height: 100vh;
+    }
+
+    /* ---------- HEADER ---------- */
+
+    .dashboard-navbar {
+        width: 100%;
+        min-height: 58px;
+        height: auto;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 14px;
+        background: #000;
+        border-bottom: 2px solid #b5121b;
+        flex-wrap: nowrap;
+    }
+
+    .dashboard-logo {
+        flex: 1;
+        margin: 0;
+        padding: 0;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        white-space: nowrap;
+    }
+
+    .dashboard-nav {
+        width: auto;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .dashboard-nav a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        margin: 0;
+        border-radius: 50%;
+        background: #111;
+        color: #fff;
+        font-size: 0;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .dashboard-nav a:hover {
+        background: #1c1c1c;
+    }
+
+    /* Hide the long desktop words on phones. */
+    .dashboard-nav a[href="/dashboard"]::before {
+        content: "⌂";
+        font-size: 25px;
+        line-height: 1;
+    }
+
+    .dashboard-nav a[href="/friends"]::before {
+        content: "♙";
+        font-size: 22px;
+        line-height: 1;
+    }
+
+    .dashboard-nav a[href="/messages"]::before {
+        content: "●";
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .dashboard-nav a[href="/notifications"] {
+        position: relative;
+    }
+
+    .dashboard-nav a[href="/notifications"]::before {
+        content: "🔔";
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .dashboard-nav a[href="/logout"]::before {
+        content: "☰";
+        font-size: 22px;
+        line-height: 1;
+    }
+
+    .dashboard-notification-link span {
+        display: none;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 16px;
+        height: 16px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #b5121b;
+        color: #fff;
+        font-size: 9px !important;
+        font-weight: 700;
+    }
+
+    /* ---------- REMOVE THE LARGE WELCOME AREA ---------- */
+
+    .welcome-section {
+        display: none !important;
+    }
+
+    /* ---------- MAIN CONTAINER ---------- */
+
+    .dashboard-container {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* ---------- MAIN LAYOUT ---------- */
+
+    .dashboard-layout {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* ---------- STORIES ---------- */
+
+    .dashboard-layout > .stories-section {
+        order: 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        margin: 0 !important;
+        padding: 14px 12px 12px !important;
+        background: #000;
+        border: 0 !important;
+        border-bottom: 1px solid #222 !important;
+        border-radius: 0 !important;
+        overflow: hidden;
+    }
+
+    .stories-header {
+        margin: 0 0 10px;
+        padding: 0 2px;
+    }
+
+    .stories-header h2 {
+        margin: 0;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .stories-row {
+        width: 100% !important;
+        max-width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start;
+        gap: 10px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        padding: 2px 2px 5px !important;
+        margin: 0;
+        scrollbar-width: none;
+    }
+
+    .stories-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .story-create-wrapper {
+        flex: 0 0 auto;
+        width: 68px;
+        margin: 0;
+    }
+
+    .story-create-card,
+    .story-card {
+        flex: 0 0 68px !important;
+        width: 68px !important;
+        max-width: 68px !important;
+        min-width: 68px !important;
+        height: 92px !important;
+        min-height: 92px !important;
+        max-height: 92px !important;
+        box-sizing: border-box;
+        padding: 0 !important;
+        margin: 0;
+        background: #111 !important;
+        border: 1px solid #333 !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .story-create-card strong,
+    .story-card strong {
+        display: block !important;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 !important;
+        padding: 4px 3px 5px !important;
+        background: rgba(0,0,0,.75);
+        color: #fff;
+        font-size: 10px !important;
+        line-height: 1.1;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .story-avatar-wrapper {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px;
+        min-height: 44px;
+        margin: auto auto 4px !important;
+        position: relative;
+    }
+
+    .story-avatar,
+    .story-avatar-fallback {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 50%;
+        object-fit: cover;
+        box-sizing: border-box;
+    }
+
+    .story-ring {
+        border: 3px solid #b5121b !important;
+    }
+
+    .story-add {
+        position: absolute !important;
+        right: -3px !important;
+        bottom: -3px !important;
+        width: 20px !important;
+        height: 20px !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #b5121b !important;
+        color: #fff !important;
+        border: 2px solid #000;
+        font-size: 17px !important;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    /* ---------- FEED ---------- */
+
+    .dashboard-layout > .feed-section {
+        order: 2 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box;
+    }
+
+    .feed-heading {
+        padding: 14px 14px 10px;
+        margin: 0;
+        border-bottom: 1px solid #222;
+    }
+
+    .feed-heading h2 {
+        margin: 0 0 4px;
+        font-size: 18px;
+    }
+
+    .feed-heading p {
+        margin: 0 0 10px;
+        color: #bbb;
+        font-size: 13px;
+    }
+
+    .feed-heading a {
+        display: inline-block;
+        margin: 3px 4px 3px 0;
+        padding: 7px 9px;
+        border: 1px solid #333;
+        border-radius: 7px;
+        color: #fff;
+        background: #111;
+        font-size: 12px;
+        text-decoration: none;
+    }
+
+    /* ---------- CREATE POST ---------- */
+
+    .feed-section > .create-post-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        margin: 0 !important;
+        padding: 12px !important;
+        background: #000 !important;
+        border: 0 !important;
+        border-bottom: 1px solid #222 !important;
+        border-radius: 0 !important;
+    }
+
+    .create-post-card h2 {
+        display: none;
+    }
+
+    .create-post-composer {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+    }
+
+    .create-post-user {
+        flex: 0 0 auto;
+    }
+
+    .create-post-avatar,
+    .create-post-avatar-fallback {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .create-post-composer textarea {
+        flex: 1;
+        width: auto !important;
+        min-height: 42px;
+        height: 42px;
+        resize: none;
+        box-sizing: border-box;
+        padding: 11px 12px;
+        border: 1px solid #333;
+        border-radius: 22px;
+        background: #111;
+        color: #fff;
+        font-size: 14px;
+    }
+
+    .create-post-composer textarea::placeholder {
+        color: #999;
+    }
+
+    .post-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .post-actions button {
+        flex: 1;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 8px 5px;
+        border: 1px solid #333;
+        border-radius: 7px;
+        background: #111;
+        color: #fff;
+        font-size: 12px;
+    }
+
+    .post-actions .post-button {
+        background: #b5121b;
+        border-color: #b5121b;
+        font-weight: 700;
+    }
+
+    /* ---------- POST LIST ---------- */
+
+    .posts-list-heading {
+        padding: 12px 14px 6px;
+        margin: 0;
+        border-top: 1px solid #222;
+    }
+
+    .posts-list-heading h3 {
+        margin: 0;
+        font-size: 14px;
+        color: #aaa;
+    }
+
+    .feed-post {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        margin: 0 !important;
+        padding: 12px !important;
+        background: #000 !important;
+        border: 0 !important;
+        border-bottom: 1px solid #222 !important;
+        border-radius: 0 !important;
+        overflow: hidden;
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .post-avatar-image,
+    .post-avatar {
+        flex: 0 0 auto;
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .post-header strong {
+        display: block;
+        font-size: 14px;
+    }
+
+    .post-header span {
+        display: block;
+        margin-top: 2px;
+        color: #888;
+        font-size: 11px;
+    }
+
+    .feed-post p {
+        margin: 10px 0;
+        font-size: 14px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .feed-post img,
+    .feed-post video {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        object-fit: contain;
+    }
+
+    /* ---------- SIDEBAR ---------- */
+
+    .dashboard-layout > .dashboard-sidebar {
+        order: 3 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        margin: 0 !important;
+        padding: 10px 12px 20px !important;
+    }
+
+    .dashboard-sidebar .dashboard-card {
+        width: 100% !important;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+        padding: 12px;
+    }
+
+    /* ---------- STORY MENU ---------- */
+
+    .story-create-menu {
+        position: absolute;
+        z-index: 100;
+    }
+
+    /* ---------- STORY VIEWER ---------- */
+
+    .story-viewer-content {
+        width: calc(100% - 24px) !important;
+        max-width: 500px;
+        box-sizing: border-box;
+    }
+
+    /* ---------- FOOTER ---------- */
+
+    .dashboard-body footer {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 30px 15px;
+        text-align: center;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 420px) {
+
+    .dashboard-navbar {
+        padding: 9px 10px;
+    }
+
+    .dashboard-logo {
+        font-size: 16px;
+    }
+
+    .dashboard-nav {
+        gap: 4px;
+    }
+
+    .dashboard-nav a {
+        width: 33px;
+        height: 33px;
+    }
+
+    .story-create-wrapper {
+        width: 64px;
+    }
+
+    .story-create-card,
+    .story-card {
+        flex-basis: 64px !important;
+        width: 64px !important;
+        min-width: 64px !important;
+        max-width: 64px !important;
+    }
+}
