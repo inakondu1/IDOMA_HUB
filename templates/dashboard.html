@@ -80,132 +80,139 @@
 
         <div class="dashboard-card stories-section">
 
-<div class="stories-header">
-        <h2>Stories</h2>
-</div>
-
-<div class="story-create-wrapper">
-
-        <button type="button" class="story-create-card" onclick="toggleStoryMenu()">
-
-                <div class="story-avatar-wrapper">
-
-                        {{if .ProfilePicture}}
-                        <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
-                        {{else}}
-                        <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
-                        {{end}}
-
-                        <span class="story-add">+</span>
-
-                </div>
-
-                <strong>Your Story</strong>
-
-        </button>
-
-        <div id="story-create-menu" class="story-create-menu">
-
-                <button type="button" onclick="chooseStoryPhoto()">
-                        📷 Photo
-                </button>
-
-                <button type="button" onclick="chooseStoryVideo()">
-                        🎥 Video
-                </button>
-
-                <button type="button" onclick="createTextStory()">
-                        Aa Text
-                </button>
-
+        <div class="stories-header">
+                <h2>Stories</h2>
         </div>
 
-</div>
+        <form id="story-form"
+              action="/status"
+              method="POST"
+              enctype="multipart/form-data"
+              style="display:none;">
 
-<form id="story-form"
-      action="/status"
-      method="POST"
-      enctype="multipart/form-data"
-      style="display:none;">
+                <input
+                        type="file"
+                        id="story-photo"
+                        name="photo"
+                        accept="image/*"
+                        onchange="submitStoryForm()">
 
-        <input
-                type="file"
-                id="story-photo"
-                name="photo"
-                accept="image/*"
-                onchange="submitStoryForm()">
+                <input
+                        type="file"
+                        id="story-video"
+                        name="video"
+                        accept="video/*"
+                        onchange="submitStoryForm()">
 
-        <input
-                type="file"
-                id="story-video"
-                name="video"
-                accept="video/*"
-                onchange="submitStoryForm()">
+                <textarea id="story-text" name="content"></textarea>
 
-        <textarea id="story-text" name="content"></textarea>
+        </form>
 
-</form>
+        <script>
+        function toggleStoryMenu() {
+                const menu = document.getElementById("story-create-menu");
 
-<script>
-function toggleStoryMenu() {
-        const menu = document.getElementById("story-create-menu");
-
-        if (menu) {
-                menu.classList.toggle("story-menu-visible");
+                if (menu) {
+                        menu.classList.toggle("story-menu-visible");
+                }
         }
-}
 
-function chooseStoryPhoto() {
-        const input = document.getElementById("story-photo");
+        function chooseStoryPhoto() {
+                const input = document.getElementById("story-photo");
 
-        if (input) {
-                input.click();
+                if (input) {
+                        input.click();
+                }
         }
-}
 
-function chooseStoryVideo() {
-        const input = document.getElementById("story-video");
+        function chooseStoryVideo() {
+                const input = document.getElementById("story-video");
 
-        if (input) {
-                input.click();
+                if (input) {
+                        input.click();
+                }
         }
-}
 
-function createTextStory() {
-        const text = prompt("What do you want to share?");
+        function createTextStory() {
+                const text = prompt("What do you want to share?");
 
-        if (text && text.trim() !== "") {
-                document.getElementById("story-text").value = text.trim();
-                submitStoryForm();
+                if (text && text.trim() !== "") {
+                        document.getElementById("story-text").value = text.trim();
+                        submitStoryForm();
+                }
         }
-}
 
-function submitStoryForm() {
-        document.getElementById("story-form").submit();
-}
-</script>
+        function submitStoryForm() {
+                document.getElementById("story-form").submit();
+        }
+        </script>
 
-<div class="stories-row">
+        <div class="stories-row">
+
+                <div class="story-create-wrapper">
+
+                        <button type="button" class="story-create-card" onclick="toggleStoryMenu()">
+
+                                <div class="story-avatar-wrapper">
+
+                                        {{if .ProfilePicture}}
+                                        <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar">
+                                        {{else}}
+                                        <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
+                                        {{end}}
+
+                                        <span class="story-add">+</span>
+
+                                </div>
+
+                                <strong>Your Story</strong>
+
+                        </button>
+
+                        <div id="story-create-menu" class="story-create-menu">
+
+                                <button type="button" onclick="chooseStoryPhoto()">
+                                        📷 Photo
+                                </button>
+
+                                <button type="button" onclick="chooseStoryVideo()">
+                                        🎥 Video
+                                </button>
+
+                                <button type="button" onclick="createTextStory()">
+                                        Aa Text
+                                </button>
+
+                        </div>
+
+                </div>
 
                 {{range .Statuses}}
                 <div class="story-card story-view-card"
                      data-status-id="{{.ID}}"
-                     data-user-id="{{.UserID}}" data-username="{{.Username}}"
+                     data-user-id="{{.UserID}}"
+                     data-username="{{.Username}}"
                      data-media-url="{{.MediaURL}}"
                      data-media-type="{{.MediaType}}"
                      data-content="{{.Content}}">
+
                         <div class="story-avatar-wrapper">
+
                                 {{if .ProfilePicture}}
                                 <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar story-ring">
                                 {{else}}
                                 <div class="story-avatar story-avatar-fallback story-ring">{{printf "%.1s" .Username}}</div>
                                 {{end}}
+
                         </div>
+
                         <strong>{{.Username}}</strong>
+
                 </div>
                 {{end}}
 
         </div>
+
 </div>
 
 <!-- Story Viewer -->
