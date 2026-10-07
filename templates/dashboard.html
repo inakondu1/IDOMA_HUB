@@ -369,6 +369,7 @@
 
                                             <form action="/like" method="POST">
                                                     <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    <input type="hidden" name="return_to" value="/dashboard#post-{{.ID}}">
                                                     {{if .LikedByMe}}
                                                     <button type="submit">💔 Unlike</button>
                                                     {{else}}
@@ -386,6 +387,7 @@
 
                                             <form action="/share" method="POST">
                                                     <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    <input type="hidden" name="return_to" value="/dashboard#post-{{.ID}}">
                                                     <button type="submit">↗ Share {{.ShareCount}}</button>
                                             </form>
 
@@ -395,6 +397,7 @@
 
                                             <form action="/comment" method="POST" class="comment-form">
                                                     <input type="hidden" name="post_id" value="{{.ID}}">
+                                                    <input type="hidden" name="return_to" value="/dashboard#post-{{.ID}}">
                                                     <input type="text" name="content" class="comment-input" placeholder="Write a comment..." required>
                                                     <button type="submit">💬 Comment</button>
                                             </form>

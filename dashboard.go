@@ -474,7 +474,14 @@ func sharePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	createPostNotification(originalUserID, userID, postID, "share")
 
-	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+	returnTo := r.FormValue("return_to")
+	if returnTo != "/sports" && returnTo != "/gossip" &&
+		!(len(returnTo) > len("/dashboard#post-") &&
+			returnTo[:len("/dashboard#post-")] == "/dashboard#post-") {
+		returnTo = "/dashboard"
+	}
+
+	http.Redirect(w, r, returnTo, http.StatusSeeOther)
 }
 
 func likePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -554,7 +561,9 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	returnTo := r.FormValue("return_to")
-	if returnTo != "/sports" && returnTo != "/gossip" {
+	if returnTo != "/sports" && returnTo != "/gossip" &&
+		!(len(returnTo) > len("/dashboard#post-") &&
+			returnTo[:len("/dashboard#post-")] == "/dashboard#post-") {
 		returnTo = "/dashboard"
 	}
 
@@ -773,7 +782,9 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	returnTo := r.FormValue("return_to")
-	if returnTo != "/sports" && returnTo != "/gossip" {
+	if returnTo != "/sports" && returnTo != "/gossip" &&
+		!(len(returnTo) > len("/dashboard#post-") &&
+			returnTo[:len("/dashboard#post-")] == "/dashboard#post-") {
 		returnTo = "/dashboard"
 	}
 
