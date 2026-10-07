@@ -11,6 +11,7 @@ type FriendUser struct {
 	Username       string
 	ProfilePicture string
 	Status         string
+	Following      bool
 }
 
 type FriendRequest struct {
@@ -26,6 +27,8 @@ type FriendsPageData struct {
 	SearchQuery   string
 	Incoming      []FriendRequest
 	Friends       []FriendUser
+	Followers     []FriendUser
+	Following     []FriendUser
 }
 
 func friendsHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,6 +77,25 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 					SET status = 'rejected'
 					WHERE id = $1 AND receiver_id = $2 AND status = 'pending'
 				`, id, userID)
+                        case "follow":
+                                if id != userID {
+                                        _, _ = db.Exec(`
+                                                INSERT INTO follows (follower_id, following_id)
+                                                SELECT $1, id
+                                                FROM users
+                                                WHERE id = $2
+                                                ON CONFLICT (follower_id, following_id) DO NOTHING
+                                        `, userID, id)
+                                }
+
+                        case "unfollow":
+                                if id != userID {
+                                        _, _ = db.Exec(`
+                                                DELETE FROM follows
+                                                WHERE follower_id = $1
+                                                AND following_id = $2
+                                        `, userID, id)
+                                }
 			}
 		}
 
@@ -106,10 +128,10 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
                                                 WHERE
                                                         (sender_id = $1 AND receiver_id = $2)
                                                         OR
-                                                        (sender_id = $1 AND receiver_id = $2)
+                                                        (sender_id = $2 AND receiver_id = $1)
                                                 ORDER BY id DESC
                                                 LIMIT 1
-                                        `, userID, user.ID, user.ID, userID).Scan(&status)
+                                        `, userID, user.ID).Scan(&status)
 
 					if statusErr == nil {
 						if status == "accepted" {
@@ -122,11 +144,11 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
                                                                 WHERE
                                                                         ((sender_id = $1 AND receiver_id = $2)
                                                                         OR
-                                                                        (sender_id = $1 AND receiver_id = $2))
+                                                                        (sender_id = $2 AND receiver_id = $1))
                                                                         AND status = 'pending'
                                                                 ORDER BY id DESC
                                                                 LIMIT 1
-                                                        `, userID, user.ID, user.ID, userID).Scan(&senderID)
+                                                        `, userID, user.ID).Scan(&senderID)
 
 							if senderErr == nil {
 								if senderID == userID {
@@ -137,6 +159,20 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 							}
 						}
 					}
+
+
+                                        var following int
+                                        followErr := db.QueryRow(`
+                                                SELECT 1
+                                                FROM follows
+                                                WHERE follower_id = $1
+                                                AND following_id = $2
+                                                LIMIT 1
+                                        `, userID, user.ID).Scan(&following)
+
+                                        if followErr == nil {
+                                                user.Following = true
+                                        }
 
 					data.SearchResults = append(data.SearchResults, user)
 				}
@@ -219,6 +255,43 @@ func friendsHandler(w http.ResponseWriter, r *http.Request) {
 			var friend FriendUser
 			if rows.Scan(&friend.ID, &friend.Username, &friend.ProfilePicture) == nil {
 				data.Friends = append(data.Friends, friend)
+			}
+		}
+		rows.Close()
+	}
+	// People you are following
+	rows, err = db.Query(`
+            SELECT u.id, u.username, COALESCE(u.profile_picture, '')
+            FROM follows f
+            JOIN users u ON u.id = f.following_id
+            WHERE f.follower_id = $1
+            ORDER BY u.username
+    `, userID)
+
+	if err == nil {
+		for rows.Next() {
+			var person FriendUser
+			if rows.Scan(&person.ID, &person.Username, &person.ProfilePicture) == nil {
+				data.Following = append(data.Following, person)
+			}
+		}
+		rows.Close()
+	}
+
+	// People who follow you
+	rows, err = db.Query(`
+            SELECT u.id, u.username, COALESCE(u.profile_picture, '')
+            FROM follows f
+            JOIN users u ON u.id = f.follower_id
+            WHERE f.following_id = $1
+            ORDER BY u.username
+    `, userID)
+
+	if err == nil {
+		for rows.Next() {
+			var person FriendUser
+			if rows.Scan(&person.ID, &person.Username, &person.ProfilePicture) == nil {
+				data.Followers = append(data.Followers, person)
 			}
 		}
 		rows.Close()

@@ -215,31 +215,51 @@
                                 </a>
                             </div>
 
-                            {{if eq .Status "friends"}}
-                                <button class="friend-button" type="button" disabled>
-                                    Friends
-                                </button>
-                            {{else if eq .Status "sent"}}
-                                <button class="friend-button" type="button" disabled>
-                                    Request Sent
-                                </button>
-                            {{else if eq .Status "received"}}
-                                <form method="POST" action="/friends">
-                                    <input type="hidden" name="action" value="accept">
-                                    <input type="hidden" name="user_id" value="{{.ID}}">
-                                    <button class="friend-button" type="submit">
-                                        Accept Request
+                            <div class="friend-actions">
+                                {{if eq .Status "friends"}}
+                                    <button class="friend-button" type="button" disabled>
+                                        Friends
                                     </button>
-                                </form>
-                            {{else}}
-                                <form method="POST" action="/friends">
-                                    <input type="hidden" name="action" value="send">
-                                    <input type="hidden" name="user_id" value="{{.ID}}">
-                                    <button class="friend-button" type="submit">
-                                        Add Friend
+                                {{else if eq .Status "sent"}}
+                                    <button class="friend-button" type="button" disabled>
+                                        Request Sent
                                     </button>
-                                </form>
-                            {{end}}
+                                {{else if eq .Status "received"}}
+                                    <form method="POST" action="/friends">
+                                        <input type="hidden" name="action" value="accept">
+                                        <input type="hidden" name="user_id" value="{{.ID}}">
+                                        <button class="friend-button" type="submit">
+                                            Accept Request
+                                        </button>
+                                    </form>
+                                {{else}}
+                                    <form method="POST" action="/friends">
+                                        <input type="hidden" name="action" value="send">
+                                        <input type="hidden" name="user_id" value="{{.ID}}">
+                                        <button class="friend-button" type="submit">
+                                            Add Friend
+                                        </button>
+                                    </form>
+                                {{end}}
+
+                                {{if .Following}}
+                                    <form method="POST" action="/friends">
+                                        <input type="hidden" name="action" value="unfollow">
+                                        <input type="hidden" name="user_id" value="{{.ID}}">
+                                        <button class="friend-button" type="submit">
+                                            Unfollow
+                                        </button>
+                                    </form>
+                                {{else}}
+                                    <form method="POST" action="/friends">
+                                        <input type="hidden" name="action" value="follow">
+                                        <input type="hidden" name="user_id" value="{{.ID}}">
+                                        <button class="friend-button" type="submit">
+                                            Follow
+                                        </button>
+                                    </form>
+                                {{end}}
+                            </div>
                         </div>
                     {{end}}
                 </div>
@@ -345,7 +365,7 @@
         </section>
 
         <section class="friends-section">
-            <h2>Your Friends</h2>
+            <h2>Your Friends ({{len .Friends}})</h2>
 
             {{if .Friends}}
                 <div class="friend-list">
@@ -391,6 +411,92 @@
             {{else}}
                 <p class="empty-message">
                     You haven't added any friends yet.
+                </p>
+            {{end}}
+        </section>
+
+        <section class="friends-section">
+            <h2>Following ({{len .Following}})</h2>
+
+            {{if .Following}}
+                <div class="friend-list">
+                    {{range .Following}}
+                        <div class="friend-card">
+                            <div class="friend-info">
+                                <a href="/profile-view?id={{.ID}}" style="text-decoration:none;">
+                                    <div class="friend-avatar">
+                                        {{if .ProfilePicture}}
+                                            <img src="{{.ProfilePicture}}" alt="{{.Username}}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                                        {{else}}
+                                            {{printf "%.1s" .Username}}
+                                        {{end}}
+                                    </div>
+                                </a>
+
+                                <a href="/profile-view?id={{.ID}}" style="text-decoration:none;">
+                                    <div class="friend-name">
+                                        {{.Username}}
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="friend-actions">
+                                <a
+                                    class="friend-button"
+                                    href="/profile-view?id={{.ID}}"
+                                >
+                                    View Profile
+                                </a>
+                            </div>
+                        </div>
+                    {{end}}
+                </div>
+            {{else}}
+                <p class="empty-message">
+                    You are not following anyone yet.
+                </p>
+            {{end}}
+        </section>
+
+        <section class="friends-section">
+            <h2>Followers ({{len .Followers}})</h2>
+
+            {{if .Followers}}
+                <div class="friend-list">
+                    {{range .Followers}}
+                        <div class="friend-card">
+                            <div class="friend-info">
+                                <a href="/profile-view?id={{.ID}}" style="text-decoration:none;">
+                                    <div class="friend-avatar">
+                                        {{if .ProfilePicture}}
+                                            <img src="{{.ProfilePicture}}" alt="{{.Username}}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                                        {{else}}
+                                            {{printf "%.1s" .Username}}
+                                        {{end}}
+                                    </div>
+                                </a>
+
+                                <a href="/profile-view?id={{.ID}}" style="text-decoration:none;">
+                                    <div class="friend-name">
+                                        {{.Username}}
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="friend-actions">
+                                <a
+                                    class="friend-button"
+                                    href="/profile-view?id={{.ID}}"
+                                >
+                                    View Profile
+                                </a>
+                            </div>
+                        </div>
+                    {{end}}
+                </div>
+            {{else}}
+                <p class="empty-message">
+                    You don't have any followers yet.
                 </p>
             {{end}}
         </section>
