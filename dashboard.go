@@ -622,7 +622,7 @@ func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
 	var oldPicture string
 
 	err = db.QueryRow(
-		"SELECT COALESCE(profile_picture, '' FROM users WHERE id = $1",
+		"SELECT COALESCE(profile_picture, '') FROM users WHERE id = $1",
 		userID,
 	).Scan(&oldPicture)
 
