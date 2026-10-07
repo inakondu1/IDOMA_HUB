@@ -32,7 +32,11 @@
         /* HEADER */
 
         .friends-header {
-            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
         }
 
         .friends-header h1 {
@@ -278,6 +282,15 @@
         /* MOBILE */
 
         @media (max-width: 700px) {
+            .friends-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .friends-back {
+                align-self: flex-end;
+            }
+
             .friends-page {
                 padding: 24px 14px 45px;
             }
@@ -345,8 +358,11 @@
     <main class="friends-page">
 
         <div class="friends-header">
-            <h1>👥 Friends</h1>
-            <p>Connect with people in the IDOMA HUB community.</p>
+            <div>
+                <h1>👥 Friends</h1>
+                <p>Connect with people in the IDOMA HUB community.</p>
+            </div>
+            <a class="friends-back" href="/dashboard">← Dashboard</a>
         </div>
         <div class="friends-summary">
             <div class="summary-card">
@@ -607,9 +623,6 @@
 
 
 
-        <p class="friends-back">
-            <a href="/dashboard">← Back to Dashboard</a>
-        </p>
 
     </main>
 
