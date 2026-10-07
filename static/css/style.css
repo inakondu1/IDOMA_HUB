@@ -9585,3 +9585,28 @@ body.dashboard-body .story-reply-form button:hover {
         text-align: center !important;
     }
 }
+
+/* =========================================================
+   IDOMA HUB — MOBILE NAVIGATION ORDER
+   Keep sidebar on the left on desktop.
+   On phones, place navigation after Stories.
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    body.dashboard-body .stories-section {
+        order: 1 !important;
+    }
+
+    body.dashboard-body .dashboard-sidebar {
+        order: 2 !important;
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+        margin: 0 8px !important;
+    }
+
+    body.dashboard-body .feed-section {
+        order: 3 !important;
+    }
+
+}
