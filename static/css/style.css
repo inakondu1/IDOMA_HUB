@@ -9518,3 +9518,70 @@ body.dashboard-body .story-reply-form button:hover {
     }
 }
 
+
+/* =========================================================
+   IDOMA HUB — MOBILE STORIES HORIZONTAL ROW
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    body.dashboard-body .stories-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+
+        gap: 10px !important;
+        padding: 6px 4px 10px !important;
+        margin: 0 !important;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        white-space: nowrap !important;
+
+        box-sizing: border-box !important;
+        scrollbar-width: none !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    body.dashboard-body .stories-row::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    body.dashboard-body .stories-row .story-card {
+        flex: 0 0 92px !important;
+        width: 92px !important;
+        min-width: 92px !important;
+        max-width: 92px !important;
+        height: 145px !important;
+
+        margin: 0 !important;
+        box-sizing: border-box !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+
+        white-space: normal !important;
+    }
+
+    body.dashboard-body .stories-row .story-card strong {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+
+        margin-top: 6px !important;
+
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+
+        text-align: center !important;
+    }
+}
