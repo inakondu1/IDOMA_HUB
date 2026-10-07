@@ -9969,3 +9969,50 @@ body.dashboard-body .story-reply-form button:hover {
         }
 
 }
+
+/* =========================================================
+   IDOMA HUB — FIX POST TEXT ALIGNMENT
+   Create Post text should always start from the left.
+   ========================================================= */
+
+body.dashboard-body .create-post-card textarea {
+    text-align: left !important;
+    text-indent: 0 !important;
+    direction: ltr !important;
+    vertical-align: top !important;
+    padding: 12px 14px !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard-body .create-post-composer textarea {
+    text-align: left !important;
+    text-indent: 0 !important;
+    direction: ltr !important;
+    vertical-align: top !important;
+}
+
+
+/* =========================================================
+   IDOMA HUB — MAKE NAVIGATION TEXT VISIBLE
+   ========================================================= */
+
+body.dashboard-body .dashboard-nav a,
+body.dashboard-body .dashboard-nav a:visited,
+body.dashboard-body .dashboard-nav a span {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body.dashboard-body .dashboard-notification-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body.dashboard-body .dashboard-notification-link:hover {
+    color: #ffffff !important;
+    background: #222222 !important;
+}
