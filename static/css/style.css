@@ -10031,3 +10031,45 @@ body.dashboard-body .dashboard-notification-link:hover {
         word-break: break-word !important;
     }
 }
+
+/* FINAL DASHBOARD FEED FIX */
+@media (max-width: 768px) {
+
+    /* Keep community post text aligned with the post card */
+    body.dashboard-body .feed-post .post-content {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 4px 0 12px 0 !important;
+        text-align: left !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Make the Like/Comment/Share row show its counts clearly */
+    body.dashboard-body .feed-post .post-actions {
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        gap: 4px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions form {
+        display: flex !important;
+        align-items: center !important;
+        min-width: 0 !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions form span {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        white-space: nowrap !important;
+        margin-left: 4px !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions button {
+        white-space: nowrap !important;
+        min-width: 0 !important;
+    }
+}
