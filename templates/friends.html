@@ -7,144 +7,309 @@
     <link rel="stylesheet" href="/static/css/style.css">
 
     <style>
-        .friends-page {
-            max-width: 1200px;
-            margin: 15px auto;
-            padding: 0 24px 70px;
+        /* =====================================================
+           IDOMA HUB — PROFESSIONAL FRIENDS PAGE
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
         }
 
+        body {
+            margin: 0;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .friends-page {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 35px 24px 70px;
+        }
+
+        /* HEADER */
+
         .friends-header {
-            margin-bottom: 35px;
+            margin-bottom: 28px;
         }
 
         .friends-header h1 {
-            margin: 0 0 10px;
+            margin: 0 0 8px;
             font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .friends-header p {
-            color: #777;
-            font-size: 16px;
             margin: 0;
+            color: #999;
+            font-size: 15px;
         }
 
-        .friends-section {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
+        /* SUMMARY CARDS */
+
+        .friends-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
             margin-bottom: 28px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .summary-card {
+            background: #111;
+            border: 1px solid #252525;
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: #b5121b;
+        }
+
+        .summary-label {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .summary-number {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* SECTIONS */
+
+        .friends-section {
+            background: #0d0d0d;
+            border: 1px solid #242424;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 22px;
         }
 
         .friends-section h2 {
-            margin: 0 0 24px;
-            font-size: 22px;
+            margin: 0 0 20px;
+            font-size: 20px;
+            font-weight: 750;
+            color: #fff;
         }
+
+        /* SEARCH */
+
+        .friends-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .friends-search input {
+            flex: 1;
+            min-width: 0;
+            padding: 13px 15px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background: #111;
+            color: #fff;
+            outline: none;
+        }
+
+        .friends-search input:focus {
+            border-color: #b5121b;
+        }
+
+        .friends-search input::placeholder {
+            color: #777;
+        }
+
+        /* PEOPLE GRID */
 
         .friend-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 14px;
         }
 
         .friend-card {
-            border: 1px solid #eee4d8;
-            border-radius: 18px;
-            padding: 22px;
+            background: #151515;
+            border: 1px solid #292929;
+            border-radius: 15px;
+            padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 18px;
-            min-height: 90px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            background: #fffdf9;
+            gap: 14px;
+            min-height: 82px;
+            transition: border-color 0.2s ease, transform 0.2s ease;
         }
 
         .friend-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: #4a4a4a;
+            transform: translateY(-2px);
         }
 
         .friend-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 13px;
             min-width: 0;
         }
 
+        .friend-info a {
+            text-decoration: none;
+        }
+
         .friend-avatar {
-            width: 58px;
-            height: 58px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            background: #287a43;
-            color: white;
+            background: #222;
+            border: 2px solid #333;
+            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 21px;
-            font-weight: bold;
+            font-size: 19px;
+            font-weight: 800;
             flex-shrink: 0;
-            box-shadow: 0 3px 8px rgba(40, 122, 67, 0.2);
+            overflow: hidden;
         }
 
         .friend-name {
+            color: #fff;
+            font-size: 16px;
             font-weight: 700;
-            font-size: 17px;
-            color: #3d3027;
             word-break: break-word;
-        }
-
-        .friend-button {
-            border: none;
-            border-radius: 10px;
-            padding: 10px 16px;
-            cursor: pointer;
-            background: #287a43;
-            color: white;
-            font-weight: 700;
-            white-space: nowrap;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            box-sizing: border-box;
-            transition: background 0.2s ease, transform 0.2s ease;
         }
 
         .friend-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: flex-end;
+            gap: 7px;
             flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        /* BUTTONS */
+
+        .friend-button {
+            border: 1px solid #b5121b;
+            border-radius: 9px;
+            padding: 9px 13px;
+            cursor: pointer;
+            background: #b5121b;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: background 0.2s ease, border-color 0.2s ease;
         }
 
         .friend-button:hover {
-            background: #1f6235;
-            transform: translateY(-1px);
+            background: #850c13;
+            border-color: #850c13;
+        }
+
+        .friend-button:disabled {
+            background: #252525;
+            border-color: #333;
+            color: #999;
+            cursor: default;
         }
 
         .friend-button.reject {
-            background: #eee7df;
-            color: #4a3d34;
+            background: #222;
+            border-color: #3a3a3a;
+            color: #ddd;
         }
 
         .friend-button.reject:hover {
-            background: #ddd2c6;
+            background: #b5121b;
+            border-color: #b5121b;
+            color: #fff;
         }
+
+        /* EMPTY STATES */
 
         .empty-message {
-            color: #777;
             margin: 0;
-            padding: 15px 0;
+            padding: 18px;
+            border: 1px dashed #333;
+            border-radius: 12px;
+            color: #777;
+            text-align: center;
+            background: #111;
         }
 
-        @media (max-width: 600px) {
+        /* BACK */
+
+        .friends-back {
+            margin-top: 10px;
+        }
+
+        .friends-back a {
+            color: #b5121b;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .friends-back a:hover {
+            color: #e21a26;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
             .friends-page {
-                margin-top: 25px;
-                padding: 0 14px 40px;
+                padding: 24px 14px 45px;
+            }
+
+            .friends-header h1 {
+                font-size: 27px;
+            }
+
+            .friends-summary {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .summary-card {
+                padding: 16px;
+            }
+
+            .summary-number {
+                font-size: 24px;
             }
 
             .friends-section {
                 padding: 18px;
+                border-radius: 15px;
+            }
+
+            .friends-search {
+                flex-direction: column;
+            }
+
+            .friends-search .friend-button {
+                width: 100%;
+            }
+
+            .friend-list {
+                grid-template-columns: 1fr;
             }
 
             .friend-card {
@@ -154,14 +319,17 @@
 
             .friend-actions {
                 width: 100%;
-                flex-direction: column;
+                justify-content: stretch;
             }
 
-            .friend-actions .friend-button {
+            .friend-actions form,
+            .friend-actions .friend-button,
+            .friend-card > form,
+            .friend-card > .friend-button {
                 width: 100%;
             }
 
-            .friend-button {
+            .friend-actions .friend-button {
                 width: 100%;
             }
         }
@@ -176,17 +344,33 @@
             <h1>👥 Friends</h1>
             <p>Connect with people in the IDOMA HUB community.</p>
         </div>
+        <div class="friends-summary">
+            <div class="summary-card">
+                <div class="summary-label">Friends</div>
+                <div class="summary-number">{{len .Friends}}</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-label">Following</div>
+                <div class="summary-number">{{len .Following}}</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-label">Followers</div>
+                <div class="summary-number">{{len .Followers}}</div>
+            </div>
+        </div>
 
         <section class="friends-section">
             <h2>Find People</h2>
 
-            <form method="GET" action="/friends" style="display:flex; gap:10px; margin-bottom:25px;">
+            <form method="GET" action="/friends" class="friends-search">
                 <input
                     type="text"
                     name="search"
                     placeholder="Search for a username..."
                     value="{{.SearchQuery}}"
-                    style="flex:1; padding:13px 15px; border:1px solid #333; border-radius:10px; background:#111; color:#fff;"
+
                 >
                 <button class="friend-button" type="submit">
                     Search
@@ -501,7 +685,7 @@
             {{end}}
         </section>
 
-        <p>
+        <p class="friends-back">
             <a href="/dashboard">← Back to Dashboard</a>
         </p>
 
@@ -509,86 +693,3 @@
 
 </body>
 </html>
-
-<style>
-/* =========================================================
-   IDOMA HUB — FRIENDS PAGE BLACK THEME
-   ========================================================= */
-
-body {
-    background: #000 !important;
-    color: #fff !important;
-}
-
-.friends-page {
-    background: #000 !important;
-    color: #fff !important;
-}
-
-.friends-header h1,
-.friends-header p,
-.friends-section h2,
-.friend-name,
-.empty-message {
-    color: #fff !important;
-}
-
-.friends-section {
-    background: #111 !important;
-    border: 1px solid #2a2a2a !important;
-    color: #fff !important;
-}
-
-.friend-card {
-    background: #181818 !important;
-    border: 1px solid #2d2d2d !important;
-    color: #fff !important;
-}
-
-.friend-info a {
-    color: #fff !important;
-}
-
-.friend-button {
-    background: #b5121b !important;
-    color: #fff !important;
-    border: 1px solid #b5121b !important;
-}
-
-.friend-button:hover {
-    background: #850c13 !important;
-    border-color: #850c13 !important;
-}
-
-.friend-button:disabled {
-    background: #333 !important;
-    color: #aaa !important;
-    border-color: #444 !important;
-}
-
-.friend-button.reject {
-    background: #333 !important;
-    border-color: #444 !important;
-}
-
-.friend-button.reject:hover {
-    background: #b5121b !important;
-    border-color: #b5121b !important;
-}
-
-.friend-avatar {
-    background: #222 !important;
-    color: #fff !important;
-}
-
-.friends-section input {
-    background: #111 !important;
-    color: #fff !important;
-    border-color: #333 !important;
-}
-
-.friends-section input::placeholder {
-    color: #888 !important;
-}
-
-</style>
