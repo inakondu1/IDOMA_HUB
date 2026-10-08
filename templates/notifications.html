@@ -91,7 +91,11 @@
 
                         {{if .Activity}}
                                 {{range .Activity}}
-                                        <a href="/dashboard?post_id={{.PostID}}" class="notification-item notification-post-link">
+                                        {{if eq .Type "story_reply"}}
+                                                <a href="/messages?user_id={{.UserID}}" class="notification-item notification-post-link">
+                                        {{else}}
+                                                <a href="/dashboard?post_id={{.PostID}}" class="notification-item notification-post-link">
+                                        {{end}}
                                                 <div class="notification-avatar">
                                                         {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="notification-avatar-image">{{else}}{{printf "%.1s" .Username}}{{end}}
                                                 </div>
@@ -105,6 +109,8 @@
                                                                 <span>commented on your post.</span>
                                                         {{else if eq .Type "share"}}
                                                                 <span>shared your post.</span>
+                                                        {{else if eq .Type "story_reply"}}
+                                                                <span>replied to your story.</span>
                                                         {{end}}
                                                         <small class="notification-time">{{.CreatedAt}}</small>
                                                 </div>

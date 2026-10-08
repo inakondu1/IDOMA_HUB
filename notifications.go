@@ -18,6 +18,7 @@ type NotificationRequest struct {
 
 type ActivityNotification struct {
 	ID             int
+	UserID         int
 	Username       string
 	ProfilePicture string
 	PostID         string
@@ -162,7 +163,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	activityRows, err := db.Query(`
-                SELECT n.id, u.username, COALESCE(u.profile_picture, ''), n.post_id, n.type, n.created_at
+                SELECT n.id, u.id, u.username, COALESCE(u.profile_picture, ''), COALESCE(n.post_id::text, ''), n.type, n.created_at
                 FROM notifications n
                 JOIN users u ON u.id = n.sender_id
                 WHERE n.recipient_id = $1
@@ -183,6 +184,7 @@ func notificationsHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err := activityRows.Scan(
 			&activity.ID,
+			&activity.UserID,
 			&activity.Username,
 			&activity.ProfilePicture,
 			&activity.PostID,
@@ -231,5 +233,21 @@ func createPostNotification(recipientID, senderID int, postID string, notificati
 
 	if err != nil {
 		log.Println("Unable to create notification:", err)
+	}
+}
+
+func createStoryNotification(recipientID, senderID int, notificationType string) {
+	if recipientID == senderID {
+		return
+	}
+
+	_, err := db.Exec(`
+		INSERT INTO notifications
+		(recipient_id, sender_id, post_id, type)
+		VALUES ($1, $2, NULL, $3)
+	`, recipientID, senderID, notificationType)
+
+	if err != nil {
+		log.Println("Unable to create story notification:", err)
 	}
 }

@@ -62,6 +62,10 @@ func storyReplyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if ownerID != userID {
+		createStoryNotification(ownerID, userID, "story_reply")
+	}
+
 	if ownerID == userID {
 		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 		return
