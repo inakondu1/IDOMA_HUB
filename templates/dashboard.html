@@ -743,7 +743,11 @@ async function sharePost(postID) {
 
       loadStoryCards();
 
-      const targetPostID = new URLSearchParams(window.location.search).get("post_id");
+      const targetPostID =
+          new URLSearchParams(window.location.search).get("post_id") ||
+          (window.location.hash.startsWith("#post-")
+              ? window.location.hash.substring(6)
+              : null);
 
       if (targetPostID) {
           const targetPost = document.getElementById("post-" + targetPostID);
