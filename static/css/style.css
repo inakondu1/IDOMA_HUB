@@ -10618,3 +10618,41 @@ body.dashboard-body .comment-meta span {
     }
 
 }
+
+/* =========================================================
+   IDOMA HUB — FIX MOBILE STORY CREATION MENU
+   Keep the menu visible and tappable on phones.
+   Desktop styling remains unchanged.
+   ========================================================= */
+
+@media (max-width: 768px) {
+    body.dashboard-body .story-create-wrapper .story-create-menu {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 20px !important;
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+        max-width: 420px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 12px !important;
+        z-index: 20000 !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .story-create-wrapper .story-create-menu.story-menu-visible {
+        display: flex !important;
+        flex-direction: column !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
+    body.dashboard-body .story-create-wrapper .story-create-menu button {
+        width: 100% !important;
+        min-height: 48px !important;
+        padding: 14px !important;
+        touch-action: manipulation !important;
+        cursor: pointer !important;
+    }
+}
