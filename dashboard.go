@@ -23,6 +23,7 @@ type Status struct {
 
 type Post struct {
 	ID             int
+	UserID         int
 	Username       string
 	ProfilePicture string
 	Content        string
@@ -100,7 +101,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT posts.id, users.username, COALESCE(users.profile_picture, ''), posts.content, posts.created_at,
+		SELECT posts.id, posts.user_id, users.username, COALESCE(users.profile_picture, ''), posts.content, posts.created_at,
                        posts.media_url, posts.media_type,
 		       COUNT(post_likes.id) AS like_count,
                     (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comment_count,
@@ -114,7 +115,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		FROM posts
 		JOIN users ON users.id = posts.user_id
 		LEFT JOIN post_likes ON post_likes.post_id = posts.id
-		GROUP BY posts.id, users.username, users.profile_picture, posts.content, posts.created_at, posts.media_url, posts.media_type
+		GROUP BY posts.id, posts.user_id, users.username, users.profile_picture, posts.content, posts.created_at, posts.media_url, posts.media_type
 		ORDER BY posts.id DESC
 	`, userID)
 
@@ -132,6 +133,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := rows.Scan(
 			&post.ID,
+			&post.UserID,
 			&post.Username,
 			&post.ProfilePicture,
 			&post.Content,

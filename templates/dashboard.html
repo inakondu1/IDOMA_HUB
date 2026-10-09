@@ -344,11 +344,13 @@
                             <div class="dashboard-card feed-post" id="post-{{.ID}}">
 
                                     <div class="post-header">
-                                            {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}" class="post-avatar-image">{{else}}<div class="post-avatar">{{printf "%.1s" .Username}}</div>{{end}}
-
-                                            <div>
-                                                    <strong>{{.Username}}</strong><span>{{.CreatedAt}}</span>
-                                            </div>
+                                        <a href="/profile-view?id={{.UserID}}" class="post-avatar-link" aria-label="View {{.Username}}'s profile">
+                                            {{if .ProfilePicture}}<img src="{{.ProfilePicture}}" alt="{{.Username}}'s profile picture" class="post-avatar-image">{{else}}<div class="post-avatar">{{printf "%.1s" .Username}}</div>{{end}}
+                                        </a>
+                                        <div class="post-author-details">
+                                            <strong><a href="/profile-view?id={{.UserID}}" class="post-author-link">{{.Username}}</a></strong>
+                                            <span>{{.CreatedAt}}</span>
+                                        </div>
                                     </div>
 
                                     {{if .Content}}
