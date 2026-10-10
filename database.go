@@ -388,24 +388,24 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create anonymous_messages table:", err)
 	}
 
-    // Add parent_id so Anonymous messages can have direct replies.
-    _, err = db.Exec(`
+	// Add parent_id so Anonymous messages can have direct replies.
+	_, err = db.Exec(`
             ALTER TABLE anonymous_messages
             ADD COLUMN IF NOT EXISTS parent_id INTEGER
     `)
-    if err != nil {
-            log.Fatal("Unable to add Anonymous reply column:", err)
-    }
+	if err != nil {
+		log.Fatal("Unable to add Anonymous reply column:", err)
+	}
 
-    _, err = db.Exec(`
+	_, err = db.Exec(`
             CREATE INDEX IF NOT EXISTS idx_anonymous_messages_parent_id
             ON anonymous_messages(parent_id)
     `)
-    if err != nil {
-            log.Fatal("Unable to create Anonymous reply index:", err)
-    }
+	if err != nil {
+		log.Fatal("Unable to create Anonymous reply index:", err)
+	}
 
-    _, err = db.Exec(`
+	_, err = db.Exec(`
             CREATE TABLE IF NOT EXISTS anonymous_views (
                             id SERIAL PRIMARY KEY,
                             session_hash TEXT NOT NULL,
@@ -417,10 +417,9 @@ func initDatabase() *sql.DB {
                                             ON DELETE CASCADE
             )
     `)
-    if err != nil {
-            log.Fatal("Unable to create anonymous_views table:", err)
-    }
-
+	if err != nil {
+		log.Fatal("Unable to create anonymous_views table:", err)
+	}
 
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS anonymous_presence (
@@ -467,6 +466,80 @@ func initDatabase() *sql.DB {
 	`)
 	if err != nil {
 		log.Fatal("Unable to clean anonymous presence:", err)
+	}
+
+	// IDOMA HUB Earn Together: activity tracking and monthly reward records.
+	// Cash payouts must remain disabled until funding and payment arrangements are ready.
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS reward_activity (
+                        id BIGSERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id),
+                        post_id INTEGER,
+                        activity_type TEXT NOT NULL
+                                CHECK (activity_type IN ('like', 'comment', 'video_watch')),
+                        activity_key TEXT NOT NULL,
+                        quantity NUMERIC(12, 2) NOT NULL DEFAULT 1 CHECK (quantity >= 0),
+                        reward_month DATE NOT NULL,
+                        status TEXT NOT NULL DEFAULT 'pending'
+                                CHECK (status IN ('pending', 'eligible', 'rejected')),
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        UNIQUE (user_id, activity_type, activity_key)
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create reward_activity table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE INDEX IF NOT EXISTS idx_reward_activity_month_status
+                ON reward_activity(reward_month, status)
+        `)
+	if err != nil {
+		log.Fatal("Unable to create reward activity month index:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS monthly_earnings (
+                        id BIGSERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id),
+                        reward_month DATE NOT NULL,
+                        watch_seconds BIGINT NOT NULL DEFAULT 0 CHECK (watch_seconds >= 0),
+                        eligible_comments INTEGER NOT NULL DEFAULT 0 CHECK (eligible_comments >= 0),
+                        eligible_likes INTEGER NOT NULL DEFAULT 0 CHECK (eligible_likes >= 0),
+                        amount_usd NUMERIC(12, 4) NOT NULL DEFAULT 0 CHECK (amount_usd >= 0),
+                        status TEXT NOT NULL DEFAULT 'pending'
+                                CHECK (status IN ('pending', 'under_review', 'approved', 'paid', 'rejected')),
+                        calculated_at TIMESTAMP,
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        UNIQUE (user_id, reward_month)
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create monthly_earnings table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS reward_payouts (
+                        id BIGSERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id),
+                        reward_month DATE NOT NULL,
+                        amount_usd NUMERIC(12, 4) NOT NULL CHECK (amount_usd >= 0),
+                        payout_method TEXT NOT NULL DEFAULT '',
+                        payout_currency TEXT NOT NULL DEFAULT 'USD',
+                        exchange_rate NUMERIC(18, 6),
+                        amount_local NUMERIC(18, 2),
+                        status TEXT NOT NULL DEFAULT 'pending'
+                                CHECK (status IN ('pending', 'processing', 'paid', 'failed', 'cancelled')),
+                        provider_reference TEXT NOT NULL DEFAULT '',
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        UNIQUE (user_id, reward_month)
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create reward_payouts table:", err)
 	}
 
 	return db

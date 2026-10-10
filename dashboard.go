@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -497,8 +498,9 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 
-		updateLastActive(r)
 	}
+
+	updateLastActive(r)
 
 	postID := r.FormValue("post_id")
 
@@ -550,6 +552,7 @@ func likePostHandler(w http.ResponseWriter, r *http.Request) {
 		).Scan(&postOwnerID)
 
 		if err == nil && postOwnerID != userID {
+			recordRewardActivity(userID, postID, "like", "post:"+postID)
 			_, err = db.Exec(`
 				INSERT INTO notifications
 				(recipient_id, sender_id, post_id, type)
@@ -744,8 +747,9 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 
-		updateLastActive(r)
 	}
+
+	updateLastActive(r)
 
 	postID := r.FormValue("post_id")
 	content := r.FormValue("content")
@@ -760,12 +764,13 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := db.Exec(
-		"INSERT INTO comments (post_id, user_id, content) VALUES ($1, $2, $3)",
+	var commentID int64
+	err := db.QueryRow(
+		"INSERT INTO comments (post_id, user_id, content) VALUES ($1, $2, $3) RETURNING id",
 		postID,
 		userID,
 		content,
-	)
+	).Scan(&commentID)
 
 	if err != nil {
 		http.Error(w, "Unable to create comment.", http.StatusInternalServerError)
@@ -780,6 +785,14 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 	).Scan(&postOwnerID)
 
 	if err == nil {
+		if postOwnerID != userID {
+			recordRewardActivity(
+				userID,
+				postID,
+				"comment",
+				"comment:"+strconv.FormatInt(commentID, 10),
+			)
+		}
 		createPostNotification(postOwnerID, userID, postID, "comment")
 	}
 

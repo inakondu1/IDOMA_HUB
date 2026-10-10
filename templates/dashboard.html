@@ -364,7 +364,7 @@
                                     {{if eq .MediaType "image"}}
                                     <img src="{{.MediaURL}}" alt="Post image" class="post-media">
                                     {{else if eq .MediaType "video"}}
-                                    <video controls class="post-media">
+                                    <video controls class="post-media" data-post-id="{{.ID}}">
                                             <source src="{{.MediaURL}}">
                                             Your browser does not support video playback.
                                     </video>
@@ -445,6 +445,73 @@
 const photoInput = document.getElementById("photoInput");
 const videoInput = document.getElementById("videoInput");
 const mediaPreview = document.getElementById("mediaPreview");
+
+
+// IDOMA HUB video watch tracking
+document.querySelectorAll("video.post-media[data-post-id]").forEach((video) => {
+    let watchedSeconds = 0;
+    let lastMediaTime = video.currentTime;
+    let requestSent = false;
+
+    video.addEventListener("playing", () => {
+        lastMediaTime = video.currentTime;
+    });
+
+    video.addEventListener("timeupdate", async () => {
+        const currentTime = video.currentTime;
+
+        if (video.paused || video.seeking || document.hidden) {
+            lastMediaTime = currentTime;
+            return;
+        }
+
+        const elapsed = currentTime - lastMediaTime;
+
+        // Ignore large jumps, including most manual seeking.
+        if (elapsed > 0 && elapsed <= 1.5) {
+            watchedSeconds += elapsed;
+        }
+
+        lastMediaTime = currentTime;
+
+        if (watchedSeconds < 30 || requestSent) return;
+
+        requestSent = true;
+
+        try {
+            const response = await fetch("/video-watch", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+                },
+                body: new URLSearchParams({
+                    post_id: video.dataset.postId,
+                    watched_seconds: "30"
+                })
+            });
+
+            if (!response.ok) {
+                console.warn("Video-watch activity was not accepted.");
+            }
+        } catch (error) {
+            console.warn("Unable to send video-watch activity.");
+        }
+    });
+
+    video.addEventListener("seeking", () => {
+        lastMediaTime = video.currentTime;
+    });
+
+    video.addEventListener("pause", () => {
+        lastMediaTime = video.currentTime;
+    });
+
+    document.addEventListener("visibilitychange", () => {
+        lastMediaTime = video.currentTime;
+    });
+});
+
 
 photoInput.addEventListener("change", function () {
     if (!this.files.length) return;

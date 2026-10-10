@@ -192,6 +192,7 @@ func main() {
 	http.HandleFunc("/messages", messagesHandler)
 	http.HandleFunc("/story-reply", storyReplyHandler)
 	http.HandleFunc("/post", createPostHandler)
+	http.HandleFunc("/video-watch", videoWatchHandler)
 	http.HandleFunc("/like", likePostHandler)
 	http.HandleFunc("/share", sharePostHandler)
 	http.HandleFunc("/comment", createCommentHandler)
