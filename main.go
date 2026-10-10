@@ -17,6 +17,7 @@ var cld *cloudinary.Cloudinary
 type PageData struct {
 	Title      string
 	Registered bool
+	Error      string
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,12 +47,12 @@ func registerPageHandler(w http.ResponseWriter, r *http.Request) {
 		confirmPassword := r.FormValue("confirm_password")
 
 		if password != confirmPassword {
-			http.Error(w, "Passwords do not match.", http.StatusBadRequest)
+			http.Redirect(w, r, "/register?error=password_mismatch", http.StatusSeeOther)
 			return
 		}
 
 		if len(password) < 8 {
-			http.Error(w, "Password must be at least 8 characters.", http.StatusBadRequest)
+			http.Redirect(w, r, "/register?error=password_short", http.StatusSeeOther)
 			return
 		}
 
@@ -69,7 +70,7 @@ func registerPageHandler(w http.ResponseWriter, r *http.Request) {
 			string(hashedPassword),
 		)
 		if err != nil {
-			http.Error(w, "Unable to create account. Username or email may already exist.", http.StatusBadRequest)
+			http.Redirect(w, r, "/register?error=account_exists", http.StatusSeeOther)
 			log.Println(err)
 			return
 		}
@@ -87,6 +88,7 @@ func registerPageHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := PageData{
 		Registered: r.URL.Query().Get("registered") == "1",
+		Error:      map[string]string{"password_mismatch": "Your passwords do not match. Please check both fields and try again.", "password_short": "Your password must contain at least 8 characters.", "account_exists": "This username or email may already be registered. Please log in or check your details."}[r.URL.Query().Get("error")],
 		Title:      "Create Account - IDOMA HUB",
 	}
 
@@ -112,13 +114,13 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 		).Scan(&userID, &storedPassword)
 
 		if err != nil {
-			http.Error(w, "Invalid username/email or password.", http.StatusUnauthorized)
+			http.Redirect(w, r, "/login?error=login_invalid", http.StatusSeeOther)
 			return
 		}
 
 		err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
 		if err != nil {
-			http.Error(w, "Invalid username/email or password.", http.StatusUnauthorized)
+			http.Redirect(w, r, "/login?error=login_invalid", http.StatusSeeOther)
 			return
 		}
 
@@ -148,6 +150,7 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := PageData{
 		Registered: r.URL.Query().Get("registered") == "1",
+		Error:      map[string]string{"login_invalid": "We couldn't sign you in. Check your username or email and password, then try again."}[r.URL.Query().Get("error")],
 		Title:      "Login - IDOMA HUB",
 	}
 
@@ -186,7 +189,7 @@ func main() {
 	http.HandleFunc("/homographs", idomaReferenceHandler)
 	http.HandleFunc("/dialects", idomaReferenceHandler)
 	http.HandleFunc("/speech-work", idomaReferenceHandler)
-    http.HandleFunc("/build-sentences", idomaReferenceHandler)
+	http.HandleFunc("/build-sentences", idomaReferenceHandler)
 	http.HandleFunc("/ai", aiHandler)
 	http.HandleFunc("/ai/translate", aiTranslateHandler)
 	http.HandleFunc("/bible", bibleHandler)

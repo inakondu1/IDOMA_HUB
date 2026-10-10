@@ -32,6 +32,7 @@
                         </div>
                         {{end}}
 
+                        {{if .Error}}<div class="auth-error" role="alert">{{.Error}}</div>{{end}}
 			<p class="auth-intro">
 				Login to your IDOMA HUB account.
 			</p>

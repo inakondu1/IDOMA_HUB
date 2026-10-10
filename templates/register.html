@@ -26,6 +26,7 @@
 
 			<h1>Create Account</h1>
 
+                        {{if .Error}}<div class="auth-error" role="alert">{{.Error}}</div>{{end}}
 			<p class="auth-intro">
 				Join IDOMA HUB and become part of the community.
 			</p>

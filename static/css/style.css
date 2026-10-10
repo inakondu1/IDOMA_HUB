@@ -10714,3 +10714,15 @@ body.dashboard-body .feed-post .post-header .post-author-link:hover {
 body.dashboard-body .feed-post .post-header .post-avatar-link:hover {
     opacity: 0.88;
 }
+
+.auth-error {
+    margin: 16px 0;
+    padding: 14px 16px;
+    border: 1px solid #f0b8bc;
+    border-left: 4px solid var(--idoma-red);
+    border-radius: 8px;
+    background: #fff0f1;
+    color: #850c13;
+    font-size: 14px;
+    line-height: 1.5;
+}
