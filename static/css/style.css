@@ -10726,3 +10726,23 @@ body.dashboard-body .feed-post .post-header .post-avatar-link:hover {
     font-size: 14px;
     line-height: 1.5;
 }
+
+/* Authentication password visibility controls */
+.show-password-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 16px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.show-password-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--idoma-red);
+    cursor: pointer;
+}

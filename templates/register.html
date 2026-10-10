@@ -59,6 +59,7 @@
 					placeholder="Create a password"
 					required
 				>
+				<label class="show-password-option"><input type="checkbox" onchange="document.getElementById('password').type = this.checked ? 'text' : 'password'"> Show password</label>
 
 				<label for="confirm_password">Confirm Password</label>
 				<input
@@ -68,6 +69,7 @@
 					placeholder="Enter your password again"
 					required
 				>
+				<label class="show-password-option"><input type="checkbox" onchange="document.getElementById('confirm_password').type = this.checked ? 'text' : 'password'"> Show confirm password</label>
 
 				<button type="submit" class="auth-button">
 					Create Account
