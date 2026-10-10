@@ -238,7 +238,19 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 					idomaText,
 				)
 			} else {
-				response, err = askGemini(question)
+				prompt := question
+
+				if referenceContext := idomaReferenceContext(question); referenceContext != "" {
+					prompt = "You are IDOMA AI, an assistant for learning and preserving the Idoma language.\n" +
+						"Answer the user's question using the supplied reference material when relevant.\n" +
+						"Preserve Idoma spelling and tone marks exactly as supplied.\n" +
+						"Do not invent meanings for missing entries. Clearly say when the reference does not provide an answer.\n" +
+						"Treat dialect forms as belonging to their stated communities; do not claim they are all interchangeable.\n\n" +
+						"USER QUESTION:\n" + question + "\n\n" +
+						"REFERENCE MATERIAL:\n" + referenceContext
+				}
+
+				response, err = askGemini(prompt)
 				if err != nil {
 					log.Printf("IDOMA AI Gemini error: %v", err)
 					aiError = "IDOMA AI is temporarily unavailable. Please try again shortly."
