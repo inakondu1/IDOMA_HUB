@@ -40,15 +40,48 @@ func establishConfiguredOwner() {
 		return
 	}
 
-	_, err := db.Exec(`
-		INSERT INTO admin_users (user_id, role)
-		SELECT id, 'owner'
-		FROM users
-		WHERE LOWER(email) = LOWER($1)
-		ON CONFLICT (user_id) DO UPDATE SET role = 'owner'
-	`, email)
+	var ownerID int
+	err := db.QueryRow(
+		"SELECT id FROM users WHERE LOWER(email) = LOWER($1)",
+		email,
+	).Scan(&ownerID)
 	if err != nil {
-		log.Println("Unable to establish configured IDOMA HUB owner:", err)
+		if err != sql.ErrNoRows {
+			log.Println("Unable to find configured IDOMA HUB owner:", err)
+		} else {
+			log.Println("Configured IDOMA HUB owner email does not match a registered account.")
+		}
+		return
+	}
+
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println("Unable to begin IDOMA HUB owner update:", err)
+		return
+	}
+	defer tx.Rollback()
+
+	_, err = tx.Exec(`
+                INSERT INTO admin_users (user_id, role)
+                VALUES ($1, 'owner')
+                ON CONFLICT (user_id) DO UPDATE SET role = 'owner'
+        `, ownerID)
+	if err != nil {
+		log.Println("Unable to assign configured IDOMA HUB owner:", err)
+		return
+	}
+
+	_, err = tx.Exec(
+		"DELETE FROM admin_users WHERE user_id <> $1",
+		ownerID,
+	)
+	if err != nil {
+		log.Println("Unable to remove other IDOMA HUB administrators:", err)
+		return
+	}
+
+	if err = tx.Commit(); err != nil {
+		log.Println("Unable to commit IDOMA HUB owner update:", err)
 	}
 }
 
@@ -255,82 +288,7 @@ func adminMonetizationHandler(w http.ResponseWriter, r *http.Request) {
 			return
 
 		case "add_admin":
-			if role != "owner" {
-				http.Error(w, "Only the platform owner can authorize administrators.", http.StatusForbidden)
-				return
-			}
-
-			username := strings.TrimSpace(r.FormValue("username"))
-			if username == "" {
-				http.Error(w, "Enter the account username.", http.StatusBadRequest)
-				return
-			}
-
-			var targetID int
-			err := db.QueryRow(
-				"SELECT id FROM users WHERE LOWER(username) = LOWER($1)",
-				username,
-			).Scan(&targetID)
-			if err != nil {
-				http.Error(w, "No account was found with that username.", http.StatusBadRequest)
-				return
-			}
-			if targetID == userID {
-				http.Error(w, "You are already the platform owner.", http.StatusBadRequest)
-				return
-			}
-
-			tx, err := db.Begin()
-			if err != nil {
-				http.Error(w, "Unable to begin administrator authorization.", http.StatusInternalServerError)
-				return
-			}
-
-			result, err := tx.Exec(`
-                                INSERT INTO admin_users (user_id, role, granted_by)
-                                VALUES ($1, 'admin', $2)
-                                ON CONFLICT (user_id) DO UPDATE
-                                SET role = 'admin', granted_by = $2
-                                WHERE admin_users.role <> 'owner'
-                        `, targetID, userID)
-			if err != nil {
-				_ = tx.Rollback()
-				log.Println("Unable to authorize administrator:", err)
-				http.Error(w, "Unable to authorize this administrator.", http.StatusInternalServerError)
-				return
-			}
-
-			affected, err := result.RowsAffected()
-			if err != nil {
-				_ = tx.Rollback()
-				log.Println("Unable to verify administrator authorization:", err)
-				http.Error(w, "Unable to verify administrator authorization.", http.StatusInternalServerError)
-				return
-			}
-			if affected == 0 {
-				_ = tx.Rollback()
-				http.Error(w, "This account cannot be authorized as an administrator.", http.StatusBadRequest)
-				return
-			}
-
-			_, err = tx.Exec(`
-                                INSERT INTO admin_audit_log (actor_id, target_user_id, action, details)
-                                VALUES ($1, $2, 'administrator_authorized', $3)
-                        `, userID, targetID, "Administrator authorized by platform owner.")
-			if err != nil {
-				_ = tx.Rollback()
-				log.Println("Unable to record administrator authorization:", err)
-				http.Error(w, "Unable to record the authorization. No changes were saved.", http.StatusInternalServerError)
-				return
-			}
-
-			if err := tx.Commit(); err != nil {
-				log.Println("Unable to commit administrator authorization:", err)
-				http.Error(w, "Unable to complete administrator authorization.", http.StatusInternalServerError)
-				return
-			}
-
-			http.Redirect(w, r, "/admin/monetization?updated=1", http.StatusSeeOther)
+			http.Error(w, "Adding additional administrators is disabled.", http.StatusForbidden)
 			return
 
 		case "remove_admin":

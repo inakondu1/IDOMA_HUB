@@ -32,14 +32,6 @@
 
     {{if eq .Role "owner"}}
     <section class="card">
-        <h2>Authorize an administrator</h2>
-        <p>Enter the username of an existing IDOMA HUB member you trust. Administrators can review monetization applications but cannot authorize other administrators.</p>
-        <form method="POST" action="/admin/monetization">
-            <input type="hidden" name="action" value="add_admin">
-            <label for="username">Member username</label>
-            <input id="username" name="username" required maxlength="100">
-            <button type="submit">Authorize administrator</button>
-        </form>
         <p class="muted">To revoke an administrator's access, enter their user ID below. The platform owner cannot be removed here.</p>
         <form method="POST" action="/admin/monetization">
             <input type="hidden" name="action" value="remove_admin">
