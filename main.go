@@ -1,16 +1,18 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 
+	"github.com/cloudinary/cloudinary-go/v2"
 	"golang.org/x/crypto/bcrypt"
 )
 
-var db = initDatabase()
-var cld = initCloudinary()
+var db *sql.DB
+var cld *cloudinary.Cloudinary
 
 type PageData struct {
 	Title      string
@@ -157,6 +159,8 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	db = initDatabase()
+	cld = initCloudinary()
 	http.Handle("/static/uploads/posts/", http.StripPrefix("/static/uploads/posts/", http.FileServer(http.Dir(postUploadDir()))))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
@@ -179,9 +183,9 @@ func main() {
 	http.HandleFunc("/groups/view", groupViewHandler)
 	http.HandleFunc("/groups/post", groupPostHandler)
 	http.HandleFunc("/learning", learningHandler)
-		http.HandleFunc("/homographs", idomaReferenceHandler)
-		http.HandleFunc("/dialects", idomaReferenceHandler)
-		http.HandleFunc("/speech-work", idomaReferenceHandler)
+	http.HandleFunc("/homographs", idomaReferenceHandler)
+	http.HandleFunc("/dialects", idomaReferenceHandler)
+	http.HandleFunc("/speech-work", idomaReferenceHandler)
 	http.HandleFunc("/ai", aiHandler)
 	http.HandleFunc("/ai/translate", aiTranslateHandler)
 	http.HandleFunc("/bible", bibleHandler)
