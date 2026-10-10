@@ -186,6 +186,7 @@ func main() {
 	http.HandleFunc("/homographs", idomaReferenceHandler)
 	http.HandleFunc("/dialects", idomaReferenceHandler)
 	http.HandleFunc("/speech-work", idomaReferenceHandler)
+    http.HandleFunc("/build-sentences", idomaReferenceHandler)
 	http.HandleFunc("/ai", aiHandler)
 	http.HandleFunc("/ai/translate", aiTranslateHandler)
 	http.HandleFunc("/bible", bibleHandler)

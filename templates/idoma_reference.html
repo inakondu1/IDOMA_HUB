@@ -197,6 +197,43 @@
             Source material attributed to Assumpta Ethel Umele.
         </p>
     </section>
+    {{else if eq .Path "/build-sentences"}}
+    <section class="reference-card">
+        <h2>Practise Understanding Idoma Sentences</h2>
+        <p>Read each Idoma sentence and select its correct English meaning.</p>
+        {{range $sentence := .SpeechWork}}
+        <article class="speech-item sentence-quiz" data-correct="{{$sentence.English}}">
+            <h3>Exercise {{$sentence.Number}}</h3>
+            <div class="speech-idoma">{{$sentence.Idoma}}</div>
+            <label for="sentence-answer-{{$sentence.Number}}">Choose the correct meaning:</label>
+            <select id="sentence-answer-{{$sentence.Number}}" class="sentence-answer" style="display:block;width:100%;padding:12px;margin:12px 0;background:#111;color:#fff;border:1px solid #555;border-radius:8px;">
+                <option value="">Select an English meaning</option>
+                {{range $option := $.SpeechWork}}
+                <option value="{{$option.English}}">{{$option.English}}</option>
+                {{end}}
+            </select>
+            <button type="button" class="sentence-check" style="padding:10px 16px;background:#b5121b;color:#fff;border:0;border-radius:8px;cursor:pointer;">Check answer</button>
+            <p class="sentence-feedback" aria-live="polite"></p>
+        </article>
+        {{end}}
+        <p class="reference-note">These exercises use supplied sentence material attributed to Assumpta Ethel Umele. Some spellings or meanings may need confirmation from a knowledgeable Idoma speaker.</p>
+    </section>
+    <script>
+    document.querySelectorAll(".sentence-quiz").forEach(function (exercise) {
+        const select = exercise.querySelector(".sentence-answer");
+        const button = exercise.querySelector(".sentence-check");
+        const feedback = exercise.querySelector(".sentence-feedback");
+        button.addEventListener("click", function () {
+            if (!select.value) {
+                feedback.textContent = "Please select an answer first.";
+            } else if (select.value === exercise.dataset.correct) {
+                feedback.textContent = "Correct! Well done.";
+            } else {
+                feedback.textContent = "Not quite. The correct meaning is: " + exercise.dataset.correct;
+            }
+        });
+    });
+    </script>
     {{end}}
 
 </main>

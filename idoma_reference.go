@@ -53,6 +53,13 @@ func idomaReferenceHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	pages["/build-sentences"] = IdomaReferencePage{
+		Title:       "Build Idoma Sentences",
+		Description: "Learn how to form Idoma sentences through guided lessons and practice.",
+		Path:        "/build-sentences",
+		SpeechWork:  idomaSpeechWork,
+	}
+
 	page, ok := pages[r.URL.Path]
 	if !ok {
 		http.NotFound(w, r)
