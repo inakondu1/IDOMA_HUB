@@ -447,14 +447,50 @@ const videoInput = document.getElementById("videoInput");
 const mediaPreview = document.getElementById("mediaPreview");
 
 
-// IDOMA HUB video watch tracking
+// IDOMA HUB server-verified video watch sessions.
 document.querySelectorAll("video.post-media[data-post-id]").forEach((video) => {
     let watchedSeconds = 0;
     let lastMediaTime = video.currentTime;
-    let requestSent = false;
+    let sessionToken = "";
+    let startPromise = null;
+    let completionSent = false;
 
-    video.addEventListener("playing", () => {
+    async function startWatchSession() {
+        if (sessionToken || startPromise || completionSent) return;
+
+        startPromise = (async () => {
+            try {
+                const response = await fetch("/video-watch/start", {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+                    },
+                    body: new URLSearchParams({
+                        post_id: video.dataset.postId
+                    })
+                });
+
+                if (!response.ok) {
+                    console.warn("Unable to start video watch session.");
+                    return;
+                }
+
+                const data = await response.json();
+                sessionToken = data.token || "";
+            } catch (error) {
+                console.warn("Unable to start video watch session.");
+            } finally {
+                startPromise = null;
+            }
+        })();
+
+        await startPromise;
+    }
+
+    video.addEventListener("playing", async () => {
         lastMediaTime = video.currentTime;
+        await startWatchSession();
     });
 
     video.addEventListener("timeupdate", async () => {
@@ -466,36 +502,35 @@ document.querySelectorAll("video.post-media[data-post-id]").forEach((video) => {
         }
 
         const elapsed = currentTime - lastMediaTime;
-
-        // Ignore large jumps, including most manual seeking.
         if (elapsed > 0 && elapsed <= 1.5) {
             watchedSeconds += elapsed;
         }
-
         lastMediaTime = currentTime;
 
-        if (watchedSeconds < 30 || requestSent) return;
+        if (watchedSeconds < 30 || completionSent) return;
 
-        requestSent = true;
+        await startWatchSession();
+        if (!sessionToken || completionSent) return;
+
+        completionSent = true;
 
         try {
-            const response = await fetch("/video-watch", {
+            const response = await fetch("/video-watch/complete", {
                 method: "POST",
                 credentials: "same-origin",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
                 },
                 body: new URLSearchParams({
-                    post_id: video.dataset.postId,
-                    watched_seconds: "30"
+                    token: sessionToken
                 })
             });
 
             if (!response.ok) {
-                console.warn("Video-watch activity was not accepted.");
+                console.warn("Video watch session was not accepted.");
             }
         } catch (error) {
-            console.warn("Unable to send video-watch activity.");
+            console.warn("Unable to complete video watch session.");
         }
     });
 

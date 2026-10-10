@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.Title}}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #080808; color: #f4f4f4; font-family: Arial, sans-serif; }
+        header { background: #b5121b; padding: 18px; }
+        header a { color: white; text-decoration: none; font-weight: bold; }
+        main { max-width: 1000px; margin: 25px auto; padding: 18px; }
+        .card { background: #151515; border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 18px; overflow-wrap: anywhere; }
+        h1, h2, h3 { margin-top: 0; }
+        p { line-height: 1.5; color: #ddd; }
+        label { display: block; margin: 12px 0 6px; }
+        input, textarea, select { width: 100%; padding: 11px; background: #090909; border: 1px solid #555; color: white; border-radius: 6px; }
+        textarea { min-height: 75px; }
+        button { margin-top: 12px; padding: 11px 14px; background: #b5121b; color: white; border: 0; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .message { padding: 12px; background: #202020; border-radius: 8px; }
+        .muted { color: #aaa; }
+        .status { color: #ff9a9f; text-transform: capitalize; font-weight: bold; }
+        a { color: #ff777d; }
+    </style>
+</head>
+<body>
+<header><a href="/dashboard">IDOMA HUB · Administration</a></header>
+<main>
+    <h1>Creator Monetization</h1>
+    <p>Your administrator role: <strong>{{.Role}}</strong></p>
+    {{if .Message}}<p class="message">{{.Message}}</p>{{end}}
+
+    {{if eq .Role "owner"}}
+    <section class="card">
+        <h2>Authorize an administrator</h2>
+        <p>Enter the username of an existing IDOMA HUB member you trust. Administrators can review monetization applications but cannot authorize other administrators.</p>
+        <form method="POST" action="/admin/monetization">
+            <input type="hidden" name="action" value="add_admin">
+            <label for="username">Member username</label>
+            <input id="username" name="username" required maxlength="100">
+            <button type="submit">Authorize administrator</button>
+        </form>
+        <p class="muted">To revoke an administrator's access, enter their user ID below. The platform owner cannot be removed here.</p>
+        <form method="POST" action="/admin/monetization">
+            <input type="hidden" name="action" value="remove_admin">
+            <label for="user_id">Administrator user ID</label>
+            <input id="user_id" name="user_id" type="number" min="1" required>
+            <button type="submit">Remove administrator access</button>
+        </form>
+    </section>
+    {{end}}
+
+    <h2>Applications</h2>
+    {{if .Applications}}
+        {{range .Applications}}
+        <section class="card">
+            <h3>{{.Username}} <span class="muted">· User ID {{.UserID}}</span></h3>
+            <p>Email: {{.Email}}</p>
+            <p>Status: <span class="status">{{.Status}}</span></p>
+            <p class="muted">Applied: {{.CreatedAt}}</p>
+            <p><strong>Applicant's note</strong><br>{{if .Note}}{{.Note}}{{else}}No note supplied.{{end}}</p>
+            {{if .ReviewNote}}<p><strong>Previous review note</strong><br>{{.ReviewNote}}</p>{{end}}
+            <form method="POST" action="/admin/monetization">
+                <input type="hidden" name="action" value="review">
+                <input type="hidden" name="application_id" value="{{.ID}}">
+                <label for="decision-{{.ID}}">Decision</label>
+                <select id="decision-{{.ID}}" name="decision" required>
+                    <option value="approved">Approve monetization</option>
+                    <option value="rejected">Reject application</option>
+                    <option value="suspended">Suspend monetization</option>
+                </select>
+                <label for="note-{{.ID}}">Review note</label>
+                <textarea id="note-{{.ID}}" name="review_note" maxlength="1500" placeholder="Optional explanation for your decision"></textarea>
+                <button type="submit">Save decision</button>
+            </form>
+        </section>
+        {{end}}
+    {{else}}
+        <section class="card"><p>No monetization applications have been submitted yet.</p></section>
+    {{end}}
+    <p><a href="/dashboard">Back to dashboard</a></p>
+</main>
+</body>
+</html>

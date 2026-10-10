@@ -475,6 +475,7 @@ func initDatabase() *sql.DB {
                 CREATE TABLE IF NOT EXISTS reward_activity (
                         id BIGSERIAL PRIMARY KEY,
                         user_id INTEGER NOT NULL REFERENCES users(id),
+                        creator_id INTEGER REFERENCES users(id),
                         post_id INTEGER,
                         activity_type TEXT NOT NULL
                                 CHECK (activity_type IN ('like', 'comment', 'video_watch')),
@@ -489,6 +490,51 @@ func initDatabase() *sql.DB {
         `)
 	if err != nil {
 		log.Fatal("Unable to create reward_activity table:", err)
+	}
+
+	// Add creator tracking to existing databases.
+	_, err = db.Exec(`
+                ALTER TABLE reward_activity
+                ADD COLUMN IF NOT EXISTS creator_id INTEGER REFERENCES users(id)
+        `)
+	if err != nil {
+		log.Fatal("Unable to add reward creator ID:", err)
+	}
+
+	// Backfill creator IDs for existing activities.
+	_, err = db.Exec(`
+                UPDATE reward_activity ra
+                SET creator_id = p.user_id
+                FROM posts p
+                WHERE ra.post_id = p.id
+                  AND ra.creator_id IS NULL
+        `)
+	if err != nil {
+		log.Fatal("Unable to backfill reward creator IDs:", err)
+	}
+
+	// Create server-side video watch sessions.
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS video_watch_sessions (
+                        token TEXT PRIMARY KEY,
+                        viewer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+                        creator_id INTEGER NOT NULL REFERENCES users(id),
+                        started_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        expires_at TIMESTAMP NOT NULL,
+                        completed_at TIMESTAMP
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create video watch sessions:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE INDEX IF NOT EXISTS idx_video_watch_sessions_viewer
+                ON video_watch_sessions(viewer_id, expires_at)
+        `)
+	if err != nil {
+		log.Fatal("Unable to create video watch session index:", err)
 	}
 
 	_, err = db.Exec(`
@@ -540,6 +586,58 @@ func initDatabase() *sql.DB {
         `)
 	if err != nil {
 		log.Fatal("Unable to create reward_payouts table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS admin_users (
+                        user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+                        role TEXT NOT NULL CHECK (role IN ('owner', 'admin')),
+                        granted_by INTEGER REFERENCES users(id),
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create admin_users table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS creator_monetization_applications (
+                        id BIGSERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+                        status TEXT NOT NULL DEFAULT 'pending'
+                                CHECK (status IN ('pending', 'approved', 'rejected', 'suspended')),
+                        application_note TEXT NOT NULL DEFAULT '',
+                        reviewed_by INTEGER REFERENCES users(id),
+                        reviewed_at TIMESTAMP,
+                        review_note TEXT NOT NULL DEFAULT '',
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create creator monetization applications table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS admin_audit_log (
+                        id BIGSERIAL PRIMARY KEY,
+                        actor_id INTEGER REFERENCES users(id),
+                        target_user_id INTEGER REFERENCES users(id),
+                        action TEXT NOT NULL,
+                        details TEXT NOT NULL DEFAULT '',
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create admin audit log table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE INDEX IF NOT EXISTS idx_creator_monetization_status
+                ON creator_monetization_applications(status, created_at)
+        `)
+	if err != nil {
+		log.Fatal("Unable to create monetization status index:", err)
 	}
 
 	return db
