@@ -88,9 +88,10 @@ func callStartHandler(w http.ResponseWriter, r *http.Request) {
 	defer tx.Rollback()
 
 	// Serialize call creation for this pair of users.
-	_, err = tx.Exec(`
-		SELECT pg_advisory_xact_lock(LEAST($1, $2), GREATEST($1, $2))
-	`, userID, peerID)
+	var lockResult any
+	err = tx.QueryRow(`
+                SELECT pg_advisory_xact_lock(LEAST($1, $2), GREATEST($1, $2))
+        `, userID, peerID).Scan(&lockResult)
 	if err != nil {
 		callError(w, http.StatusInternalServerError, "Unable to reserve the call.")
 		return
