@@ -118,6 +118,9 @@ func wordsHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	// Keep the existing words and add the supplied Idoma nouns.
+	words = append(words, idomaNounWords()...)
+
 	data := WordsPageData{
 		Username: username,
 		Words:    words,
