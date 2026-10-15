@@ -11453,3 +11453,204 @@ body.dashboard-body footer,
 body.dashboard-body ~ footer {
     border-top: 1px solid #292929 !important;
 }
+
+/* =========================================================
+   IDOMA HUB — FACEBOOK-STYLE DESKTOP DASHBOARD
+   Laptop: left sidebar | stories and feed | right sidebar
+   Phone/tablet: preserve the existing compact layout
+   ========================================================= */
+
+body.dashboard-body .dashboard-rightbar {
+    display: none;
+}
+
+body.dashboard-body .dashboard-rightbar-card {
+    padding: 16px;
+    margin: 0 0 14px;
+    background: #111111;
+    border: 1px solid #292929;
+    border-radius: 14px;
+    color: #ffffff;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+body.dashboard-body .dashboard-rightbar-card h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+body.dashboard-body .dashboard-rightbar-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+body.dashboard-body .dashboard-rightbar-heading a {
+    color: #e15b62;
+    font-size: 12px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+body.dashboard-body .dashboard-rightbar-suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+body.dashboard-body .dashboard-suggestion {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 9px;
+    min-width: 0;
+}
+
+body.dashboard-body .dashboard-suggestion-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+body.dashboard-body .dashboard-suggestion-avatar {
+    display: flex;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+body.dashboard-body .dashboard-suggestion-initial {
+    background: #292929;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+body.dashboard-body .dashboard-suggestion-name {
+    overflow-wrap: anywhere;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+body.dashboard-body .dashboard-suggestion-button {
+    width: 100%;
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 1px solid #b5121b;
+    border-radius: 8px;
+    background: #b5121b;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.dashboard-body .dashboard-suggestion-button:hover {
+    background: #850c13;
+}
+
+body.dashboard-body .dashboard-rightbar-empty {
+    margin: 0;
+    color: #aaaaaa;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+body.dashboard-body .dashboard-rightbar-link {
+    display: block;
+    padding: 12px 0;
+    border-bottom: 1px solid #292929;
+    color: #eeeeee;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+body.dashboard-body .dashboard-rightbar-link:last-child {
+    border-bottom: 0;
+}
+
+body.dashboard-body .dashboard-rightbar-link:hover {
+    color: #e15b62;
+}
+
+@media (min-width: 1001px) {
+    body.dashboard-body .dashboard-layout {
+        display: grid !important;
+        grid-template-columns: minmax(190px, 220px) minmax(0, 1fr) minmax(230px, 270px) !important;
+        grid-template-rows: auto auto !important;
+        align-items: start !important;
+        gap: 18px !important;
+        width: 100% !important;
+        max-width: 1500px !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .dashboard-layout > .dashboard-sidebar {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-column: 1 !important;
+        grid-row: 1 / span 2 !important;
+        gap: 14px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        align-self: start !important;
+    }
+
+    body.dashboard-body .dashboard-layout > .stories-section {
+        display: block !important;
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        order: initial !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        align-self: start !important;
+    }
+
+    body.dashboard-body .dashboard-layout > .feed-section {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+        order: initial !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        align-self: start !important;
+    }
+
+    body.dashboard-body .dashboard-layout > .dashboard-rightbar {
+        display: block !important;
+        grid-column: 3 !important;
+        grid-row: 1 / span 2 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        align-self: start !important;
+    }
+
+    body.dashboard-body .dashboard-sidebar > .dashboard-card {
+        width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+}
+
+@media (max-width: 1000px) {
+    body.dashboard-body .dashboard-layout > .dashboard-rightbar {
+        display: none !important;
+    }
+}
