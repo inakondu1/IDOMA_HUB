@@ -121,6 +121,7 @@ func askGemini(prompt string) (string, error) {
 
 	models := []string{
 		"gemini-3.8-flash",
+		"gemini-3.5-flash-lite",
 		"gemini-3.6-flash",
 	}
 
@@ -133,7 +134,7 @@ func askGemini(prompt string) (string, error) {
 			model,
 		)
 
-		for attempt := 1; attempt <= 1; attempt++ {
+		for attempt := 1; attempt <= 2; attempt++ {
 			req, err := http.NewRequestWithContext(ctx,
 				http.MethodPost,
 				url,
