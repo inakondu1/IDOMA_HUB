@@ -147,6 +147,12 @@ func idomaReferenceContext(question string) string {
 		sections = append(sections, b.String())
 	}
 
+	if cultureContext := idomaCultureReferenceContext(question); cultureContext != "" {
+
+		sections = append(sections, cultureContext)
+
+	}
+
 	if len(sections) == 0 {
 		return ""
 	}
