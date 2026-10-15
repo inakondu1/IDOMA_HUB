@@ -10746,3 +10746,72 @@ body.dashboard-body .feed-post .post-header .post-avatar-link:hover {
     accent-color: var(--idoma-red);
     cursor: pointer;
 }
+
+/* IDOMA AI FORMATTED ANSWERS */
+.ai-answer-content {
+    color: #d0d0d0;
+    font-size: 1rem;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.ai-answer-content p {
+    margin: 0 0 16px;
+    line-height: 1.8;
+}
+
+.ai-answer-content h1,
+.ai-answer-content h2,
+.ai-answer-content h3,
+.ai-answer-content h4,
+.ai-answer-content h5,
+.ai-answer-content h6 {
+    color: #ffffff;
+    font-weight: 750;
+    line-height: 1.4;
+    margin: 24px 0 12px;
+}
+
+.ai-answer-content h1 { font-size: 1.7rem; }
+.ai-answer-content h2 { font-size: 1.45rem; }
+.ai-answer-content h3 { font-size: 1.25rem; }
+
+.ai-answer-content ul,
+.ai-answer-content ol {
+    padding-left: 26px;
+    margin: 12px 0 20px;
+}
+
+.ai-answer-content li {
+    margin-bottom: 8px;
+    line-height: 1.75;
+}
+
+.ai-answer-content strong {
+    color: #ffffff;
+    font-weight: 750;
+}
+
+.ai-answer-content pre {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 16px;
+    background: #111111;
+    border: 1px solid #333333;
+    border-radius: 10px;
+}
+
+.ai-answer-content code {
+    font-family: monospace;
+}
+
+@media (max-width: 700px) {
+    .ai-answer-content {
+        font-size: 0.95rem;
+        line-height: 1.75;
+    }
+
+    .ai-answer-content h1 { font-size: 1.5rem; }
+    .ai-answer-content h2 { font-size: 1.3rem; }
+    .ai-answer-content h3 { font-size: 1.15rem; }
+}

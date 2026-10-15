@@ -238,18 +238,18 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 					idomaText,
 				)
 			} else {
-				prompt := question
+				prompt := "You are IDOMA AI, a helpful assistant for learning and preserving the Idoma language and culture.\n" +
+					"Answer the user's actual question directly in clear, natural English unless they request another language.\n" +
+					"Keep Idoma language, culture, community traditions, and history central when relevant. Be respectful of differences between communities.\n" +
+					"Preserve Idoma spellings and tone marks exactly as supplied. Use any supplied IDOMA HUB reference material accurately.\n" +
+					"Do not invent Idoma translations, cultural practices, historical details, citations, or sources. If reliable details are unavailable or you are uncertain, say so clearly.\n" +
+					"Format answers for readability: use short paragraphs, Markdown headings for longer answers, and bullet points only when useful. Avoid excessive bold text and repetition.\n\n" +
+					"USER QUESTION:\n" + question
 
 				if referenceContext := idomaReferenceContext(question); referenceContext != "" {
-					prompt = "You are IDOMA AI, an assistant for learning and preserving the Idoma language.\n" +
-						"Answer the user's question using the supplied reference material when relevant.\n" +
-						"Preserve Idoma spelling and tone marks exactly as supplied.\n" +
-						"Do not invent meanings for missing entries. Clearly say when the reference does not provide an answer.\n" +
-						"Treat dialect forms as belonging to their stated communities; do not claim they are all interchangeable.\n\n" +
-						"USER QUESTION:\n" + question + "\n\n" +
-						"REFERENCE MATERIAL:\n" + referenceContext
+					prompt += "\n\nSUPPLIED IDOMA HUB REFERENCE MATERIAL:\n" + referenceContext +
+						"\nUse the supplied material accurately. Do not treat different community forms as interchangeable."
 				}
-
 				response, err = askGemini(prompt)
 				if err != nil {
 					log.Printf("IDOMA AI Gemini error: %v", err)
@@ -260,15 +260,17 @@ func aiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Username string
-		Question string
-		Response string
-		Error    string
+		Username          string
+		Question          string
+		Response          string
+		FormattedResponse template.HTML
+		Error             string
 	}{
-		Username: username,
-		Question: question,
-		Response: response,
-		Error:    aiError,
+		Username:          username,
+		Question:          question,
+		Response:          response,
+		FormattedResponse: renderMarkdown(response),
+		Error:             aiError,
 	}
 
 	tmpl, err := template.ParseFiles("templates/ai.html")
