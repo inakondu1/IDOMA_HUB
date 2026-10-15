@@ -118,6 +118,24 @@
                 }
         }
 
+        function handleYourStoryClick(event) {
+                const button = event.currentTarget;
+                const currentUserID = button ? String(button.dataset.currentUserId || "") : "";
+
+                loadStoryCards();
+
+                const ownStoryIndex = storyCards.findIndex(function (card) {
+                        return String(card.dataset.userId || "") === currentUserID;
+                });
+
+                if (currentUserID && ownStoryIndex >= 0) {
+                        openStory(ownStoryIndex);
+                        return;
+                }
+
+                toggleStoryMenu();
+        }
+
         function chooseStoryPhoto() {
                 const input = document.getElementById("story-photo");
 
@@ -152,7 +170,7 @@
 
                 <div class="story-create-wrapper">
 
-                        <button type="button" class="story-create-card" onclick="toggleStoryMenu()">
+                        <button type="button" class="story-create-card" data-current-user-id="{{.UserID}}" onclick="handleYourStoryClick(event)">
 
                                 <div class="story-avatar-wrapper">
 
@@ -162,7 +180,7 @@
                                         <div class="story-avatar story-avatar-fallback">{{printf "%.1s" .Username}}</div>
                                         {{end}}
 
-                                        <span class="story-add">+</span>
+                                        <span class="story-add" onclick="event.stopPropagation(); toggleStoryMenu()" aria-label="Create a story">+</span>
 
                                 </div>
 
@@ -207,7 +225,7 @@
 
                         </div>
 
-                        {{if and .Content (not .MediaURL)}}<div class="story-text-preview">{{.Content}}</div>{{end}}
+
                         <strong>{{.Username}}</strong>
 
                 </div>
@@ -749,6 +767,14 @@ async function sharePost(postID) {
       mediaContainer.innerHTML = "";
       textContainer.textContent = content;
 
+      const viewerContent = document.querySelector(".story-viewer-content");
+      if (viewerContent) {
+          viewerContent.classList.toggle(
+              "story-text-only",
+              !mediaURL && Boolean(content.trim())
+          );
+      }
+
       if (mediaURL && mediaType === "image") {
           const image = document.createElement("img");
           image.src = mediaURL;
@@ -873,9 +899,18 @@ async function sharePost(postID) {
       }
 
       const visibleUsers = new Set();
+      const yourStoryButton = document.querySelector(".story-create-card");
+      const currentUserID = yourStoryButton
+          ? String(yourStoryButton.dataset.currentUserId || "")
+          : "";
 
       storyCards.forEach(function (card, index) {
-          const userID = card.dataset.userId || "";
+          const userID = String(card.dataset.userId || "");
+
+          if (currentUserID && userID === currentUserID) {
+              card.style.display = "none";
+              return;
+          }
 
           if (visibleUsers.has(userID)) {
               card.style.display = "none";

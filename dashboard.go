@@ -275,6 +275,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := struct {
 		Title                string
+		UserID               int
 		Username             string
 		ProfilePicture       string
 		Posts                []Post
@@ -285,6 +286,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		AnonymousOnlineCount int
 	}{
 		Title:                "IDOMA HUB - Dashboard",
+		UserID:               userID,
 		Username:             username,
 		ProfilePicture:       profilePicture,
 		Posts:                posts,
