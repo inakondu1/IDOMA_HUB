@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -115,12 +116,15 @@ func askGemini(prompt string) (string, error) {
 		return "", err
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
 	models := []string{
 		"gemini-3.8-flash",
 		"gemini-3.6-flash",
 	}
 
-	client := &http.Client{}
+	client := &http.Client{Timeout: 20 * time.Second}
 	var lastErr error
 
 	for _, model := range models {
@@ -129,8 +133,8 @@ func askGemini(prompt string) (string, error) {
 			model,
 		)
 
-		for attempt := 1; attempt <= 2; attempt++ {
-			req, err := http.NewRequest(
+		for attempt := 1; attempt <= 1; attempt++ {
+			req, err := http.NewRequestWithContext(ctx,
 				http.MethodPost,
 				url,
 				bytes.NewBuffer(jsonData),
@@ -144,7 +148,8 @@ func askGemini(prompt string) (string, error) {
 
 			resp, err := client.Do(req)
 			if err != nil {
-				return "", err
+				lastErr = fmt.Errorf("Gemini model %s request failed: %w", model, err)
+				continue
 			}
 
 			if resp.StatusCode == http.StatusOK {
