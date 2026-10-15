@@ -10816,3 +10816,204 @@ body.dashboard-body .feed-post .post-header .post-avatar-link:hover {
     .ai-answer-content h2 { font-size: 1.3rem; }
     .ai-answer-content h3 { font-size: 1.15rem; }
 }
+
+/* =========================================================
+   IDOMA HUB — COMPACT STORIES AND COMMUNITY FEED
+   Responsive improvements for phones and laptops
+   ========================================================= */
+
+/* Compact Stories container on all screens */
+body.dashboard-body .stories-section {
+    padding: 5px 8px !important;
+    margin-bottom: 6px !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard-body .stories-row {
+    gap: 7px !important;
+    padding: 2px 2px 4px !important;
+}
+
+/* Compact story cards on laptops */
+@media (min-width: 769px) {
+    body.dashboard-body .story-create-wrapper {
+        flex: 0 0 95px !important;
+        width: 95px !important;
+        min-width: 95px !important;
+    }
+
+    body.dashboard-body .story-create-card,
+    body.dashboard-body .stories-row .story-card {
+        flex: 0 0 95px !important;
+        width: 95px !important;
+        min-width: 95px !important;
+        max-width: 95px !important;
+        height: 140px !important;
+        min-height: 140px !important;
+    }
+
+    body.dashboard-body .story-create-card .story-avatar-wrapper {
+        height: 105px !important;
+    }
+}
+
+/* Compact story cards on phones */
+@media (max-width: 768px) {
+    body.dashboard-body .stories-section {
+        width: calc(100% - 16px) !important;
+        margin: 0 8px 6px !important;
+        padding: 4px !important;
+    }
+
+    body.dashboard-body .stories-row {
+        gap: 7px !important;
+        padding: 2px 1px 4px !important;
+    }
+
+    body.dashboard-body .story-create-wrapper {
+        flex: 0 0 76px !important;
+        width: 76px !important;
+        min-width: 76px !important;
+        max-width: 76px !important;
+        height: 115px !important;
+        min-height: 115px !important;
+    }
+
+    body.dashboard-body .story-create-card,
+    body.dashboard-body .stories-row .story-card {
+        flex: 0 0 76px !important;
+        width: 76px !important;
+        min-width: 76px !important;
+        max-width: 76px !important;
+        height: 115px !important;
+        min-height: 115px !important;
+        padding: 4px 2px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .story-create-card .story-avatar-wrapper {
+        height: 80px !important;
+    }
+
+    body.dashboard-body .story-create-card > strong {
+        padding: 4px 1px !important;
+        font-size: 11px !important;
+    }
+
+    body.dashboard-body .story-create-card .story-add {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 20px !important;
+    }
+}
+
+/* Keep community photos proportional and prevent excessive height */
+body.dashboard-body .feed-post .post-media-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 8px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard-body .feed-post img.post-media {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 420px !important;
+    object-fit: contain !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard-body .feed-post video.post-media {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 420px !important;
+    object-fit: contain !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+    body.dashboard-body .feed-post img.post-media {
+        max-height: 360px !important;
+    }
+
+    body.dashboard-body .feed-post video.post-media {
+        max-height: 360px !important;
+    }
+}
+
+/* Cleaner, evenly spaced Facebook-style post action row */
+body.dashboard-body .feed-post .post-actions {
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: space-around !important;
+    gap: 4px !important;
+    width: 100% !important;
+    margin-top: 8px !important;
+    padding-top: 6px !important;
+    border-top: 1px solid #e4e6eb !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard-body .feed-post .post-actions form {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+body.dashboard-body .feed-post .post-actions > .comment-action {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+}
+
+body.dashboard-body .feed-post .post-actions button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 38px !important;
+    padding: 6px 3px !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #65676b !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard-body .feed-post .post-actions button:hover {
+    background: #f0f2f5 !important;
+}
+
+body.dashboard-body .feed-post .post-actions form span {
+    flex: 0 0 auto !important;
+    margin-left: 3px !important;
+    color: #65676b !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 380px) {
+    body.dashboard-body .feed-post .post-actions button {
+        font-size: 11px !important;
+        padding: 5px 1px !important;
+    }
+
+    body.dashboard-body .feed-post .post-actions form span {
+        font-size: 10px !important;
+        margin-left: 1px !important;
+    }
+}
