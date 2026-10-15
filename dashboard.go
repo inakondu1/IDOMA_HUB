@@ -65,6 +65,7 @@ func formatDateTime(value string) string {
 type Comment struct {
 	ID             int
 	PostID         int
+	UserID         int
 	Username       string
 	ProfilePicture string
 	Content        string
@@ -154,7 +155,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		commentRows, err := db.Query(`
-                        SELECT comments.id, comments.post_id, users.username, COALESCE(users.profile_picture, ''),
+                        SELECT comments.id, comments.post_id, comments.user_id, users.username, COALESCE(users.profile_picture, ''),
                                comments.content, comments.created_at
                         FROM comments
                         JOIN users ON users.id = comments.user_id
@@ -174,6 +175,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 			err := commentRows.Scan(
 				&comment.ID,
 				&comment.PostID,
+				&comment.UserID,
 				&comment.Username,
 				&comment.ProfilePicture,
 				&comment.Content,

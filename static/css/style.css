@@ -11371,3 +11371,85 @@ body.dashboard-body .story-viewer-content.story-text-only .story-viewer-header {
         font-size: 0.8rem;
     }
 }
+
+/* Dashboard feed polish: clean borders and profile links */
+body.dashboard-body .feed-post,
+body.dashboard-body .create-post-card,
+body.dashboard-body .dashboard-card,
+body.dashboard-body .story-card {
+    border-color: #292929 !important;
+    box-shadow: none !important;
+}
+body.dashboard-body .feed-post {
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 12px;
+}
+body.dashboard-body .feed-post button {
+    border-color: #292929 !important;
+    box-shadow: none !important;
+}
+body.dashboard-body .feed-post button:hover {
+    border-color: #b5121b !important;
+}
+body.dashboard-body .comment-bubble {
+    border: 0 !important;
+    box-shadow: none !important;
+}
+body.dashboard-body .comment-form {
+    border-color: #292929 !important;
+}
+body.dashboard-body .comment-avatar-link,
+body.dashboard-body .story-profile-link {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 0 !important;
+    outline-offset: 3px;
+    text-decoration: none !important;
+}
+body.dashboard-body .comment-avatar-link {
+    width: 36px;
+    height: 36px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+body.dashboard-body .comment-avatar-link .comment-avatar-image,
+body.dashboard-body .comment-avatar-link .comment-avatar {
+    display: block;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
+    object-fit: cover;
+}
+body.dashboard-body .comment-avatar-link .comment-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+body.dashboard-body .comment-author-link {
+    color: inherit !important;
+    text-decoration: none;
+}
+body.dashboard-body .comment-author-link:hover {
+    color: #b5121b !important;
+    text-decoration: underline;
+}
+body.dashboard-body .story-profile-link {
+    border-radius: 50%;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+body.dashboard-body .story-profile-link .story-avatar {
+    display: block;
+}
+body.dashboard-body hr {
+    border-color: #292929 !important;
+}
+body.dashboard-body footer,
+body.dashboard-body ~ footer {
+    border-top: 1px solid #292929 !important;
+}
