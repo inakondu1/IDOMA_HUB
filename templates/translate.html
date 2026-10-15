@@ -65,7 +65,7 @@
                     name="text"
                     placeholder="Enter English text to translate..."
                     required
-                ></textarea>
+                >{{.Text}}</textarea>
 
                 <button type="submit" class="ai-ask-button">
                     Translate to Idoma
@@ -93,6 +93,18 @@
                 </div>
                 {{end}}
 
+            </div>
+            {{end}}
+
+            {{if and .Text (not .Matches) (not .Error)}}
+            <div class="ai-response">
+                <h2>No matching translations found</h2>
+                <p>
+                    No saved translation matched
+                    <strong>{{.Text}}</strong>.
+                    Try a shorter word or phrase. A full sentence may not
+                    be available in the IDOMA HUB translation database yet.
+                </p>
             </div>
             {{end}}
 
