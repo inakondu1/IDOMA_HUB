@@ -10481,12 +10481,13 @@ body.dashboard-body .comment-meta span {
         display: none !important;
     }
 
-    /* Stories come first */
+    /* Stories come first — compact desktop container */
     body.dashboard-body .stories-section {
         order: 1 !important;
         width: 100% !important;
         max-width: 100% !important;
-        margin: 0 0 12px 0 !important;
+        margin: 0 0 6px 0 !important;
+        padding: 8px 10px !important;
         box-sizing: border-box !important;
     }
 
