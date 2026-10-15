@@ -273,6 +273,40 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var suggestions []FriendUser
+
+	suggestionRows, suggestionErr := db.Query(`
+		SELECT u.id, u.username, COALESCE(u.profile_picture, '')
+		FROM users u
+		WHERE u.id <> $1
+		AND NOT EXISTS (
+			SELECT 1
+			FROM friend_requests fr
+			WHERE (
+				(fr.sender_id = $1 AND fr.receiver_id = u.id)
+				OR (fr.sender_id = u.id AND fr.receiver_id = $1)
+			)
+			AND fr.status IN ('pending', 'accepted')
+		)
+		ORDER BY u.username
+		LIMIT 5
+	`, userID)
+
+	if suggestionErr == nil {
+		for suggestionRows.Next() {
+			var suggestion FriendUser
+			if suggestionRows.Scan(&suggestion.ID, &suggestion.Username, &suggestion.ProfilePicture) == nil {
+				suggestions = append(suggestions, suggestion)
+			}
+		}
+		if err := suggestionRows.Err(); err != nil {
+			log.Println("Unable to load dashboard suggestions:", err)
+		}
+		suggestionRows.Close()
+	} else {
+		log.Println("Unable to load dashboard suggestions:", suggestionErr)
+	}
+
 	data := struct {
 		Title                string
 		UserID               int
@@ -280,6 +314,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		ProfilePicture       string
 		Posts                []Post
 		Statuses             []Status
+		Suggestions          []FriendUser
 		NotificationCount    int
 		MessageCount         int
 		OnlineCount          int
@@ -291,6 +326,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		ProfilePicture:       profilePicture,
 		Posts:                posts,
 		Statuses:             statuses,
+		Suggestions:          suggestions,
 		NotificationCount:    notificationCount,
 		MessageCount:         messageCount,
 		OnlineCount:          getOnlineCount(),
