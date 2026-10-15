@@ -19,6 +19,7 @@
 			<a href="/profile">👤 Profile</a>
                         <a href="/dashboard">Home</a>
 			<a href="/friends">Friends</a>
+                        <a href="/friends#people-you-may-know">People You May Know</a>
                         <a href="/messages">Messages</a>
                         <a href="/notifications" class="dashboard-notification-link">
     <span>Notifications</span>
@@ -308,47 +309,7 @@
 
 
 
-				<div class="dashboard-card dashboard-suggestions">
-    <h2>👋 People You May Know</h2>
-    <p class="dashboard-suggestions-intro">
-        Connect with more people in the Idoma community.
-    </p>
-
-    {{if .Suggestions}}
-    <div class="dashboard-suggestion-list">
-        {{range .Suggestions}}
-        <div class="dashboard-suggestion">
-            <a class="dashboard-suggestion-user"
-               href="/profile-view?id={{.ID}}">
-                <div class="dashboard-suggestion-avatar">
-                    {{if .ProfilePicture}}
-                    <img src="{{.ProfilePicture}}" alt="{{.Username}}">
-                    {{else}}
-                    {{printf "%.1s" .Username}}
-                    {{end}}
-                </div>
-                <span class="dashboard-suggestion-name">{{.Username}}</span>
-            </a>
-
-            <form class="dashboard-suggestion-form"
-                  method="POST" action="/friends">
-                <input type="hidden" name="action" value="send">
-                <input type="hidden" name="user_id" value="{{.ID}}">
-                <button class="dashboard-suggestion-button" type="submit">
-                    Add Friend
-                </button>
-            </form>
-        </div>
-        {{end}}
-    </div>
-    {{else}}
-    <p class="dashboard-suggestion-empty">
-        No new people to connect with right now. Check back later!
-    </p>
-    {{end}}
-</div>
-
-<div class="dashboard-card create-post-card">
+				<div class="dashboard-card create-post-card">
 
         <h2>📝 Create a Post</h2>
 
