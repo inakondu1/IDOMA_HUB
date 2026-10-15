@@ -640,5 +640,53 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create monetization status index:", err)
 	}
 
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS call_sessions (
+                        id BIGSERIAL PRIMARY KEY,
+                        caller_id INTEGER NOT NULL REFERENCES users(id),
+                        callee_id INTEGER NOT NULL REFERENCES users(id),
+                        call_type TEXT NOT NULL CHECK (call_type IN ('audio', 'video')),
+                        status TEXT NOT NULL DEFAULT 'ringing'
+                                CHECK (status IN ('ringing', 'accepted', 'rejected', 'ended', 'missed')),
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        CHECK (caller_id <> callee_id)
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create call sessions table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS call_signals (
+                        id BIGSERIAL PRIMARY KEY,
+                        call_id BIGINT NOT NULL REFERENCES call_sessions(id) ON DELETE CASCADE,
+                        sender_id INTEGER NOT NULL REFERENCES users(id),
+                        recipient_id INTEGER NOT NULL REFERENCES users(id),
+                        signal_type TEXT NOT NULL CHECK (signal_type IN ('offer', 'answer', 'ice')),
+                        payload JSONB NOT NULL,
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create call signals table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE INDEX IF NOT EXISTS idx_call_sessions_recipient_status
+                ON call_sessions(callee_id, status, created_at DESC)
+        `)
+	if err != nil {
+		log.Fatal("Unable to create call sessions index:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE INDEX IF NOT EXISTS idx_call_signals_recipient
+                ON call_signals(call_id, recipient_id, id)
+        `)
+	if err != nil {
+		log.Fatal("Unable to create call signals index:", err)
+	}
+
 	return db
 }

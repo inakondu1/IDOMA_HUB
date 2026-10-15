@@ -203,6 +203,12 @@ func main() {
 	http.HandleFunc("/farm-produce", farmProduceHandler)
 	http.HandleFunc("/notifications", notificationsHandler)
 	http.HandleFunc("/messages", messagesHandler)
+
+	http.HandleFunc("/calls/start", callStartHandler)
+	http.HandleFunc("/calls/incoming", callIncomingHandler)
+	http.HandleFunc("/calls/action", callActionHandler)
+	http.HandleFunc("/calls/signal", callSignalHandler)
+	http.HandleFunc("/calls/events", callEventsHandler)
 	http.HandleFunc("/story-reply", storyReplyHandler)
 	http.HandleFunc("/post", createPostHandler)
 	http.HandleFunc("/video-watch", videoWatchHandler)
