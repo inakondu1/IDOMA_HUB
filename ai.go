@@ -116,8 +116,7 @@ func askGemini(prompt string) (string, error) {
 	}
 
 	models := []string{
-		"gemini-3.5-flash",
-		"gemini-3.7-flash",
+		"gemini-3.8-flash",
 		"gemini-3.6-flash",
 	}
 
@@ -177,9 +176,7 @@ func askGemini(prompt string) (string, error) {
 				string(body),
 			)
 
-			transient := resp.StatusCode == http.StatusRequestTimeout ||
-				resp.StatusCode == http.StatusTooManyRequests ||
-				resp.StatusCode >= 500
+			transient := resp.StatusCode == http.StatusRequestTimeout || resp.StatusCode >= 500
 
 			if !transient {
 				break
