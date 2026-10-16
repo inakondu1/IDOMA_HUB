@@ -91,7 +91,10 @@ func callStartHandler(w http.ResponseWriter, r *http.Request) {
 	// Serialize call creation for this pair of users.
 	var lockResult any
 	err = tx.QueryRow(`
-                SELECT pg_advisory_xact_lock(LEAST($1, $2), GREATEST($1, $2))
+                SELECT pg_advisory_xact_lock(
+                    LEAST($1::integer, $2::integer),
+                    GREATEST($1::integer, $2::integer)
+                )
         `, userID, peerID).Scan(&lockResult)
 	if err != nil {
 		log.Printf("Unable to reserve call: %v", err)
