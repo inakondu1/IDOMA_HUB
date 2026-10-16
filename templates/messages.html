@@ -506,6 +506,11 @@
             let lastSignalID = 0;
             let pendingICE = [];
             let offerSent = false;
+            let makingOffer = false;
+            let isSettingRemoteAnswerPending = false;
+            let ignoreOffer = false;
+            let renegotiationEnabled = false;
+            let negotiationQueued = false;
             let eventsBusy = false;
             let incomingBusy = false;
             let startingCall = false;
@@ -567,16 +572,36 @@
                 });
             }
 
-            function setCallTitle() {
-                title.textContent =
-                    (callType === "video" ? "📹 Video call with " : "📞 Voice call with ") + peerName;
+            function syncCallMediaUI() {
+                const localTracks = localStream ? localStream.getVideoTracks() : [];
+                const remoteTracks = remoteStream ? remoteStream.getVideoTracks() : [];
 
-                const showVideo = callType === "video";
+                const hasLiveLocalVideo = localTracks.some(
+                    track => track.readyState === "live"
+                );
+                const hasRemoteVideo = remoteTracks.some(
+                    track => track.readyState === "live"
+                );
+                const showVideo =
+                    callType === "video" || hasLiveLocalVideo || hasRemoteVideo;
+                const cameraEnabled = localTracks.some(
+                    track => track.readyState === "live" && track.enabled
+                );
+
                 videoArea.style.display = showVideo ? "grid" : "none";
                 localVideo.style.display = showVideo ? "block" : "none";
                 remoteVideo.style.display = showVideo ? "block" : "none";
+
+                title.textContent =
+                    (showVideo ? "📹 Video call with " : "📞 Voice call with ") +
+                    peerName;
                 muteButton.textContent = "Mute microphone";
-                cameraButton.textContent = "Turn camera off";
+                cameraButton.textContent =
+                    cameraEnabled ? "Turn camera off" : "Turn camera on";
+            }
+
+            function setCallTitle() {
+                syncCallMediaUI();
             }
 
             async function sendSignal(type, payload) {
@@ -601,6 +626,7 @@
                     });
                 }
                 localVideo.srcObject = localStream;
+                syncCallMediaUI();
 
                 peerConnection.ontrack = event => {
                     event.streams.forEach(stream => {
@@ -610,6 +636,7 @@
                             }
                         });
                     });
+                    syncCallMediaUI();
                     remoteVideo.play().catch(() => {});
                 };
 
@@ -619,6 +646,10 @@
                             console.warn("Could not send network candidate:", error);
                         });
                     }
+                };
+
+                peerConnection.onnegotiationneeded = () => {
+                    void negotiateMediaChanges();
                 };
 
                 peerConnection.onconnectionstatechange = () => {
@@ -657,43 +688,134 @@
                 }
             }
 
+            async function negotiateMediaChanges() {
+                if (!renegotiationEnabled || !callID || !peerConnection) return;
+
+                const pc = peerConnection;
+                if (makingOffer || pc.signalingState !== "stable") {
+                    negotiationQueued = true;
+                    return;
+                }
+
+                negotiationQueued = false;
+                makingOffer = true;
+
+                try {
+                    const offer = await pc.createOffer();
+                    if (pc !== peerConnection || !callID) return;
+
+                    if (pc.signalingState !== "stable") {
+                        negotiationQueued = true;
+                        return;
+                    }
+
+                    await pc.setLocalDescription(offer);
+                    await sendSignal("offer", pc.localDescription);
+                } catch (error) {
+                    console.warn("Could not renegotiate call media:", error);
+                    status.textContent =
+                        "Could not update video. Your audio call can continue.";
+                } finally {
+                    makingOffer = false;
+                    if (
+                        negotiationQueued &&
+                        pc === peerConnection &&
+                        pc.signalingState === "stable" &&
+                        renegotiationEnabled
+                    ) {
+                        negotiationQueued = false;
+                        setTimeout(() => void negotiateMediaChanges(), 0);
+                    }
+                }
+            }
+
             async function processSignal(signal) {
                 if (!peerConnection) return;
 
+                const pc = peerConnection;
+
                 if (signal.signal_type === "ice") {
-                    if (!peerConnection.remoteDescription) {
+                    if (!pc.remoteDescription) {
                         pendingICE.push(signal.payload);
                     } else {
                         try {
-                            await peerConnection.addIceCandidate(
+                            await pc.addIceCandidate(
                                 new RTCIceCandidate(signal.payload)
                             );
                         } catch (error) {
-                            console.warn("Could not add network candidate:", error);
+                            if (!ignoreOffer) {
+                                console.warn(
+                                    "Could not add network candidate:",
+                                    error
+                                );
+                            }
                         }
                     }
                     return;
                 }
 
-                if (signal.signal_type === "offer" && callRole === "callee") {
-                    if (peerConnection.remoteDescription) return;
+                if (signal.signal_type === "offer") {
+                    const description =
+                        new RTCSessionDescription(signal.payload);
+                    const readyForOffer =
+                        !makingOffer &&
+                        (
+                            pc.signalingState === "stable" ||
+                            isSettingRemoteAnswerPending
+                        );
+                    const offerCollision = !readyForOffer;
+                    const polite = callRole === "callee";
 
-                    await peerConnection.setRemoteDescription(
-                        new RTCSessionDescription(signal.payload)
-                    );
+                    ignoreOffer = !polite && offerCollision;
+                    if (ignoreOffer) return;
+
+                    if (offerCollision) {
+                        await pc.setLocalDescription({ type: "rollback" });
+                    }
+
+                    await pc.setRemoteDescription(description);
                     await flushPendingICE();
 
-                    const answer = await peerConnection.createAnswer();
-                    await peerConnection.setLocalDescription(answer);
-                    await sendSignal("answer", peerConnection.localDescription);
+                    const answer = await pc.createAnswer();
+                    await pc.setLocalDescription(answer);
+                    await sendSignal("answer", pc.localDescription);
+
+                    renegotiationEnabled = true;
                     status.textContent = "Connecting your call…";
-                } else if (signal.signal_type === "answer" && callRole === "caller") {
-                    if (peerConnection.remoteDescription) return;
 
-                    await peerConnection.setRemoteDescription(
-                        new RTCSessionDescription(signal.payload)
-                    );
-                    await flushPendingICE();
+                    if (
+                        negotiationQueued &&
+                        pc === peerConnection &&
+                        pc.signalingState === "stable"
+                    ) {
+                        negotiationQueued = false;
+                        setTimeout(() => void negotiateMediaChanges(), 0);
+                    }
+                    return;
+                }
+
+                if (signal.signal_type === "answer") {
+                    if (pc.signalingState !== "have-local-offer") return;
+
+                    isSettingRemoteAnswerPending = true;
+                    try {
+                        await pc.setRemoteDescription(
+                            new RTCSessionDescription(signal.payload)
+                        );
+                        await flushPendingICE();
+                        renegotiationEnabled = true;
+                    } finally {
+                        isSettingRemoteAnswerPending = false;
+                    }
+
+                    if (
+                        negotiationQueued &&
+                        pc === peerConnection &&
+                        pc.signalingState === "stable"
+                    ) {
+                        negotiationQueued = false;
+                        setTimeout(() => void negotiateMediaChanges(), 0);
+                    }
                 }
             }
 
@@ -779,6 +901,11 @@
                 lastSignalID = 0;
                 pendingICE = [];
                 offerSent = false;
+                makingOffer = false;
+                isSettingRemoteAnswerPending = false;
+                ignoreOffer = false;
+                renegotiationEnabled = false;
+                negotiationQueued = false;
                 startingCall = false;
                 startAttempt++;
 
@@ -902,7 +1029,7 @@
 
                     startingCall = false;
                     endButton.textContent = "End call";
-                    setButtons({ mute: true, camera: type === "video", end: true });
+                    setButtons({ mute: true, camera: true, end: true });
                     status.textContent = "Calling " + peerName + "… Waiting for an answer.";
                     startEventPolling();
 
@@ -971,7 +1098,7 @@
 
                     setButtons({
                         mute: true,
-                        camera: callType === "video",
+                        camera: true,
                         end: true
                     });
                     status.textContent = "Call answered. Connecting…";
@@ -992,6 +1119,62 @@
                         : "Could not answer the call: " + error.message);
                 } finally {
                     answerButton.disabled = false;
+                }
+            }
+
+            async function toggleCamera() {
+                if (!callID || !localStream || !peerConnection) return;
+
+                const existingTracks = localStream.getVideoTracks().filter(
+                    track => track.readyState === "live"
+                );
+
+                if (existingTracks.length) {
+                    const enable = !existingTracks.some(track => track.enabled);
+                    existingTracks.forEach(track => {
+                        track.enabled = enable;
+                    });
+                    syncCallMediaUI();
+                    return;
+                }
+
+                const cameraCallID = callID;
+                cameraButton.disabled = true;
+
+                try {
+                    const cameraStream =
+                        await navigator.mediaDevices.getUserMedia({
+                            video: { facingMode: "user" }
+                        });
+                    const track = cameraStream.getVideoTracks()[0];
+
+                    if (!track) {
+                        throw new Error("No camera track was provided.");
+                    }
+
+                    if (
+                        callID !== cameraCallID ||
+                        !peerConnection ||
+                        !localStream
+                    ) {
+                        cameraStream.getTracks().forEach(t => t.stop());
+                        return;
+                    }
+
+                    localStream.addTrack(track);
+                    peerConnection.addTrack(track, localStream);
+                    localVideo.srcObject = localStream;
+                    syncCallMediaUI();
+                    localVideo.play().catch(() => {});
+                    status.textContent = "Camera enabled. Connecting video…";
+                } catch (error) {
+                    status.textContent =
+                        error.name === "NotAllowedError"
+                            ? "Camera permission was denied. Allow camera access and try again."
+                            : "Could not turn on your camera: " + error.message;
+                } finally {
+                    cameraButton.disabled = false;
+                    syncCallMediaUI();
                 }
             }
 
@@ -1083,15 +1266,7 @@
                 muteButton.textContent = enable ? "Mute microphone" : "Unmute microphone";
             });
 
-            cameraButton.addEventListener("click", () => {
-                if (!localStream) return;
-                const tracks = localStream.getVideoTracks();
-                if (!tracks.length) return;
-
-                const enable = !tracks[0].enabled;
-                tracks.forEach(track => { track.enabled = enable; });
-                cameraButton.textContent = enable ? "Turn camera off" : "Turn camera on";
-            });
+            cameraButton.addEventListener("click", toggleCamera);
 
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 pollIncomingCall();
