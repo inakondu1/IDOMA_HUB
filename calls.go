@@ -102,6 +102,34 @@ func callStartHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// IDOMA HUB stale-call cleanup: expire unanswered calls for this pair.
+	_, err = tx.Exec(`
+		UPDATE call_sessions
+		SET status = 'missed', updated_at = CURRENT_TIMESTAMP
+		WHERE status = 'ringing'
+		  AND created_at < CURRENT_TIMESTAMP - INTERVAL '45 seconds'
+		  AND ((caller_id = $1 AND callee_id = $2) OR (caller_id = $2 AND callee_id = $1))
+	`, userID, peerID)
+	if err != nil {
+		log.Printf("Unable to expire stale ringing call: %v", err)
+		callError(w, http.StatusInternalServerError, "Unable to clear expired calls.")
+		return
+	}
+
+	// Release accepted calls whose event heartbeat has been absent for three minutes.
+	_, err = tx.Exec(`
+		UPDATE call_sessions
+		SET status = 'ended', updated_at = CURRENT_TIMESTAMP
+		WHERE status = 'accepted'
+		  AND updated_at < CURRENT_TIMESTAMP - INTERVAL '3 minutes'
+		  AND ((caller_id = $1 AND callee_id = $2) OR (caller_id = $2 AND callee_id = $1))
+	`, userID, peerID)
+	if err != nil {
+		log.Printf("Unable to expire stale accepted call: %v", err)
+		callError(w, http.StatusInternalServerError, "Unable to clear abandoned calls.")
+		return
+	}
+
 	var activeCount int
 	err = tx.QueryRow(`
 		SELECT COUNT(*)
@@ -288,6 +316,16 @@ func callActionHandler(w http.ResponseWriter, r *http.Request) {
 			WHERE id = $1 AND status IN ('ringing', 'accepted')
 		`, callID)
 
+	case "heartbeat":
+		if currentStatus != "accepted" {
+			callError(w, http.StatusConflict, "Only an accepted call can send a heartbeat.")
+			return
+		}
+		result, err = db.Exec(`
+			UPDATE call_sessions
+			SET updated_at = CURRENT_TIMESTAMP
+			WHERE id = $1 AND status = 'accepted'
+		`, callID)
 	default:
 		callError(w, http.StatusBadRequest, "Unknown call action.")
 		return

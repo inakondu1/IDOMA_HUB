@@ -501,6 +501,7 @@
             let peerConnection = null;
             let remoteStream = null;
             let eventTimer = null;
+            let heartbeatTimer = null;
             let ringTimer = null;
             let lastSignalID = 0;
             let pendingICE = [];
@@ -623,15 +624,21 @@
                 peerConnection.onconnectionstatechange = () => {
                     if (!peerConnection) return;
                     const state = peerConnection.connectionState;
+
                     if (state === "connected") {
+                        startCallHeartbeat();
                         status.textContent = "Connected. You can talk now.";
-                    } else if (state === "connecting") {
-                        status.textContent = "Connecting your call…";
-                    } else if (state === "failed") {
-                        status.textContent =
-                            "Connection failed. Your network may require a TURN relay server.";
-                    } else if (state === "disconnected") {
-                        status.textContent = "Connection interrupted. Trying to reconnect…";
+                    } else {
+                        stopCallHeartbeat();
+
+                        if (state === "connecting") {
+                            status.textContent = "Connecting your call…";
+                        } else if (state === "failed") {
+                            status.textContent =
+                                "Connection failed. Your network may require a TURN relay server.";
+                        } else if (state === "disconnected") {
+                            status.textContent = "Connection interrupted. Trying to reconnect…";
+                        }
                     }
                 };
             }
@@ -705,9 +712,45 @@
                 }
             }
 
+            function stopCallHeartbeat() {
+                if (heartbeatTimer) clearInterval(heartbeatTimer);
+                heartbeatTimer = null;
+            }
+
+            function startCallHeartbeat() {
+                if (heartbeatTimer || !callID) return;
+                const heartbeatCallID = callID;
+
+                const sendHeartbeat = async () => {
+                    if (
+                        callID !== heartbeatCallID ||
+                        !peerConnection ||
+                        peerConnection.connectionState !== "connected"
+                    ) {
+                        stopCallHeartbeat();
+                        return;
+                    }
+
+                    try {
+                        await postForm("/calls/action", {
+                            call_id: heartbeatCallID,
+                            action: "heartbeat"
+                        });
+                    } catch (error) {
+                        console.warn("Call heartbeat failed:", error);
+                    }
+                };
+
+                heartbeatTimer = setInterval(() => {
+                    void sendHeartbeat();
+                }, 30000);
+                void sendHeartbeat();
+            }
+
             function stopEventPolling() {
                 if (eventTimer) clearInterval(eventTimer);
                 if (ringTimer) clearTimeout(ringTimer);
+                stopCallHeartbeat();
                 eventTimer = null;
                 ringTimer = null;
                 eventsBusy = false;
