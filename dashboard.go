@@ -91,7 +91,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, "Unable to load your account.", http.StatusInternalServerError)
-		log.Println(err)
+		log.Printf("dashboardHandler: account query failed for userID=%d: %v", userID, err)
 		return
 	}
 

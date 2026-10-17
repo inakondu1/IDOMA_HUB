@@ -22,7 +22,7 @@ func sportsHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			http.Error(w, "Unable to load your account.", http.StatusInternalServerError)
-			log.Println(err)
+			log.Printf("sportsHandler: account query failed for userID=%d: %v", userID, err)
 			return
 		}
 	}
@@ -145,10 +145,10 @@ func sportsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		LoggedIn      bool
-		Username      string
+		LoggedIn       bool
+		Username       string
 		ProfilePicture string
-		Posts         []Post
+		Posts          []Post
 	}{
 		LoggedIn:       loggedIn,
 		Username:       username,
