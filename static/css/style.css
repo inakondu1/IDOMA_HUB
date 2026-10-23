@@ -10907,13 +10907,15 @@ body.dashboard-body .stories-row {
     }
 }
 
-/* Keep community photos proportional and prevent excessive height */
+/* Full-width community media with clean proportions */
 body.dashboard-body .feed-post .post-media-container {
     width: 100% !important;
     max-width: 100% !important;
     margin-top: 8px !important;
+    padding: 0 !important;
     overflow: hidden !important;
     box-sizing: border-box !important;
+    background: transparent !important;
 }
 
 body.dashboard-body .feed-post img.post-media {
@@ -10921,8 +10923,11 @@ body.dashboard-body .feed-post img.post-media {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    max-height: 420px !important;
-    object-fit: contain !important;
+    max-height: 600px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    background: transparent !important;
+    border-radius: 8px !important;
     box-sizing: border-box !important;
 }
 
@@ -10931,18 +10936,19 @@ body.dashboard-body .feed-post video.post-media {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    max-height: 420px !important;
+    max-height: 600px !important;
     object-fit: contain !important;
+    object-position: center !important;
+    background: #000 !important;
+    border-radius: 8px !important;
     box-sizing: border-box !important;
 }
 
 @media (max-width: 768px) {
-    body.dashboard-body .feed-post img.post-media {
-        max-height: 360px !important;
-    }
-
+    body.dashboard-body .feed-post img.post-media,
     body.dashboard-body .feed-post video.post-media {
-        max-height: 360px !important;
+        max-height: 480px !important;
+        border-radius: 0 !important;
     }
 }
 
