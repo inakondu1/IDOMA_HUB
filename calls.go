@@ -355,6 +355,7 @@ func callActionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
+                log.Printf("Unable to load call %d in callActionHandler: %v", callID, err)
 		callError(w, http.StatusInternalServerError, "Unable to load call.")
 		return
 	}
