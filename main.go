@@ -206,6 +206,7 @@ func main() {
 
 	http.HandleFunc("/calls/start", callStartHandler)
 	http.HandleFunc("/calls/incoming", callIncomingHandler)
+	http.HandleFunc("/calls/incoming-any", callIncomingAnyHandler)
 	http.HandleFunc("/calls/action", callActionHandler)
 	http.HandleFunc("/calls/signal", callSignalHandler)
 	http.HandleFunc("/calls/events", callEventsHandler)

@@ -91,7 +91,7 @@
 
                         {{if .Activity}}
                                 {{range .Activity}}
-                                        {{if eq .Type "story_reply"}}
+                                        {{if or (eq .Type "story_reply") (eq .Type "missed_call")}}
                                                 <a href="/messages?user_id={{.UserID}}" class="notification-item notification-post-link">
                                         {{else}}
                                                 <a href="/dashboard?post_id={{.PostID}}" class="notification-item notification-post-link">
@@ -111,6 +111,8 @@
                                                                 <span>shared your post.</span>
                                                         {{else if eq .Type "story_reply"}}
                                                                 <span>replied to your story.</span>
+                                                        {{else if eq .Type "missed_call"}}
+                                                                <span>called you. You missed this call.</span>
                                                         {{end}}
                                                         <small class="notification-time">{{.CreatedAt}}</small>
                                                 </div>
@@ -131,5 +133,6 @@
 
 
 
+    <script src="/static/js/global-calls.js" defer></script>
 </body>
 </html>

@@ -191,13 +191,20 @@ func callIncomingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Calls that were never answered expire after 45 seconds.
+	// Expire unanswered calls and create missed-call notifications.
 	if _, err := db.Exec(`
-		UPDATE call_sessions
-		SET status = 'missed', updated_at = CURRENT_TIMESTAMP
-		WHERE status = 'ringing'
-		AND created_at < CURRENT_TIMESTAMP - INTERVAL '45 seconds'
-	`); err != nil {
+            WITH expired AS (
+                    UPDATE call_sessions
+                    SET status = 'missed', updated_at = CURRENT_TIMESTAMP
+                    WHERE status = 'ringing'
+                      AND created_at < CURRENT_TIMESTAMP - INTERVAL '45 seconds'
+                    RETURNING caller_id, callee_id
+            )
+            INSERT INTO notifications (recipient_id, sender_id, post_id, type)
+            SELECT callee_id, caller_id, NULL, 'missed_call'
+            FROM expired
+    `); err != nil {
+		log.Printf("Unable to expire calls or create missed-call notifications: %v", err)
 		callError(w, http.StatusInternalServerError, "Unable to check for expired calls.")
 		return
 	}
@@ -232,6 +239,78 @@ func callIncomingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
+		callError(w, http.StatusInternalServerError, "Unable to check incoming calls.")
+		return
+	}
+
+	callJSON(w, http.StatusOK, map[string]any{"call": result})
+}
+
+// GET /calls/incoming-any
+// Checks for calls to the logged-in user without requiring a conversation partner.
+func callIncomingAnyHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		callError(w, http.StatusMethodNotAllowed, "GET required.")
+		return
+	}
+
+	userID, ok := callUserID(w, r)
+	if !ok {
+		return
+	}
+
+	// Expire unanswered calls and create one missed-call notification per call.
+	_, err := db.Exec(`
+		WITH expired AS (
+			UPDATE call_sessions
+			SET status = 'missed', updated_at = CURRENT_TIMESTAMP
+			WHERE status = 'ringing'
+			  AND created_at < CURRENT_TIMESTAMP - INTERVAL '45 seconds'
+			RETURNING caller_id, callee_id
+		)
+		INSERT INTO notifications (recipient_id, sender_id, post_id, type)
+		SELECT callee_id, caller_id, NULL, 'missed_call'
+		FROM expired
+	`)
+	if err != nil {
+		log.Printf("Unable to expire calls or create missed-call notifications: %v", err)
+		callError(w, http.StatusInternalServerError, "Unable to check incoming calls.")
+		return
+	}
+
+	var result struct {
+		CallID   int64  `json:"call_id"`
+		CallerID int    `json:"caller_id"`
+		CalleeID int    `json:"callee_id"`
+		CallType string `json:"call_type"`
+		Status   string `json:"status"`
+		Username string `json:"username"`
+	}
+
+	err = db.QueryRow(`
+		SELECT c.id, c.caller_id, c.callee_id, c.call_type, c.status, u.username
+		FROM call_sessions c
+		JOIN users u ON u.id = c.caller_id
+		WHERE c.callee_id = $1
+		  AND c.status = 'ringing'
+		  AND c.created_at >= CURRENT_TIMESTAMP - INTERVAL '45 seconds'
+		ORDER BY c.created_at DESC
+		LIMIT 1
+	`, userID).Scan(
+		&result.CallID,
+		&result.CallerID,
+		&result.CalleeID,
+		&result.CallType,
+		&result.Status,
+		&result.Username,
+	)
+
+	if err == sql.ErrNoRows {
+		callJSON(w, http.StatusOK, map[string]any{"call": nil})
+		return
+	}
+	if err != nil {
+		log.Printf("Unable to find incoming call: %v", err)
 		callError(w, http.StatusInternalServerError, "Unable to check incoming calls.")
 		return
 	}
