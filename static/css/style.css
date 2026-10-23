@@ -10937,7 +10937,7 @@ body.dashboard-body .feed-post video.post-media {
     max-width: 100% !important;
     height: auto !important;
     max-height: 600px !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     object-position: center !important;
     background: #000 !important;
     border-radius: 8px !important;
