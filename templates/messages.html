@@ -1239,6 +1239,22 @@
                     status.textContent = peerName + " is calling you.";
                     setButtons({ answer: true, reject: true });
                     showScreen();
+
+                    const requestedAnswerCall = new URLSearchParams(
+                        window.location.search
+                    ).get("answer_call");
+
+                    if (requestedAnswerCall === String(callID)) {
+                        const cleanURL = new URL(window.location.href);
+                        cleanURL.searchParams.delete("answer_call");
+                        window.history.replaceState({}, "", cleanURL);
+
+                        setTimeout(() => {
+                            if (callID && callRole === "callee") {
+                                answerCall();
+                            }
+                        }, 0);
+                    }
                 } catch (error) {
                     console.warn("Incoming-call check failed:", error);
                 } finally {

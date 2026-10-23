@@ -142,8 +142,12 @@
         if (!Number.isInteger(callerId) || callerId <= 0) return;
 
         // The Messages page owns the established audio/video call interface.
+        const callId = Number(activeCall.call_id);
+        if (!Number.isInteger(callId) || callId <= 0) return;
+
         window.location.href = "/messages?user_id=" +
-            encodeURIComponent(String(callerId));
+            encodeURIComponent(String(callerId)) +
+            "&answer_call=" + encodeURIComponent(String(callId));
     });
 
     reject.addEventListener("click", async () => {
