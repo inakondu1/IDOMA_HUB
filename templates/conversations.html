@@ -158,6 +158,181 @@
                 font-size: 11px;
             }
         }
+
+
+        /* IDOMA HUB — dark conversation list */
+        body {
+            background: #080808 !important;
+            color: #f5f5f5;
+        }
+
+        .conversations-page {
+            max-width: 850px;
+            padding: 12px 18px 35px;
+        }
+
+        .back-dashboard a,
+        .conversations-footer a {
+            color: #e0444b;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .conversations-header {
+            padding: 21px 23px;
+            margin-bottom: 15px;
+            background: #111;
+            border: 1px solid #292929;
+            border-radius: 16px;
+            box-shadow: none;
+        }
+
+        .conversations-header h1 {
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .conversations-header p {
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        .conversation-list {
+            gap: 2px;
+            overflow: hidden;
+            background: #111;
+            border: 1px solid #292929;
+            border-radius: 16px;
+        }
+
+        .conversation-card {
+            gap: 13px;
+            padding: 15px 17px;
+            color: #fff;
+            background: #111;
+            border-bottom: 1px solid #292929;
+            border-radius: 0;
+            box-shadow: none;
+            transition: background .18s ease;
+        }
+
+        .conversation-card:last-child {
+            border-bottom: 0;
+        }
+
+        .conversation-card:hover {
+            transform: none;
+            background: #1c1c1c;
+            box-shadow: none;
+        }
+
+        .conversation-avatar,
+        .conversation-avatar-image {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+        }
+
+        .conversation-avatar {
+            overflow: hidden;
+            background: #b5121b;
+            border: 1px solid #762027;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .conversation-avatar-image {
+            object-fit: cover;
+        }
+
+        .conversation-name {
+            margin-bottom: 5px;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .conversation-last-message {
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        .conversation-meta {
+            color: #999;
+            font-size: 11px;
+        }
+
+        .unread-badge {
+            min-width: 21px;
+            height: 21px;
+            background: #b5121b;
+            color: #fff;
+            font-size: 11px;
+        }
+
+        .empty-conversations {
+            padding: 55px 22px;
+            background: #111;
+            border: 1px solid #292929;
+            border-radius: 16px;
+            color: #aaa;
+            box-shadow: none;
+        }
+
+        .empty-conversations h2 {
+            color: #fff;
+        }
+
+        .empty-conversations a {
+            color: #e0444b;
+        }
+
+        .conversations-footer {
+            padding: 10px 3px;
+        }
+
+        @media (max-width: 600px) {
+            .conversations-page {
+                padding: 8px 9px 25px;
+            }
+
+            .conversations-header {
+                padding: 17px;
+                border-radius: 13px;
+            }
+
+            .conversations-header h1 {
+                font-size: 21px;
+            }
+
+            .conversation-list {
+                border-radius: 13px;
+            }
+
+            .conversation-card {
+                gap: 11px;
+                padding: 13px 11px;
+            }
+
+            .conversation-avatar,
+            .conversation-avatar-image {
+                width: 46px;
+                height: 46px;
+            }
+
+            .conversation-name {
+                font-size: 14px;
+            }
+
+            .conversation-last-message {
+                max-width: 55vw;
+                font-size: 12px;
+            }
+
+            .conversation-meta {
+                font-size: 10px;
+            }
+        }
+
     </style>
 </head>
 
