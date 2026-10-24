@@ -20,9 +20,10 @@ type Message struct {
 }
 
 type MessagesPageData struct {
-	OtherUserID   int
-	OtherUsername string
-	Messages      []Message
+	OtherUserID             int
+	OtherUsername           string
+	OtherUserProfilePicture string
+	Messages                []Message
 }
 
 type Conversation struct {
@@ -120,11 +121,12 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var otherUsername string
+	var otherUserProfilePicture string
 	err = db.QueryRow(`
-		SELECT username
+		SELECT username, COALESCE(profile_picture, '')
 		FROM users
 		WHERE id = $1
-	`, otherUserID).Scan(&otherUsername)
+	`, otherUserID).Scan(&otherUsername, &otherUserProfilePicture)
 
 	if err != nil {
 		http.Error(w, "User not found", http.StatusNotFound)
@@ -222,8 +224,9 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	data := MessagesPageData{
-		OtherUserID:   otherUserID,
-		OtherUsername: otherUsername,
+		OtherUserID:             otherUserID,
+		OtherUsername:           otherUsername,
+		OtherUserProfilePicture: otherUserProfilePicture,
 	}
 
 	for rows.Next() {
