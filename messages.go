@@ -9,14 +9,17 @@ import (
 )
 
 type Message struct {
-	ID         int
-	SenderID   int
-	ReceiverID int
-	Content    string
-	AudioURL   string
-	IsVoice    bool
-	IsRead     int
-	CreatedAt  string
+	ID             int
+	SenderID       int
+	ReceiverID     int
+	Content        string
+	AudioURL       string
+	IsVoice        bool
+	IsRead         int
+	CreatedAt      string
+	ReplyToID      int
+	ReplyToContent string
+	ReplyToIsVoice bool
 }
 
 type MessagesPageData struct {
@@ -135,6 +138,7 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodPost {
 		content := strings.TrimSpace(r.FormValue("content"))
+		replyToID, _ := strconv.Atoi(r.FormValue("reply_to_id"))
 
 		isMultipart := strings.HasPrefix(
 			r.Header.Get("Content-Type"),
@@ -183,12 +187,33 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		replyToID, _ = strconv.Atoi(r.FormValue("reply_to_id"))
+
+		if replyToID != 0 {
+			var validReply int
+			err := db.QueryRow(`
+				SELECT COUNT(*)
+				FROM messages
+				WHERE id = $1
+				  AND (
+					(sender_id = $2 AND receiver_id = $3)
+					OR
+					(sender_id = $3 AND receiver_id = $2)
+				  )
+			`, replyToID, userID, otherUserID).Scan(&validReply)
+
+			if err != nil || validReply == 0 {
+				http.Error(w, "Invalid message to reply to", http.StatusBadRequest)
+				return
+			}
+		}
+
 		if content != "" {
 			_, err = db.Exec(`
                 INSERT INTO messages
-                (sender_id, receiver_id, content)
-                VALUES ($1, $2, $3)
-            `, userID, otherUserID, content)
+				(sender_id, receiver_id, content, reply_to_id)
+				VALUES ($1, $2, $3, NULLIF($4, 0))
+			`, userID, otherUserID, content, replyToID)
 
 			if err != nil {
 				log.Println("Unable to save message:", err)
@@ -207,14 +232,17 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT id, sender_id, receiver_id, content, is_read,
-		       TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI')
-		FROM messages
-		WHERE
-			(sender_id = $1 AND receiver_id = $2)
-			OR
-			(sender_id = $2 AND receiver_id = $1)
-		ORDER BY created_at ASC
+		SELECT m.id, m.sender_id, m.receiver_id, m.content, m.is_read,
+                   TO_CHAR(m.created_at, 'YYYY-MM-DD HH24:MI'),
+                   COALESCE(m.reply_to_id, 0),
+                   COALESCE(replied.content, '')
+            FROM messages m
+            LEFT JOIN messages replied ON replied.id = m.reply_to_id
+            WHERE
+                    (m.sender_id = $1 AND m.receiver_id = $2)
+                    OR
+                    (m.sender_id = $2 AND m.receiver_id = $1)
+            ORDER BY m.created_at ASC
 	`, userID, otherUserID)
 
 	if err != nil {
@@ -239,10 +267,16 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 			&message.Content,
 			&message.IsRead,
 			&message.CreatedAt,
+			&message.ReplyToID,
+			&message.ReplyToContent,
 		); err == nil {
 			if strings.HasPrefix(message.Content, "VOICE:") {
 				message.IsVoice = true
 				message.AudioURL = strings.TrimPrefix(message.Content, "VOICE:")
+			}
+			if strings.HasPrefix(message.ReplyToContent, "VOICE:") {
+				message.ReplyToIsVoice = true
+				message.ReplyToContent = "🎤 Voice message"
 			}
 			data.Messages = append(data.Messages, message)
 		}

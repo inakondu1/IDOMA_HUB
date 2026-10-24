@@ -243,6 +243,15 @@ func initDatabase() *sql.DB {
 	}
 
 	_, err = db.Exec(`
+		ALTER TABLE messages
+		ADD COLUMN IF NOT EXISTS reply_to_id INTEGER
+		REFERENCES messages(id)
+	`)
+	if err != nil {
+		log.Fatal("Unable to add message reply reference:", err)
+	}
+
+	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS farm_produce (
 			id SERIAL PRIMARY KEY,
 			name TEXT NOT NULL,

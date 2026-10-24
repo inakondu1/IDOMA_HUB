@@ -789,6 +789,86 @@
             background: #52171b;
         }
 
+        /* Reply preview above the message composer */
+        .reply-preview {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            background: #171717;
+            border-left: 4px solid #b5121b;
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        .reply-preview[hidden] {
+            display: none;
+        }
+
+        .reply-preview strong,
+        .message-reply-reference strong {
+            display: block;
+            color: #ff666e;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .reply-preview p,
+        .message-reply-reference p {
+            margin: 0;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .reply-preview p {
+            font-size: 14px;
+            max-height: 60px;
+            overflow: hidden;
+        }
+
+        #cancelReplyButton {
+            flex: 0 0 auto;
+            border: 1px solid #555;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            background: #292929;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #cancelReplyButton:hover {
+            background: #52171b;
+            border-color: #b5121b;
+        }
+
+        /* Quoted message shown inside a sent or received reply */
+        .message-reply-reference {
+            margin-bottom: 8px;
+            padding: 7px 10px;
+            border-left: 3px solid #b5121b;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            max-width: 100%;
+        }
+
+        .message-reply-reference p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            .reply-preview {
+                padding: 9px 10px;
+            }
+
+            .message-reply-reference {
+                padding: 6px 8px;
+            }
+        }
+
         .message-copy-notice {
             position: fixed;
             left: 50%;
@@ -864,6 +944,12 @@
                     {{if eq .SenderID $.OtherUserID}}
                         <div class="message-row received" data-message-id="{{.ID}}">
                             <div class="message-bubble">
+                                {{if .ReplyToID}}
+                                    <div class="message-reply-reference">
+                                        <strong>↪ Replied to</strong>
+                                        <p>{{.ReplyToContent}}</p>
+                                    </div>
+                                {{end}}
                                 {{if .IsVoice}}
                                     <div class="voice-message">
                                         <span>🎤 Voice message</span>
@@ -873,20 +959,27 @@
                                     </div>
                                 {{else}}
                                     <div class="message-text">{{.Content}}</div>
-                                    <div class="message-actions">
-                                        <button type="button" class="message-menu-toggle"
-                                                aria-label="Message options" aria-expanded="false">⋮</button>
-                                        <div class="message-options" hidden>
-                                            <button type="button" class="copy-message">Copy</button>
-                                        </div>
-                                    </div>
                                 {{end}}
+                                <div class="message-actions">
+                                    <button type="button" class="message-menu-toggle"
+                                            aria-label="Message options" aria-expanded="false">⋮</button>
+                                    <div class="message-options" hidden>
+                                        <button type="button" class="copy-message">Copy</button>
+                                        <button type="button" class="reply-message">Reply</button>
+                                    </div>
+                                </div>
                                 <span class="message-time">{{.CreatedAt}}</span>
                             </div>
                         </div>
                     {{else}}
                         <div class="message-row sent" data-message-id="{{.ID}}">
                             <div class="message-bubble">
+                                {{if .ReplyToID}}
+                                    <div class="message-reply-reference">
+                                        <strong>↪ Replied to</strong>
+                                        <p>{{.ReplyToContent}}</p>
+                                    </div>
+                                {{end}}
                                 {{if .IsVoice}}
                                     <div class="voice-message">
                                         <span>🎤 Voice message</span>
@@ -896,14 +989,15 @@
                                     </div>
                                 {{else}}
                                     <div class="message-text">{{.Content}}</div>
-                                    <div class="message-actions">
-                                        <button type="button" class="message-menu-toggle"
-                                                aria-label="Message options" aria-expanded="false">⋮</button>
-                                        <div class="message-options" hidden>
-                                            <button type="button" class="copy-message">Copy</button>
-                                        </div>
-                                    </div>
                                 {{end}}
+                                <div class="message-actions">
+                                    <button type="button" class="message-menu-toggle"
+                                            aria-label="Message options" aria-expanded="false">⋮</button>
+                                    <div class="message-options" hidden>
+                                        <button type="button" class="copy-message">Copy</button>
+                                        <button type="button" class="reply-message">Reply</button>
+                                    </div>
+                                </div>
                                 <span class="message-time">{{.CreatedAt}}</span>
                             </div>
                         </div>
@@ -922,6 +1016,16 @@
         </section>
 
         <form class="message-form" id="chatMessageForm" enctype="multipart/form-data" method="POST" action="/messages?user_id={{.OtherUserID}}">
+            <input type="hidden" name="reply_to_id" id="replyToMessageID" value="0">
+
+            <div id="replyPreview" class="reply-preview" hidden>
+                <div>
+                    <strong id="replyPreviewLabel">Replying to message</strong>
+                    <p id="replyPreviewContent"></p>
+                </div>
+                <button type="button" id="cancelReplyButton" aria-label="Cancel reply">✕</button>
+            </div>
+
             <textarea
                 name="content"
                 placeholder="Write a message or record a voice note..."
@@ -1867,6 +1971,36 @@
                 return;
             }
 
+            const replyButton = event.target.closest(".reply-message");
+            if (replyButton) {
+                const row = replyButton.closest(".message-row");
+                const messageID = row?.dataset.messageId;
+                const messageText = row?.querySelector(".message-text")?.innerText
+                    || (row?.querySelector(".voice-message") ? "🎤 Voice message" : "");
+
+                const replyIDField = document.getElementById("replyToMessageID");
+                const replyPreview = document.getElementById("replyPreview");
+                const replyContent = document.getElementById("replyPreviewContent");
+                const messageInput = document.querySelector(
+                    '#chatMessageForm textarea[name="content"]'
+                );
+
+                if (!messageID || !replyIDField || !replyPreview || !replyContent) {
+                    showNotice("Unable to prepare reply. Please refresh the chat.");
+                    closeMenus();
+                    return;
+                }
+
+                replyIDField.value = messageID;
+                replyContent.textContent = messageText;
+                replyPreview.hidden = false;
+
+                if (messageInput) messageInput.focus();
+
+                closeMenus();
+                return;
+            }
+
             const copyButton = event.target.closest(".copy-message");
             if (copyButton) {
                 const row = copyButton.closest(".message-row");
@@ -1899,6 +2033,19 @@
                 closeMenus();
             }
         });
+
+        const cancelReplyButton = document.getElementById("cancelReplyButton");
+        if (cancelReplyButton) {
+            cancelReplyButton.addEventListener("click", () => {
+                const replyIDField = document.getElementById("replyToMessageID");
+                const replyPreview = document.getElementById("replyPreview");
+                const replyContent = document.getElementById("replyPreviewContent");
+
+                if (replyIDField) replyIDField.value = "0";
+                if (replyPreview) replyPreview.hidden = true;
+                if (replyContent) replyContent.textContent = "";
+            });
+        }
 
         document.addEventListener("click", event => {
             if (!chat.contains(event.target)) closeMenus();
