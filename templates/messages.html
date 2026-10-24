@@ -387,14 +387,32 @@
                     {{if eq .SenderID $.OtherUserID}}
                         <div class="message-row received">
                             <div class="message-bubble">
-                                {{.Content}}
+                                {{if .IsVoice}}
+                                    <div class="voice-message">
+                                        <span>🎤 Voice message</span>
+                                        <audio controls preload="metadata" src="{{.AudioURL}}">
+                                            Your browser does not support audio playback.
+                                        </audio>
+                                    </div>
+                                {{else}}
+                                    {{.Content}}
+                                {{end}}
                                 <span class="message-time">{{.CreatedAt}}</span>
                             </div>
                         </div>
                     {{else}}
                         <div class="message-row sent">
                             <div class="message-bubble">
-                                {{.Content}}
+                                {{if .IsVoice}}
+                                    <div class="voice-message">
+                                        <span>🎤 Voice message</span>
+                                        <audio controls preload="metadata" src="{{.AudioURL}}">
+                                            Your browser does not support audio playback.
+                                        </audio>
+                                    </div>
+                                {{else}}
+                                    {{.Content}}
+                                {{end}}
                                 <span class="message-time">{{.CreatedAt}}</span>
                             </div>
                         </div>
@@ -412,14 +430,20 @@
 
         </section>
 
-        <form class="message-form" method="POST" action="/messages?user_id={{.OtherUserID}}">
+        <form class="message-form" id="chatMessageForm" enctype="multipart/form-data" method="POST" action="/messages?user_id={{.OtherUserID}}">
             <textarea
                 name="content"
-                placeholder="Write a message..."
-                required
+                placeholder="Write a message or record a voice note..."
             ></textarea>
 
-            <button type="submit">
+            <div class="voice-controls">
+                <button type="button" id="voiceRecordButton">🎙️ Record</button>
+                <button type="button" id="voiceStopButton" disabled>⏹ Stop</button>
+                <button type="button" id="voiceCancelButton" disabled>✖ Cancel</button>
+                <p id="voiceRecordingStatus">Write a message or record a voice note.</p>
+            </div>
+
+            <button type="submit" id="sendMessageButton">
                 Send
             </button>
         </form>
@@ -1313,5 +1337,6 @@
     </main>
 
     <script src="/static/js/global-calls.js" defer></script>
+    <script src="/static/js/voice-messages.js" defer></script>
 </body>
 </html>

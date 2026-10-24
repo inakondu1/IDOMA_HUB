@@ -2,8 +2,10 @@ package main
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type Message struct {
@@ -11,6 +13,8 @@ type Message struct {
 	SenderID   int
 	ReceiverID int
 	Content    string
+	AudioURL   string
+	IsVoice    bool
 	IsRead     int
 	CreatedAt  string
 }
@@ -128,16 +132,64 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
-		content := r.FormValue("content")
+		content := strings.TrimSpace(r.FormValue("content"))
+
+		isMultipart := strings.HasPrefix(
+			r.Header.Get("Content-Type"),
+			"multipart/form-data",
+		)
+
+		if isMultipart {
+			r.Body = http.MaxBytesReader(w, r.Body, 12<<20)
+
+			if err := r.ParseMultipartForm(10 << 20); err != nil {
+				http.Error(w, "Unable to process message or recording", http.StatusBadRequest)
+				return
+			}
+
+			content = strings.TrimSpace(r.FormValue("content"))
+
+			voiceFile, voiceHeader, voiceErr := r.FormFile("voice")
+			if voiceErr == nil {
+				defer voiceFile.Close()
+
+				if voiceHeader.Size > 10<<20 {
+					http.Error(w, "Voice message must be 10 MB or smaller", http.StatusBadRequest)
+					return
+				}
+
+				if !strings.HasPrefix(voiceHeader.Header.Get("Content-Type"), "audio/") {
+					http.Error(w, "Unsupported voice-message format", http.StatusBadRequest)
+					return
+				}
+
+				audioURL, uploadErr := uploadToCloudinary(
+					voiceFile,
+					"idoma_hub/voice_messages",
+					"video",
+				)
+				if uploadErr != nil {
+					log.Println("Unable to upload voice message:", uploadErr)
+					http.Error(w, "Unable to upload voice message", http.StatusInternalServerError)
+					return
+				}
+
+				content = "VOICE:" + audioURL
+			} else if voiceErr != http.ErrMissingFile {
+				http.Error(w, "Unable to read voice message", http.StatusBadRequest)
+				return
+			}
+		}
 
 		if content != "" {
 			_, err = db.Exec(`
-				INSERT INTO messages
-				(sender_id, receiver_id, content)
-				VALUES ($1, $2, $3)
-			`, userID, otherUserID, content)
+                INSERT INTO messages
+                (sender_id, receiver_id, content)
+                VALUES ($1, $2, $3)
+            `, userID, otherUserID, content)
 
 			if err != nil {
+				log.Println("Unable to save message:", err)
 				http.Error(w, "Unable to send message", http.StatusInternalServerError)
 				return
 			}
@@ -185,6 +237,10 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 			&message.IsRead,
 			&message.CreatedAt,
 		); err == nil {
+			if strings.HasPrefix(message.Content, "VOICE:") {
+				message.IsVoice = true
+				message.AudioURL = strings.TrimPrefix(message.Content, "VOICE:")
+			}
 			data.Messages = append(data.Messages, message)
 		}
 	}
