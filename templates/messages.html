@@ -447,7 +447,8 @@
 
             <div class="call-video-area" id="callVideoArea">
                 <video id="localCallVideo" autoplay playsinline muted></video>
-                <video id="remoteCallVideo" autoplay playsinline></video>
+                <video id="remoteCallVideo" autoplay playsinline muted></video>
+                <audio id="remoteCallAudio" autoplay></audio>
             </div>
 
             <div class="call-controls">
@@ -486,6 +487,7 @@
             const status = document.getElementById("callStatus");
             const localVideo = document.getElementById("localCallVideo");
             const remoteVideo = document.getElementById("remoteCallVideo");
+            const remoteAudio = document.getElementById("remoteCallAudio");
             const answerButton = document.getElementById("answerCallButton");
             const rejectButton = document.getElementById("rejectCallButton");
             const muteButton = document.getElementById("muteCallButton");
@@ -619,6 +621,7 @@
                 peerConnection = new RTCPeerConnection(rtcConfig);
                 remoteStream = new MediaStream();
                 remoteVideo.srcObject = remoteStream;
+                remoteAudio.srcObject = remoteStream;
 
                 if (localStream) {
                     localStream.getTracks().forEach(track => {
@@ -629,15 +632,29 @@
                 syncCallMediaUI();
 
                 peerConnection.ontrack = event => {
-                    event.streams.forEach(stream => {
-                        stream.getTracks().forEach(track => {
-                            if (!remoteStream.getTracks().some(t => t.id === track.id)) {
-                                remoteStream.addTrack(track);
-                            }
-                        });
-                    });
+                    if (!remoteStream) return;
+
+                    const track = event.track;
+                    if (
+                        track &&
+                        !remoteStream.getTracks().some(t => t.id === track.id)
+                    ) {
+                        remoteStream.addTrack(track);
+                    }
+
+                    remoteVideo.srcObject = remoteStream;
+                    remoteAudio.srcObject = remoteStream;
                     syncCallMediaUI();
-                    remoteVideo.play().catch(() => {});
+
+                    remoteAudio.play().catch(error => {
+                        console.warn("Remote audio playback failed:", error);
+                        status.textContent =
+                            "Call connected, but audio playback failed. Check your browser audio settings.";
+                    });
+
+                    remoteVideo.play().catch(error => {
+                        console.warn("Remote video playback failed:", error);
+                    });
                 };
 
                 peerConnection.onicecandidate = event => {
@@ -895,6 +912,7 @@
                 remoteStream = null;
                 localVideo.srcObject = null;
                 remoteVideo.srcObject = null;
+                remoteAudio.srcObject = null;
 
                 callID = null;
                 callRole = "";
