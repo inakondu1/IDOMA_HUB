@@ -17,6 +17,7 @@
     let chunks = [];
     let recordingBlob = null;
     let recordingType = "";
+    let cancelRequested = false;
 
     function releaseMicrophone() {
         if (microphone) {
@@ -73,32 +74,69 @@
                 }
             });
 
-            recorder.addEventListener("stop", () => {
-                if (chunks.length) {
-                    recordingType = recorder.mimeType || "audio/webm";
-                    recordingBlob = new Blob(chunks, {
-                        type: recordingType
-                    });
+            recorder.addEventListener("stop", async () => {
+                releaseMicrophone();
 
-                    if (recordingBlob.size > 10 * 1024 * 1024) {
-                        recordingBlob = null;
-                        status.textContent =
-                            "Recording exceeds 10 MB. Please record a shorter message.";
-                        resetRecording();
-                    } else if (recordingBlob.size === 0) {
-                        status.textContent = "No audio was recorded. Try again.";
-                        resetRecording();
-                    } else {
-                        status.textContent =
-                            "Voice note ready. Press Send to deliver it.";
-                        recordButton.disabled = true;
-                        stopButton.disabled = true;
-                        cancelButton.disabled = false;
-                        sendButton.disabled = false;
-                    }
+                if (cancelRequested) {
+                    cancelRequested = false;
+                    resetRecording();
+                    status.textContent = "Voice note cancelled.";
+                    return;
                 }
 
-                releaseMicrophone();
+                if (!chunks.length) {
+                    resetRecording();
+                    status.textContent = "No audio was recorded. Try again.";
+                    return;
+                }
+
+                recordingType = recorder.mimeType || chunks[0].type || "audio/webm";
+                recordingBlob = new Blob(chunks, { type: recordingType });
+
+                if (recordingBlob.size === 0) {
+                    resetRecording();
+                    status.textContent = "No audio was recorded. Try again.";
+                    return;
+                }
+
+                if (recordingBlob.size > 10 * 1024 * 1024) {
+                    resetRecording();
+                    status.textContent =
+                        "Recording exceeds 10 MB. Please record a shorter message.";
+                    return;
+                }
+
+                const extension = recordingType.includes("mp4") ? "m4a" : "webm";
+                const payload = new FormData();
+                payload.append("voice", recordingBlob, `voice-message.${extension}`);
+
+                sendButton.disabled = true;
+                recordButton.disabled = true;
+                stopButton.disabled = true;
+                cancelButton.disabled = true;
+                status.textContent = "Sending voice message…";
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: "POST",
+                        body: payload,
+                        credentials: "same-origin",
+                        redirect: "follow"
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Upload failed (${response.status})`);
+                    }
+
+                    window.location.href = response.url || form.action;
+                } catch (error) {
+                    console.error("Voice upload error:", error);
+                    status.textContent =
+                        "Could not send the voice note. Please try again.";
+                    sendButton.disabled = false;
+                    recordButton.disabled = false;
+                    cancelButton.disabled = false;
+                }
             });
 
             recorder.start();
@@ -124,13 +162,12 @@
     });
 
     cancelButton.addEventListener("click", () => {
+        cancelRequested = true;
+
         if (recorder && recorder.state !== "inactive") {
-            recorder.addEventListener("stop", () => {
-                resetRecording();
-                status.textContent = "Recording cancelled.";
-            }, { once: true });
             recorder.stop();
         } else {
+            cancelRequested = false;
             resetRecording();
             releaseMicrophone();
             status.textContent = "Voice note cancelled.";
