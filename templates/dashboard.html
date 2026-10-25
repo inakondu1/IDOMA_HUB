@@ -164,7 +164,7 @@
 
                 <div class="story-create-wrapper">
 
-                        <button type="button" class="story-create-card" data-current-user-id="{{.UserID}}" onclick="handleYourStoryClick(event)">
+                        <button type="button" class="story-create-card" data-current-user-id="{{.UserID}}" onclick="event.preventDefault(); event.stopPropagation(); handleYourStoryClick(event)">
 
                                 <div class="story-avatar-wrapper">
 
@@ -178,7 +178,7 @@
 
                                 </div>
 
-                                <strong>Your Story</strong>
+                                <strong>Idoma Status</strong>
 
                         </button>
 
