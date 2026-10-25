@@ -125,6 +125,21 @@
         function handleYourStoryClick(event) {
                 if (event) {
                         event.preventDefault();
+                        event.stopPropagation();
+                }
+
+                const button = event ? event.currentTarget : document.querySelector(".story-create-card");
+                const currentUserID = button ? String(button.dataset.currentUserId || "") : "";
+
+                loadStoryCards();
+
+                const ownStoryIndex = storyCards.findIndex(function (card) {
+                        return String(card.dataset.userId || "") === currentUserID;
+                });
+
+                if (currentUserID && ownStoryIndex >= 0) {
+                        openStory(ownStoryIndex);
+                        return;
                 }
 
                 toggleStoryMenu();
@@ -207,7 +222,11 @@
                      data-username="{{.Username}}"
                      data-media-url="{{.MediaURL}}"
                      data-media-type="{{.MediaType}}"
-                     data-content="{{.Content}}">
+                     data-content="{{.Content}}"
+                     data-original-status-id="{{.OriginalStatusID}}"
+                     data-original-user-id="{{.OriginalUserID}}"
+                     data-original-username="{{.OriginalUsername}}"
+                     data-reshare-message="{{.ReshareMessage}}">
 
                         <div class="story-avatar-wrapper">
 
@@ -246,9 +265,23 @@
                         <strong id="storyViewerUsername"></strong>
                 </div>
 
+                <div id="storyReshareAttribution" class="story-reshare-attribution" style="display:none;"></div>
+                <div id="storyReshareMessage" class="story-reshare-message" style="display:none;"></div>
+
                 <div id="storyViewerMedia" class="story-viewer-media"></div>
 
                 <div id="storyViewerText" class="story-viewer-text"></div>
+
+                <button type="button" id="storyReshareToggle" class="story-reshare-toggle" style="display:none;">
+                        Reshare to my status
+                </button>
+
+                <form id="storyReshareForm" class="story-reshare-form" action="/status/reshare" method="POST" style="display:none;">
+                        <input type="hidden" id="storyReshareStatusID" name="status_id">
+                        <textarea id="storyReshareInput" name="message" maxlength="1000" placeholder="Add your message before resharing..."></textarea>
+                        <button type="submit">Share status</button>
+                        <button type="button" id="storyReshareCancel">Cancel</button>
+                </form>
 
                 <form id="storyReplyForm" class="story-reply-form" action="/story-reply" method="POST">
                         <input type="hidden" id="storyReplyStatusID" name="status_id">
@@ -807,8 +840,35 @@ async function sharePost(postID) {
       const mediaType = card.dataset.mediaType || "";
       const content = card.dataset.content || "";
       const statusID = card.dataset.statusId || "";
+      const originalStatusID = card.dataset.originalStatusId || "0";
+      const originalUsername = card.dataset.originalUsername || "";
+      const reshareMessage = card.dataset.reshareMessage || "";
+      const currentUserButton = document.querySelector(".story-create-card");
+      const currentUserID = currentUserButton
+          ? String(currentUserButton.dataset.currentUserId || "")
+          : "";
+      const statusUserID = String(card.dataset.userId || "");
+      const reshareToggle = document.getElementById("storyReshareToggle");
+      const reshareForm = document.getElementById("storyReshareForm");
+      const reshareInput = document.getElementById("storyReshareInput");
 
       document.getElementById("storyViewerUsername").textContent = username;
+
+      document.getElementById("storyReshareStatusID").value = statusID;
+      reshareInput.value = "";
+      reshareForm.style.display = "none";
+      reshareToggle.style.display =
+          currentUserID && statusUserID !== currentUserID ? "block" : "none";
+
+      const attribution = document.getElementById("storyReshareAttribution");
+      const message = document.getElementById("storyReshareMessage");
+      const isReshare = originalStatusID !== "0" && originalUsername !== "";
+
+      attribution.textContent = isReshare ? "Reshared from " + originalUsername : "";
+      attribution.style.display = isReshare ? "block" : "none";
+
+      message.textContent = isReshare ? reshareMessage : "";
+      message.style.display = isReshare && reshareMessage.trim() ? "block" : "none";
       document.getElementById("storyReplyStatusID").value = statusID;
       document.getElementById("storyReplyInput").value = "";
 
@@ -856,6 +916,19 @@ async function sharePost(postID) {
           startStoryTimer(STORY_DURATION);
       }
   }
+
+  document.getElementById("storyReshareToggle").addEventListener("click", function () {
+      const form = document.getElementById("storyReshareForm");
+      form.style.display = form.style.display === "none" ? "block" : "none";
+      if (form.style.display === "block") {
+          document.getElementById("storyReshareInput").focus();
+      }
+  });
+
+  document.getElementById("storyReshareCancel").addEventListener("click", function () {
+      document.getElementById("storyReshareForm").style.display = "none";
+      document.getElementById("storyReshareInput").value = "";
+  });
 
   function nextStory() {
       const group = storyGroups[currentGroupIndex];

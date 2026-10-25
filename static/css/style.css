@@ -11729,3 +11729,89 @@ body.dashboard-body .dashboard-rightbar-link:hover {
         font-size: 13px;
     }
 }
+
+/* IDOMA HUB — Story Reshare */
+body.dashboard-body .story-reshare-attribution {
+    margin: 8px 16px;
+    padding: 8px 12px;
+    border-left: 3px solid #b5121b;
+    border-radius: 4px;
+    background: #171717;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+body.dashboard-body .story-reshare-message {
+    margin: 8px 16px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #222;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+body.dashboard-body .story-reshare-toggle,
+body.dashboard-body .story-reshare-form button {
+    border: 1px solid #b5121b !important;
+    border-radius: 22px;
+    background: #b5121b !important;
+    color: #fff !important;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+body.dashboard-body .story-reshare-toggle {
+    display: block;
+    margin: 12px auto 70px;
+}
+
+body.dashboard-body .story-reshare-form {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 72px;
+    z-index: 11;
+    padding: 10px;
+    border: 1px solid #b5121b;
+    border-radius: 14px;
+    background: #000;
+    box-sizing: border-box;
+}
+
+body.dashboard-body .story-reshare-form textarea {
+    display: block;
+    width: 100%;
+    min-height: 72px;
+    margin-bottom: 8px;
+    padding: 10px;
+    border: 1px solid #b5121b;
+    border-radius: 8px;
+    background: #111;
+    color: #fff;
+    resize: vertical;
+    box-sizing: border-box;
+    font: inherit;
+}
+
+body.dashboard-body .story-reshare-form textarea::placeholder {
+    color: #aaa;
+}
+
+body.dashboard-body .story-reshare-form button:hover,
+body.dashboard-body .story-reshare-toggle:hover {
+    background: #850c13 !important;
+}
+
+@media (max-width: 600px) {
+    body.dashboard-body .story-reshare-form {
+        left: 10px;
+        right: 10px;
+        bottom: 68px;
+    }
+
+    body.dashboard-body .story-reshare-toggle {
+        margin-bottom: 66px;
+    }
+}

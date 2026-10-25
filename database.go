@@ -126,6 +126,17 @@ func initDatabase() *sql.DB {
 	}
 
 	_, err = db.Exec(`
+                ALTER TABLE statuses
+                ADD COLUMN IF NOT EXISTS original_status_id INTEGER,
+                ADD COLUMN IF NOT EXISTS original_user_id INTEGER,
+                ADD COLUMN IF NOT EXISTS original_username TEXT,
+                ADD COLUMN IF NOT EXISTS reshare_message TEXT
+        `)
+	if err != nil {
+		log.Fatal("Unable to add status reshare columns:", err)
+	}
+
+	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS posts (
 			id SERIAL PRIMARY KEY,
 			user_id INTEGER NOT NULL,

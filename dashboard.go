@@ -13,14 +13,18 @@ import (
 )
 
 type Status struct {
-	ID             int
-	UserID         int
-	Username       string
-	ProfilePicture string
-	Content        string
-	MediaURL       string
-	MediaType      string
-	CreatedAt      string
+	ID               int
+	UserID           int
+	Username         string
+	ProfilePicture   string
+	Content          string
+	MediaURL         string
+	MediaType        string
+	CreatedAt        string
+	OriginalStatusID int
+	OriginalUserID   int
+	OriginalUsername string
+	ReshareMessage   string
 }
 
 type Post struct {
@@ -265,7 +269,11 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
                        COALESCE(statuses.content, ''),
                        COALESCE(statuses.media_url, ''),
                        COALESCE(statuses.media_type, ''),
-                       statuses.created_at
+                       statuses.created_at,
+                       COALESCE(statuses.original_status_id, 0),
+                       COALESCE(statuses.original_user_id, 0),
+                       COALESCE(statuses.original_username, ''),
+                       COALESCE(statuses.reshare_message, '')
                 FROM statuses
                 JOIN users ON users.id = statuses.user_id
                 WHERE statuses.expires_at > CURRENT_TIMESTAMP
@@ -291,6 +299,10 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 			&status.MediaURL,
 			&status.MediaType,
 			&status.CreatedAt,
+			&status.OriginalStatusID,
+			&status.OriginalUserID,
+			&status.OriginalUsername,
+			&status.ReshareMessage,
 		)
 
 		if err != nil {

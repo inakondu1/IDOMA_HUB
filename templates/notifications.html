@@ -111,6 +111,8 @@
                                                                 <span>shared your post.</span>
                                                         {{else if eq .Type "story_reply"}}
                                                                 <span>replied to your story.</span>
+                                                        {{else if eq .Type "status_reshare"}}
+                                                                <span>reshared your status.</span>
                                                         {{else if eq .Type "missed_call"}}
                                                                 <span>called you. You missed this call.</span>
                                                         {{end}}
