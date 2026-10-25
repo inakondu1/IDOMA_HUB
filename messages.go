@@ -15,11 +15,14 @@ type Message struct {
 	Content        string
 	AudioURL       string
 	IsVoice        bool
+	VideoURL       string
+	IsVideo        bool
 	IsRead         int
 	CreatedAt      string
 	ReplyToID      int
 	ReplyToContent string
 	ReplyToIsVoice bool
+	ReplyToIsVideo bool
 }
 
 type ForwardRecipient struct {
@@ -223,6 +226,19 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 
 			content = strings.TrimSpace(r.FormValue("content"))
 
+			hasVoice := r.MultipartForm != nil && len(r.MultipartForm.File["voice"]) > 0
+			hasVideo := r.MultipartForm != nil && len(r.MultipartForm.File["video"]) > 0
+
+			if hasVoice && hasVideo {
+				http.Error(w, "Send a video separately from a voice message", http.StatusBadRequest)
+				return
+			}
+
+			if (hasVoice || hasVideo) && content != "" {
+				http.Error(w, "Send recordings separately from text messages", http.StatusBadRequest)
+				return
+			}
+
 			voiceFile, voiceHeader, voiceErr := r.FormFile("voice")
 			if voiceErr == nil {
 				defer voiceFile.Close()
@@ -251,6 +267,41 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 				content = "VOICE:" + audioURL
 			} else if voiceErr != http.ErrMissingFile {
 				http.Error(w, "Unable to read voice message", http.StatusBadRequest)
+				return
+			}
+			videoFile, videoHeader, videoErr := r.FormFile("video")
+			if videoErr == nil {
+				defer videoFile.Close()
+
+				if content != "" {
+					http.Error(w, "Send a video separately from text or voice", http.StatusBadRequest)
+					return
+				}
+
+				if videoHeader.Size > 10<<20 {
+					http.Error(w, "Video message must be 10 MB or smaller", http.StatusBadRequest)
+					return
+				}
+
+				if !strings.HasPrefix(videoHeader.Header.Get("Content-Type"), "video/") {
+					http.Error(w, "Unsupported video-message format", http.StatusBadRequest)
+					return
+				}
+
+				videoURL, uploadErr := uploadToCloudinary(
+					videoFile,
+					"idoma_hub/video_messages",
+					"video",
+				)
+				if uploadErr != nil {
+					log.Println("Unable to upload video message:", uploadErr)
+					http.Error(w, "Unable to upload video message", http.StatusInternalServerError)
+					return
+				}
+
+				content = "VIDEO:" + videoURL
+			} else if videoErr != http.ErrMissingFile {
+				http.Error(w, "Unable to read video message", http.StatusBadRequest)
 				return
 			}
 		}
@@ -372,9 +423,19 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 				message.IsVoice = true
 				message.AudioURL = strings.TrimPrefix(message.Content, "VOICE:")
 			}
+
+			if strings.HasPrefix(message.Content, "VIDEO:") {
+				message.IsVideo = true
+				message.VideoURL = strings.TrimPrefix(message.Content, "VIDEO:")
+			}
 			if strings.HasPrefix(message.ReplyToContent, "VOICE:") {
 				message.ReplyToIsVoice = true
 				message.ReplyToContent = "🎤 Voice message"
+			}
+
+			if strings.HasPrefix(message.ReplyToContent, "VIDEO:") {
+				message.ReplyToIsVideo = true
+				message.ReplyToContent = "🎬 Video message"
 			}
 			data.Messages = append(data.Messages, message)
 		}

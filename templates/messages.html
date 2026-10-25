@@ -605,6 +605,70 @@
             font-size: 11px;
         }
 
+        .video-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            max-width: 100%;
+            flex: 1 1 100%;
+        }
+
+        .video-controls button {
+            min-height: 38px;
+            padding: 8px 12px;
+            background: #242424;
+            border: 1px solid #3a3a3a;
+            font-size: 12px;
+        }
+
+        .video-controls button:hover:not(:disabled) {
+            background: #b5121b;
+        }
+
+        .video-controls p {
+            flex-basis: 100%;
+            margin: 2px 0 0;
+            color: #aaa;
+            font-size: 11px;
+        }
+
+        #videoPreview {
+            display: block;
+            width: min(320px, 100%);
+            max-width: 100%;
+            max-height: 300px;
+            background: #000;
+            border: 1px solid #3a3a3a;
+            border-radius: 10px;
+        }
+
+        #videoPreview[hidden] {
+            display: none !important;
+        }
+
+        .video-message {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .video-message > span {
+            color: #ddd;
+            font-size: 12px;
+        }
+
+        .video-message video {
+            display: block;
+            width: min(320px, 100%);
+            max-width: 100%;
+            max-height: 360px;
+            background: #000;
+            border-radius: 10px;
+        }
+
         .voice-message {
             display: flex;
             flex-direction: column;
@@ -695,6 +759,24 @@
                 flex: 1 1 100%;
                 order: 2;
             }
+
+            .video-controls {
+                flex: 1 1 100%;
+                order: 3;
+            }
+
+            .video-controls button {
+                flex: 1;
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+
+            #videoPreview,
+            .video-message video {
+                width: 100%;
+                max-width: 100%;
+            }
+
 
             .voice-controls button {
                 flex: 1;
@@ -1017,7 +1099,14 @@
                                         <p>{{.ReplyToContent}}</p>
                                     </div>
                                 {{end}}
-                                {{if .IsVoice}}
+                                {{if .IsVideo}}
+                                    <div class="video-message">
+                                        <span>🎬 Video message</span>
+                                        <video controls preload="metadata" playsinline src="{{.VideoURL}}">
+                                            Your browser does not support video playback.
+                                        </video>
+                                    </div>
+                                {{else if .IsVoice}}
                                     <div class="voice-message">
                                         <span>🎤 Voice message</span>
                                         <audio controls preload="metadata" src="{{.AudioURL}}">
@@ -1048,7 +1137,14 @@
                                         <p>{{.ReplyToContent}}</p>
                                     </div>
                                 {{end}}
-                                {{if .IsVoice}}
+                                {{if .IsVideo}}
+                                    <div class="video-message">
+                                        <span>🎬 Video message</span>
+                                        <video controls preload="metadata" playsinline src="{{.VideoURL}}">
+                                            Your browser does not support video playback.
+                                        </video>
+                                    </div>
+                                {{else if .IsVoice}}
                                     <div class="voice-message">
                                         <span>🎤 Voice message</span>
                                         <audio controls preload="metadata" src="{{.AudioURL}}">
@@ -1105,6 +1201,14 @@
                 <button type="button" id="voiceStopButton" disabled>⏹ Stop</button>
                 <button type="button" id="voiceCancelButton" disabled>✖ Cancel</button>
                 <p id="voiceRecordingStatus">Write a message or record a voice note.</p>
+            </div>
+
+            <div class="video-controls">
+                <button type="button" id="videoRecordButton">📹 Record Video</button>
+                <button type="button" id="videoStopButton" disabled>⏹ Stop</button>
+                <button type="button" id="videoCancelButton" disabled>✖ Cancel</button>
+                <p id="videoRecordingStatus">Record a short video message.</p>
+                <video id="videoPreview" controls playsinline hidden></video>
             </div>
 
             <button type="submit" id="sendMessageButton">
@@ -2200,5 +2304,6 @@
 
     <script src="/static/js/global-calls.js" defer></script>
     <script src="/static/js/voice-messages.js" defer></script>
+    <script src="/static/js/video-messages.js" defer></script>
 </body>
 </html>
