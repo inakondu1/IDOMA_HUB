@@ -11925,3 +11925,90 @@ body.dashboard-body .story-viewer-content.story-text-only .story-viewer-media {
         padding-top: 32px;
     }
 }
+
+
+
+/* IDOMA HUB status composer and reply interactions */
+body.dashboard-body .story-composer {
+    display: none;
+    margin: 12px 0;
+    padding: 14px;
+    border: 1px solid rgba(181, 18, 27, .65);
+    border-radius: 14px;
+    background: #101010;
+    color: #fff;
+}
+body.dashboard-body .story-composer-heading,
+body.dashboard-body .story-composer-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+body.dashboard-body .story-composer button,
+body.dashboard-body .story-reply-emoji-picker button {
+    cursor: pointer;
+    border: 1px solid #850c13;
+    border-radius: 9px;
+    padding: 8px 11px;
+    background: #1a1a1a;
+    color: #fff;
+}
+body.dashboard-body .story-composer textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 90px;
+    margin: 10px 0;
+    padding: 12px;
+    resize: vertical;
+    border: 1px solid #444;
+    border-radius: 10px;
+    background: #080808;
+    color: #fff;
+}
+body.dashboard-body .story-emoji-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+body.dashboard-body .story-composer .story-publish-button {
+    width: 100%;
+    margin-top: 12px;
+    background: #b5121b;
+    font-weight: 700;
+}
+body.dashboard-body .story-selected-media {
+    margin-top: 8px;
+    color: #ddd;
+    font-size: .9rem;
+}
+body.dashboard-body .story-reply-form {
+    position: relative;
+}
+body.dashboard-body .story-reply-emoji-picker {
+    position: absolute;
+    right: 42px;
+    bottom: calc(100% + 8px);
+    z-index: 20;
+    flex-wrap: wrap;
+    gap: 5px;
+    max-width: 260px;
+    padding: 9px;
+    border: 1px solid #850c13;
+    border-radius: 12px;
+    background: #101010;
+}
+body.dashboard-body .story-reply-emoji-picker button {
+    padding: 7px;
+    font-size: 1.15rem;
+}
+@media (max-width: 600px) {
+    body.dashboard-body .story-composer {
+        padding: 10px;
+    }
+    body.dashboard-body .story-composer-tools button {
+        flex: 1;
+    }
+}

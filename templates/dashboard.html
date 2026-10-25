@@ -90,27 +90,42 @@
         </div>
 
         <form id="story-form"
+              class="story-composer"
               action="/status"
               method="POST"
               enctype="multipart/form-data"
               style="display:none;">
 
-                <input
-                        type="file"
-                        id="story-photo"
-                        name="photo"
-                        accept="image/*"
-                        onchange="submitStoryForm()">
+                <div class="story-composer-heading">
+                        <strong>Create a status</strong>
+                        <button type="button" onclick="closeStoryComposer()" aria-label="Close status composer">×</button>
+                </div>
 
-                <input
-                        type="file"
-                        id="story-video"
-                        name="video"
-                        accept="video/*"
-                        onchange="submitStoryForm()">
+                <input type="file" id="story-photo" name="photo" accept="image/*" hidden>
+                <input type="file" id="story-video" name="video" accept="video/*" hidden>
 
-                <textarea id="story-text" name="content"></textarea>
+                <div class="story-composer-tools">
+                        <button type="button" onclick="chooseStoryPhoto()">📷 Add photo</button>
+                        <button type="button" onclick="chooseStoryVideo()">🎥 Add video</button>
+                </div>
 
+                <textarea id="story-text" name="content" maxlength="1000"
+                          placeholder="Write something to go with your photo or video..."></textarea>
+
+                <div class="story-emoji-row" aria-label="Choose an emoji">
+                        <button type="button" onclick="insertStoryEmoji('❤️')">❤️</button>
+                        <button type="button" onclick="insertStoryEmoji('��')">😂</button>
+                        <button type="button" onclick="insertStoryEmoji('😍')">😍</button>
+                        <button type="button" onclick="insertStoryEmoji('🙏')">🙏</button>
+                        <button type="button" onclick="insertStoryEmoji('🎉')">🎉</button>
+                        <button type="button" onclick="insertStoryEmoji('🌾')">🌾</button>
+                        <button type="button" onclick="insertStoryEmoji('🔥')">🔥</button>
+                        <button type="button" onclick="insertStoryEmoji('😊')">😊</button>
+                </div>
+
+                <div id="story-selected-media" class="story-selected-media"></div>
+
+                <button type="submit" class="story-publish-button">Share status</button>
         </form>
 
         <script>
@@ -145,34 +160,66 @@
                 toggleStoryMenu();
         }
 
-        function chooseStoryPhoto() {
-                const input = document.getElementById("story-photo");
-
-                if (input) {
-                        input.click();
+        function openStoryComposer() {
+                const form = document.getElementById("story-form");
+                const menu = document.getElementById("story-create-menu");
+                if (menu) menu.classList.remove("story-menu-visible");
+                if (form) {
+                        form.style.display = "block";
+                        const text = document.getElementById("story-text");
+                        if (text) text.focus();
                 }
+        }
+
+        function closeStoryComposer() {
+                const form = document.getElementById("story-form");
+                if (form) form.style.display = "none";
+        }
+
+        function chooseStoryPhoto() {
+                openStoryComposer();
+                const input = document.getElementById("story-photo");
+                if (input) input.click();
         }
 
         function chooseStoryVideo() {
+                openStoryComposer();
                 const input = document.getElementById("story-video");
-
-                if (input) {
-                        input.click();
-                }
+                if (input) input.click();
         }
 
         function createTextStory() {
-                const text = prompt("What do you want to share?");
-
-                if (text && text.trim() !== "") {
-                        document.getElementById("story-text").value = text.trim();
-                        submitStoryForm();
-                }
+                openStoryComposer();
         }
 
-        function submitStoryForm() {
-                document.getElementById("story-form").submit();
+        function insertStoryEmoji(emoji) {
+                const input = document.getElementById("story-text");
+                if (!input) return;
+                const start = input.selectionStart || 0;
+                const end = input.selectionEnd || 0;
+                input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
+                input.focus();
+                input.selectionStart = input.selectionEnd = start + emoji.length;
         }
+
+        function updateStorySelectedMedia() {
+                const photo = document.getElementById("story-photo");
+                const video = document.getElementById("story-video");
+                const preview = document.getElementById("story-selected-media");
+                if (!preview) return;
+
+                const file = (photo && photo.files && photo.files[0]) ||
+                             (video && video.files && video.files[0]);
+
+                preview.textContent = file ? "Selected: " + file.name : "";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+                ["story-photo", "story-video"].forEach(function (id) {
+                        const input = document.getElementById(id);
+                        if (input) input.addEventListener("change", updateStorySelectedMedia);
+                });
+        });
         </script>
 
         <div class="stories-row">
@@ -295,11 +342,22 @@
                                 type="text"
                                 id="storyReplyInput"
                                 name="content"
-                                placeholder="Reply to this story..."
+                                placeholder="Reply to this status..."
                                 maxlength="1000"
                                 autocomplete="off">
 
+                        <button type="button" id="storyReplyEmojiToggle" aria-label="Choose emoji">😊</button>
                         <button type="submit" aria-label="Send story reply">➤</button>
+                        <div id="storyReplyEmojiPicker" class="story-reply-emoji-picker" style="display:none;">
+                                <button type="button">❤️</button>
+                                <button type="button">😂</button>
+                                <button type="button">😍</button>
+                                <button type="button">🙏</button>
+                                <button type="button">🎉</button>
+                                <button type="button">😊</button>
+                                <button type="button">🔥</button>
+                                <button type="button">🌾</button>
+                        </div>
                 </form>
 
                 <button type="button" class="story-nav story-prev" onclick="previousStory()">‹</button>
@@ -710,7 +768,54 @@ async function sharePost(postID) {
   let currentGroupStoryIndex = 0;
   let storyTimer = null;
   let storyFinished = false;
+  let storyPaused = false;
+  let storyTimerDeadline = 0;
+  let storyRemaining = 0;
   const STORY_DURATION = 5000;
+
+  function pauseStoryTimer() {
+      if (storyPaused) return;
+
+      storyPaused = true;
+
+      const video = document.querySelector("#storyViewerMedia video");
+      if (video) {
+          video.pause();
+          return;
+      }
+
+      if (!storyTimer) return;
+
+      storyRemaining = Math.max(0, storyTimerDeadline - Date.now());
+      clearTimeout(storyTimer);
+      storyTimer = null;
+
+      const progressBar = document.getElementById("storyProgressBar");
+      if (progressBar) {
+          const computed = parseFloat(getComputedStyle(progressBar).width);
+          const parentWidth = progressBar.parentElement
+              ? progressBar.parentElement.clientWidth : 0;
+          const percent = parentWidth ? (computed / parentWidth) * 100 : 0;
+          progressBar.style.transition = "none";
+          progressBar.style.width = percent + "%";
+      }
+  }
+
+  function resumeStoryTimer() {
+      if (!storyPaused) return;
+      storyPaused = false;
+
+      const video = document.querySelector("#storyViewerMedia video");
+      if (video) {
+          if (video.paused && !video.ended) {
+              video.play().catch(function () {});
+          }
+          return;
+      }
+
+      const remaining = storyRemaining;
+      if (remaining > 0 && !storyFinished) startStoryTimer(remaining);
+  }
 
   function clearStoryTimer() {
       if (storyTimer) {
@@ -742,8 +847,12 @@ async function sharePost(postID) {
           progressBar.style.width = "100%";
       });
 
+      storyPaused = false;
+      storyRemaining = duration;
+      storyTimerDeadline = Date.now() + duration;
+
       storyTimer = setTimeout(function () {
-          if (storyFinished) return;
+          if (storyFinished || storyPaused) return;
 
           storyFinished = true;
           storyTimer = null;
@@ -839,6 +948,8 @@ async function sharePost(postID) {
 
       clearStoryTimer();
       storyFinished = false;
+      storyPaused = false;
+      storyRemaining = 0;
 
       const username = card.dataset.username || "";
       const mediaURL = card.dataset.mediaUrl || "";
@@ -939,17 +1050,94 @@ async function sharePost(postID) {
           video.appendChild(source);
           mediaContainer.appendChild(video);
 
-          video.addEventListener("loadedmetadata", function () {
-              if (video.duration && Number.isFinite(video.duration)) {
-                  startStoryTimer(video.duration * 1000);
-              }
-          });
+          // Video playback and its ended event control video status timing.
+          // Do not start the shared timeout, which can race with video playback.
+          clearStoryTimer();
+          storyFinished = false;
+          storyPaused = false;
+          storyRemaining = 0;
 
+          const progressBar = document.getElementById("storyProgressBar");
+
+          function updateVideoProgress() {
+              if (!progressBar || !Number.isFinite(video.duration) ||
+                  video.duration <= 0) {
+                  return;
+              }
+
+              const percent = Math.min(100, (video.currentTime / video.duration) * 100);
+              progressBar.style.transition = "none";
+              progressBar.style.width = percent + "%";
+          }
+
+          video.addEventListener("timeupdate", updateVideoProgress);
           video.addEventListener("ended", finishVideoStory);
+          video.play().catch(function () {});
       } else {
           startStoryTimer(STORY_DURATION);
       }
   }
+
+  document.addEventListener("DOMContentLoaded", function () {
+      const replyInput = document.getElementById("storyReplyInput");
+      const replyForm = document.getElementById("storyReplyForm");
+      const emojiToggle = document.getElementById("storyReplyEmojiToggle");
+      const emojiPicker = document.getElementById("storyReplyEmojiPicker");
+
+      if (replyInput) {
+          replyInput.addEventListener("focus", pauseStoryTimer);
+          replyInput.addEventListener("input", pauseStoryTimer);
+          replyInput.addEventListener("blur", function () {
+              setTimeout(function () {
+                  if (!replyForm || !replyForm.contains(document.activeElement)) {
+                      if (!emojiPicker || emojiPicker.style.display === "none") {
+                          resumeStoryTimer();
+                      }
+                  }
+              }, 150);
+          });
+      }
+
+      if (emojiToggle && emojiPicker) {
+          emojiToggle.addEventListener("click", function () {
+              const opening = emojiPicker.style.display === "none";
+              emojiPicker.style.display = opening ? "flex" : "none";
+              if (opening) pauseStoryTimer();
+              else if (replyInput) replyInput.focus();
+          });
+
+          emojiPicker.querySelectorAll("button").forEach(function (button) {
+              button.addEventListener("click", function () {
+                  if (!replyInput) return;
+                  const emoji = button.textContent;
+                  const start = replyInput.selectionStart || 0;
+                  const end = replyInput.selectionEnd || 0;
+                  replyInput.value = replyInput.value.slice(0, start) + emoji +
+                      replyInput.value.slice(end);
+                  replyInput.focus();
+                  replyInput.selectionStart = replyInput.selectionEnd = start + emoji.length;
+                  pauseStoryTimer();
+              });
+          });
+      }
+
+      if (replyForm) {
+          replyForm.addEventListener("submit", function () {
+              if (emojiPicker) emojiPicker.style.display = "none";
+          });
+      }
+
+      const reshareInput = document.getElementById("storyReshareInput");
+      const reshareForm = document.getElementById("storyReshareForm");
+      if (reshareInput) reshareInput.addEventListener("focus", pauseStoryTimer);
+      if (reshareForm) {
+          reshareForm.addEventListener("focusout", function () {
+              setTimeout(function () {
+                  if (!reshareForm.contains(document.activeElement)) resumeStoryTimer();
+              }, 150);
+          });
+      }
+  });
 
   document.getElementById("storyReshareToggle").addEventListener("click", function () {
       const form = document.getElementById("storyReshareForm");
