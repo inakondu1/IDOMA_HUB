@@ -80,15 +80,15 @@ func createStatusHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		mediaURL, err = uploadToCloudinary(
-			video,
-			"idoma_hub/statuses",
-			"video",
-		)
+		mediaURL, _, err = uploadStoryVideo(video)
 
 		if err != nil {
-			http.Error(w, "Unable to upload video.", http.StatusInternalServerError)
-			log.Println(err)
+			log.Println("Unable to upload story video:", err)
+			if strings.Contains(err.Error(), "cannot exceed five minutes") {
+				http.Error(w, "Story videos cannot exceed five minutes.", http.StatusBadRequest)
+				return
+			}
+			http.Error(w, "Unable to upload video. Please try again.", http.StatusInternalServerError)
 			return
 		}
 	}

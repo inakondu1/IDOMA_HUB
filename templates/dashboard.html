@@ -123,18 +123,8 @@
         }
 
         function handleYourStoryClick(event) {
-                const button = event.currentTarget;
-                const currentUserID = button ? String(button.dataset.currentUserId || "") : "";
-
-                loadStoryCards();
-
-                const ownStoryIndex = storyCards.findIndex(function (card) {
-                        return String(card.dataset.userId || "") === currentUserID;
-                });
-
-                if (currentUserID && ownStoryIndex >= 0) {
-                        openStory(ownStoryIndex);
-                        return;
+                if (event) {
+                        event.preventDefault();
                 }
 
                 toggleStoryMenu();
