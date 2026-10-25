@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -70,6 +71,57 @@ type Comment struct {
 	ProfilePicture string
 	Content        string
 	CreatedAt      string
+}
+
+func newFeedPostCountHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Error(w, "Please log in.", http.StatusUnauthorized)
+		return
+	}
+	_ = userID
+
+	afterText := r.URL.Query().Get("after")
+	afterID := 0
+
+	if afterText != "" {
+		parsedID, err := strconv.Atoi(afterText)
+		if err != nil || parsedID < 0 {
+			http.Error(w, "Invalid post ID.", http.StatusBadRequest)
+			return
+		}
+		afterID = parsedID
+	}
+
+	var count int
+	err := db.QueryRow(
+		"SELECT COUNT(*) FROM posts WHERE id > $1",
+		afterID,
+	).Scan(&count)
+	if err != nil {
+		log.Printf("newFeedPostCountHandler: unable to count new posts: %v", err)
+		http.Error(w, "Unable to check for new posts.", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(struct {
+		Count int `json:"count"`
+	}{Count: count}); err != nil {
+		log.Printf("newFeedPostCountHandler: unable to send response: %v", err)
+	}
+}
+
+func latestDashboardPostID(posts []Post) int {
+	if len(posts) == 0 {
+		return 0
+	}
+	return posts[0].ID
 }
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
@@ -315,6 +367,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		Username             string
 		ProfilePicture       string
 		Posts                []Post
+		LatestPostID         int
 		Statuses             []Status
 		Suggestions          []FriendUser
 		NotificationCount    int
@@ -327,6 +380,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		Username:             username,
 		ProfilePicture:       profilePicture,
 		Posts:                posts,
+		LatestPostID:         latestDashboardPostID(posts),
 		Statuses:             statuses,
 		Suggestions:          suggestions,
 		NotificationCount:    notificationCount,

@@ -11660,3 +11660,70 @@ body.dashboard-body .dashboard-rightbar-link:hover {
         display: none !important;
     }
 }
+
+
+/* IDOMA HUB: new-post feed indicator */
+.new-posts-indicator {
+    width: 100%;
+    margin: 10px 0 14px;
+    text-align: center;
+}
+
+.new-posts-indicator[hidden] {
+    display: none !important;
+}
+
+.new-posts-indicator button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    max-width: 100%;
+    padding: 11px 18px;
+    border: 1px solid #b5121b;
+    border-radius: 999px;
+    background: #171717;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+}
+
+.new-posts-indicator button span:first-child {
+    color: #ff5a62;
+    font-size: 18px;
+}
+
+.new-posts-indicator button:hover,
+.new-posts-indicator button:focus-visible {
+    background: #b5121b;
+    color: #fff;
+    outline: 2px solid rgba(181, 18, 27, 0.25);
+    outline-offset: 2px;
+}
+
+.new-posts-indicator button:hover span:first-child,
+.new-posts-indicator button:focus-visible span:first-child {
+    color: #fff;
+}
+
+.dashboard-messages-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (max-width: 700px) {
+    .new-posts-indicator {
+        padding: 0 4px;
+        box-sizing: border-box;
+    }
+
+    .new-posts-indicator button {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -49,6 +50,36 @@ type Conversation struct {
 
 type ConversationsPageData struct {
 	Conversations []Conversation
+}
+
+func unreadMessageCountHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var count int
+	err := db.QueryRow(
+		"SELECT COUNT(*) FROM messages WHERE receiver_id = $1 AND is_read = 0",
+		userID,
+	).Scan(&count)
+	if err != nil {
+		log.Println("Unable to count unread messages:", err)
+		http.Error(w, "Unable to count unread messages", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store")
+	if err := json.NewEncoder(w).Encode(map[string]int{"count": count}); err != nil {
+		log.Println("Unable to encode unread message count:", err)
+	}
 }
 
 func messagesHandler(w http.ResponseWriter, r *http.Request) {

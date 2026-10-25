@@ -20,7 +20,10 @@
                         <a href="/dashboard">Home</a>
 			<a href="/friends">Friends</a>
                         <a href="/friends#people-you-may-know">People You May Know</a>
-                        <a href="/messages">Messages</a>
+                        <a href="/messages" class="dashboard-messages-link">
+    <span>Messages</span>
+    <span class="notification-badge unread-message-badge" {{if le .MessageCount 0}}hidden{{end}}>{{if gt .MessageCount 0}}{{.MessageCount}}{{end}}</span>
+</a>
                         <a href="/notifications" class="dashboard-notification-link">
     <span>Notifications</span>
     {{if gt .NotificationCount 0}}
@@ -359,6 +362,16 @@
 
                             <div class="posts-list-heading">
         <h3>Posts from the community</h3>
+</div>
+
+<div id="new-posts-indicator"
+     class="new-posts-indicator"
+     data-latest-post-id="{{.LatestPostID}}"
+     hidden>
+    <button type="button" id="load-new-posts-button">
+        <span aria-hidden="true">↑</span>
+        <span id="new-posts-message">New posts available — see new posts</span>
+    </button>
 </div>
 
 {{range .Posts}}
@@ -1025,6 +1038,64 @@ function toggleComments(button) {
 }
 </script>
 
+
+<script>
+(function () {
+    const indicator = document.getElementById("new-posts-indicator");
+    const button = document.getElementById("load-new-posts-button");
+    const message = document.getElementById("new-posts-message");
+    if (!indicator || !button || !message) return;
+
+    const latestPostID = Number.parseInt(indicator.dataset.latestPostId || "0", 10);
+    if (!Number.isFinite(latestPostID) || latestPostID < 0) return;
+
+    let checking = false;
+
+    async function checkForNewPosts() {
+        if (checking || document.hidden) return;
+        checking = true;
+
+        try {
+            const response = await fetch(
+                "/feed/new-count?after=" + encodeURIComponent(latestPostID),
+                {
+                    credentials: "same-origin",
+                    headers: { "Accept": "application/json" },
+                    cache: "no-store"
+                }
+            );
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+            const count = Math.max(0, Number(data.count) || 0);
+
+            if (count > 0) {
+                message.textContent = count === 1
+                    ? "1 new post — see new post"
+                    : count + " new posts — see new posts";
+                indicator.hidden = false;
+            } else {
+                indicator.hidden = true;
+            }
+        } catch (_) {
+            // A temporary network error should not interrupt reading.
+        } finally {
+            checking = false;
+        }
+    }
+
+    button.addEventListener("click", function () {
+        window.location.reload();
+    });
+
+    checkForNewPosts();
+    window.setInterval(checkForNewPosts, 20000);
+    document.addEventListener("visibilitychange", checkForNewPosts);
+})();
+</script>
+
+    <script src="/static/js/unread-message-badge.js" defer></script>
     <script src="/static/js/global-calls.js" defer></script>
 </body>
 </html>

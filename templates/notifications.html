@@ -17,7 +17,7 @@
 		<nav class="dashboard-nav">
 			<a href="/dashboard">Home</a>
 			<a href="/friends">Friends</a>
-			<a href="/messages">Messages</a>
+			<a href="/messages" class="dashboard-messages-link"><span>Messages</span> <span class="notification-badge unread-message-badge" hidden></span></a>
 			<a href="/notifications">🔔 Notifications{{if .Count}} <span class="notification-badge">{{.Count}}</span>{{end}}</a>
 			<a href="/logout">Logout</a>
 		</nav>
@@ -133,6 +133,7 @@
 
 
 
+    <script src="/static/js/unread-message-badge.js" defer></script>
     <script src="/static/js/global-calls.js" defer></script>
 </body>
 </html>

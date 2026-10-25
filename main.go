@@ -171,6 +171,7 @@ func main() {
 	http.HandleFunc("/register", registerPageHandler)
 	http.HandleFunc("/login", loginPageHandler)
 	http.HandleFunc("/dashboard", dashboardHandler)
+	http.HandleFunc("/feed/new-count", newFeedPostCountHandler)
 	http.HandleFunc("/creator-studio", creatorStudioHandler)
 	http.HandleFunc("/admin/monetization", adminMonetizationHandler)
 	http.HandleFunc("/status", createStatusHandler)
@@ -202,6 +203,7 @@ func main() {
 	http.HandleFunc("/history", historyHandler)
 	http.HandleFunc("/farm-produce", farmProduceHandler)
 	http.HandleFunc("/notifications", notificationsHandler)
+	http.HandleFunc("/messages/unread-count", unreadMessageCountHandler)
 	http.HandleFunc("/messages", messagesHandler)
 
 	http.HandleFunc("/calls/start", callStartHandler)
