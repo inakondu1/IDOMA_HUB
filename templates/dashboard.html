@@ -230,7 +230,7 @@
 
                         <div class="story-avatar-wrapper">
 
-                                <a href="/profile-view?id={{.UserID}}" class="story-profile-link" aria-label="View {{.Username}} profile" onclick="event.stopPropagation();">
+                                <a href="#" class="story-profile-link" aria-label="View {{.Username}} status" onclick="event.preventDefault(); event.stopPropagation(); this.closest('.story-card').click();">
 {{if .ProfilePicture}}
                                 <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="story-avatar story-ring">
                                 {{else}}
