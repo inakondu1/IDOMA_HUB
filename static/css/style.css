@@ -5175,7 +5175,9 @@ body:has(.auth-page) .auth-footer {
 }
 
 .feed-post .post-actions span {
-    display: none;
+    display: inline;
+    color: #65676b;
+    font-size: 13px;
 }
 
 .comments-section {
