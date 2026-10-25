@@ -11815,3 +11815,42 @@ body.dashboard-body .story-reshare-toggle:hover {
         margin-bottom: 66px;
     }
 }
+
+
+/* IDOMA HUB — Story share and reshare actions */
+body.dashboard-body .story-action-buttons {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 74px;
+    z-index: 12;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    pointer-events: none;
+}
+
+body.dashboard-body .story-action-buttons .story-reshare-toggle {
+    margin: 0;
+    pointer-events: auto;
+}
+
+body.dashboard-body .story-action-buttons button {
+    max-width: 100%;
+}
+
+@media (max-width: 600px) {
+    body.dashboard-body .story-action-buttons {
+        left: 10px;
+        right: 10px;
+        bottom: 72px;
+        gap: 6px;
+    }
+
+    body.dashboard-body .story-action-buttons .story-reshare-toggle {
+        padding: 9px 12px;
+        font-size: 13px;
+    }
+}
