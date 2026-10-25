@@ -12012,3 +12012,34 @@ body.dashboard-body .story-reply-emoji-picker button {
         flex: 1;
     }
 }
+
+
+/* FINAL MOBILE STATUS CARD SIZE FIX */
+@media (max-width: 768px) {
+    body.dashboard-body .stories-row {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+        overflow-x: auto !important;
+        gap: 8px !important;
+    }
+
+    body.dashboard-body .story-create-wrapper,
+    body.dashboard-body .story-create-card,
+    body.dashboard-body .stories-row .story-card {
+        flex: 0 0 92px !important;
+        width: 92px !important;
+        min-width: 92px !important;
+        max-width: 92px !important;
+        height: 145px !important;
+        min-height: 145px !important;
+        max-height: 145px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .story-create-card,
+    body.dashboard-body .stories-row .story-card {
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+}
