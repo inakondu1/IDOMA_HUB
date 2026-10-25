@@ -240,6 +240,73 @@
             background: #287a43;
         }
 
+        .forward-dialog {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.88);
+        }
+
+        .forward-dialog[hidden] {
+            display: none;
+        }
+
+        .forward-dialog-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            border: 1px solid #b5121b;
+            border-radius: 18px;
+            background: #101010;
+            color: #fff;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+        }
+
+        .forward-dialog-card h2 {
+            margin: 0 0 20px;
+        }
+
+        .forward-dialog-card label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+        }
+
+        .forward-dialog-card select {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #181818;
+            color: #fff;
+        }
+
+        .forward-dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .forward-dialog-actions button {
+            padding: 10px 16px;
+            border: 1px solid #b5121b;
+            border-radius: 8px;
+            background: #b5121b;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .forward-dialog-actions button:first-child {
+            background: #222;
+            border-color: #444;
+        }
+
         .call-screen {
             position: fixed;
             inset: 0;
@@ -966,6 +1033,7 @@
                                     <div class="message-options" hidden>
                                         <button type="button" class="copy-message">Copy</button>
                                         <button type="button" class="reply-message">Reply</button>
+                                        <button type="button" class="forward-message">Forward</button>
                                     </div>
                                 </div>
                                 <span class="message-time">{{.CreatedAt}}</span>
@@ -996,6 +1064,7 @@
                                     <div class="message-options" hidden>
                                         <button type="button" class="copy-message">Copy</button>
                                         <button type="button" class="reply-message">Reply</button>
+                                        <button type="button" class="forward-message">Forward</button>
                                     </div>
                                 </div>
                                 <span class="message-time">{{.CreatedAt}}</span>
@@ -1049,6 +1118,29 @@
             <a href="/dashboard">Dashboard</a>
         </div>
 
+
+
+    <section id="forwardMessageDialog" class="forward-dialog" hidden
+             role="dialog" aria-modal="true" aria-labelledby="forwardDialogTitle">
+        <div class="forward-dialog-card">
+            <h2 id="forwardDialogTitle">Forward message</h2>
+            <form id="forwardMessageForm" method="POST"
+                  action="/messages?user_id={{.OtherUserID}}">
+                <input type="hidden" name="forward_message_id" id="forwardMessageID">
+                <label for="forwardRecipient">Choose a recipient</label>
+                <select id="forwardRecipient" name="forward_to_user_id" required>
+                    <option value="">Select a person</option>
+                    {{range .Recipients}}
+                    <option value="{{.UserID}}">{{.Username}}</option>
+                    {{end}}
+                </select>
+                <div class="forward-dialog-actions">
+                    <button type="button" id="cancelForwardButton">Cancel</button>
+                    <button type="submit">Forward</button>
+                </div>
+            </form>
+        </div>
+    </section>
 
     <section
         class="call-screen"
@@ -2001,6 +2093,28 @@
                 return;
             }
 
+            const forwardButton = event.target.closest(".forward-message");
+            if (forwardButton) {
+                const row = forwardButton.closest(".message-row");
+                const messageID = row?.dataset.messageId;
+                const dialog = document.getElementById("forwardMessageDialog");
+                const messageIDField = document.getElementById("forwardMessageID");
+                const recipientSelect = document.getElementById("forwardRecipient");
+
+                if (!messageID || !dialog || !messageIDField || !recipientSelect) {
+                    showNotice("Unable to prepare forwarding. Please refresh the chat.");
+                    closeMenus();
+                    return;
+                }
+
+                messageIDField.value = messageID;
+                recipientSelect.value = "";
+                dialog.hidden = false;
+                closeMenus();
+                recipientSelect.focus();
+                return;
+            }
+
             const copyButton = event.target.closest(".copy-message");
             if (copyButton) {
                 const row = copyButton.closest(".message-row");
@@ -2031,6 +2145,33 @@
 
             if (!event.target.closest(".message-options")) {
                 closeMenus();
+            }
+        });
+
+        const forwardDialog = document.getElementById("forwardMessageDialog");
+        const forwardMessageID = document.getElementById("forwardMessageID");
+        const forwardRecipient = document.getElementById("forwardRecipient");
+        const cancelForwardButton = document.getElementById("cancelForwardButton");
+
+        function closeForwardDialog() {
+            if (forwardDialog) forwardDialog.hidden = true;
+            if (forwardMessageID) forwardMessageID.value = "";
+            if (forwardRecipient) forwardRecipient.value = "";
+        }
+
+        if (cancelForwardButton) {
+            cancelForwardButton.addEventListener("click", closeForwardDialog);
+        }
+
+        if (forwardDialog) {
+            forwardDialog.addEventListener("click", event => {
+                if (event.target === forwardDialog) closeForwardDialog();
+            });
+        }
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape" && forwardDialog && !forwardDialog.hidden) {
+                closeForwardDialog();
             }
         });
 

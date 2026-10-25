@@ -22,11 +22,17 @@ type Message struct {
 	ReplyToIsVoice bool
 }
 
+type ForwardRecipient struct {
+	UserID   int
+	Username string
+}
+
 type MessagesPageData struct {
 	OtherUserID             int
 	OtherUsername           string
 	OtherUserProfilePicture string
 	Messages                []Message
+	Recipients              []ForwardRecipient
 }
 
 type Conversation struct {
@@ -137,6 +143,68 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
+		forwardMessageID, _ := strconv.Atoi(r.FormValue("forward_message_id"))
+		if forwardMessageID > 0 {
+			forwardToUserID, parseErr := strconv.Atoi(r.FormValue("forward_to_user_id"))
+			if parseErr != nil || forwardToUserID <= 0 || forwardToUserID == userID {
+				http.Error(w, "Invalid forwarding recipient", http.StatusBadRequest)
+				return
+			}
+
+			var forwardedContent string
+			err := db.QueryRow(`
+				SELECT content
+				FROM messages
+				WHERE id = $1
+				  AND (
+					(sender_id = $2 AND receiver_id = $3)
+					OR
+					(sender_id = $3 AND receiver_id = $2)
+				  )
+			`, forwardMessageID, userID, otherUserID).Scan(&forwardedContent)
+
+			if err != nil {
+				http.Error(w, "Message to forward not found", http.StatusBadRequest)
+				return
+			}
+
+			var recipientExists bool
+			err = db.QueryRow(`
+				SELECT EXISTS (
+					SELECT 1 FROM users WHERE id = $1
+				)
+			`, forwardToUserID).Scan(&recipientExists)
+
+			if err != nil {
+				log.Println("Unable to validate forwarding recipient:", err)
+				http.Error(w, "Unable to validate forwarding recipient", http.StatusInternalServerError)
+				return
+			}
+			if !recipientExists {
+				http.Error(w, "Forwarding recipient not found", http.StatusBadRequest)
+				return
+			}
+
+			_, err = db.Exec(`
+				INSERT INTO messages (sender_id, receiver_id, content)
+				VALUES ($1, $2, $3)
+			`, userID, forwardToUserID, forwardedContent)
+
+			if err != nil {
+				log.Println("Unable to forward message:", err)
+				http.Error(w, "Unable to forward message", http.StatusInternalServerError)
+				return
+			}
+
+			http.Redirect(
+				w,
+				r,
+				"/messages?user_id="+strconv.Itoa(forwardToUserID),
+				http.StatusSeeOther,
+			)
+			return
+		}
+
 		content := strings.TrimSpace(r.FormValue("content"))
 		replyToID, _ := strconv.Atoi(r.FormValue("reply_to_id"))
 
@@ -256,6 +324,36 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 		OtherUsername:           otherUsername,
 		OtherUserProfilePicture: otherUserProfilePicture,
 	}
+
+	recipientRows, recipientErr := db.Query(`
+		SELECT id, username
+		FROM users
+		WHERE id <> $1
+		ORDER BY username
+	`, userID)
+	if recipientErr != nil {
+		log.Println("Unable to load forwarding recipients:", recipientErr)
+		http.Error(w, "Unable to load forwarding recipients", http.StatusInternalServerError)
+		return
+	}
+
+	for recipientRows.Next() {
+		var recipient ForwardRecipient
+		if err := recipientRows.Scan(&recipient.UserID, &recipient.Username); err != nil {
+			recipientRows.Close()
+			http.Error(w, "Unable to read forwarding recipients", http.StatusInternalServerError)
+			return
+		}
+		data.Recipients = append(data.Recipients, recipient)
+	}
+
+	if err := recipientRows.Err(); err != nil {
+		recipientRows.Close()
+		log.Println("Unable to read forwarding recipients:", err)
+		http.Error(w, "Unable to read forwarding recipients", http.StatusInternalServerError)
+		return
+	}
+	recipientRows.Close()
 
 	for rows.Next() {
 		var message Message
