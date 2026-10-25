@@ -931,10 +931,12 @@ async function sharePost(postID) {
               : null);
 
       if (targetPostID) {
-          const targetPost = document.getElementById("post-" + targetPostID);
+          let attempts = 0;
 
-          if (targetPost) {
-              setTimeout(function () {
+          const findAndOpenTargetPost = function () {
+              const targetPost = document.getElementById("post-" + targetPostID);
+
+              if (targetPost) {
                   targetPost.scrollIntoView({
                       behavior: "smooth",
                       block: "center"
@@ -944,9 +946,21 @@ async function sharePost(postID) {
 
                   setTimeout(function () {
                       targetPost.classList.remove("notification-highlight");
-                  }, 3000);
-              }, 300);
-          }
+                  }, 5000);
+
+                  return;
+              }
+
+              attempts++;
+
+              if (attempts < 15) {
+                  setTimeout(findAndOpenTargetPost, 200);
+              } else {
+                  console.warn("Could not find notification target post:", targetPostID);
+              }
+          };
+
+          setTimeout(findAndOpenTargetPost, 200);
       }
 
       const visibleUsers = new Set();
