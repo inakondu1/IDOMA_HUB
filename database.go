@@ -708,5 +708,47 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create call signals index:", err)
 	}
 
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS status_views (
+			id SERIAL PRIMARY KEY,
+			status_id INTEGER NOT NULL REFERENCES statuses(id) ON DELETE CASCADE,
+			viewer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			viewed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE(status_id, viewer_id)
+		)
+	`)
+	if err != nil {
+		log.Fatal("Unable to create status views table:", err)
+	}
+
+	_, err = db.Exec(`
+		CREATE INDEX IF NOT EXISTS idx_status_views_status_viewed
+		ON status_views(status_id, viewed_at DESC)
+	`)
+	if err != nil {
+		log.Fatal("Unable to create status views index:", err)
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS status_shares (
+			id SERIAL PRIMARY KEY,
+			status_id INTEGER NOT NULL REFERENCES statuses(id) ON DELETE CASCADE,
+			reshared_status_id INTEGER NOT NULL REFERENCES statuses(id) ON DELETE CASCADE,
+			sharer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			shared_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		log.Fatal("Unable to create status shares table:", err)
+	}
+
+	_, err = db.Exec(`
+		CREATE INDEX IF NOT EXISTS idx_status_shares_status_shared
+		ON status_shares(status_id, shared_at DESC)
+	`)
+	if err != nil {
+		log.Fatal("Unable to create status shares index:", err)
+	}
+
 	return db
 }

@@ -12269,3 +12269,87 @@ body.dashboard-body .post-edit-actions button[type="button"] {
         font-size: 16px;
     }
 }
+
+/* IDOMA HUB — Status insights panel */
+body.dashboard-body .story-insights-panel {
+    position: absolute;
+    z-index: 11;
+    top: 84px;
+    left: 12px;
+    right: 12px;
+    margin: 0;
+    padding: 14px;
+    max-height: 30vh;
+    box-sizing: border-box;
+    overflow-y: auto;
+    border: 1px solid rgba(181, 18, 27, 0.65);
+    border-radius: 12px;
+    background: rgba(8, 8, 8, 0.96);
+    color: #f5f5f5;
+    text-align: left;
+    scrollbar-width: thin;
+    scrollbar-color: #b5121b #171717;
+}
+
+body.dashboard-body .story-insights-panel h3 {
+    margin: 0 0 10px;
+    color: #ff4a52;
+    font-size: 16px;
+}
+
+body.dashboard-body .story-insights-panel h4 {
+    margin: 12px 0 6px;
+    color: #ffffff;
+    font-size: 13px;
+}
+
+body.dashboard-body .story-insights-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+body.dashboard-body .story-insights-counts span {
+    padding: 7px 10px;
+    border: 1px solid #383838;
+    border-radius: 8px;
+    background: #171717;
+    font-size: 13px;
+}
+
+body.dashboard-body .story-insights-counts strong {
+    color: #ff4a52;
+}
+
+body.dashboard-body .story-insights-panel ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+body.dashboard-body .story-insights-panel li,
+body.dashboard-body .story-insights-panel p {
+    overflow-wrap: anywhere;
+    color: #dddddd;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+body.dashboard-body .story-insights-panel p {
+    margin: 10px 0 0;
+}
+
+@media (max-width: 600px) {
+    body.dashboard-body .story-insights-panel {
+        top: 82px;
+        left: 10px;
+        right: 10px;
+        margin: 0;
+        padding: 11px;
+        max-height: 28vh;
+        border-radius: 10px;
+    }
+
+    body.dashboard-body .story-insights-panel h3 {
+        font-size: 15px;
+    }
+}

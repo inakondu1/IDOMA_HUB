@@ -77,33 +77,43 @@ func statusReshareHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = db.Exec(`
-		INSERT INTO statuses (
-			user_id,
-			content,
-			media_url,
-			media_type,
-			expires_at,
-			original_status_id,
-			original_user_id,
-			original_username,
-			reshare_message
-		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-	`,
-		userID,
-		content,
-		mediaURL,
-		mediaType,
-		time.Now().Add(24*time.Hour),
-		rootStatusID,
-		originalUserID,
-		originalUsername,
-		message,
-	)
-
+	tx, err := db.Begin()
 	if err != nil {
 		http.Error(w, "Unable to reshare this status.", http.StatusInternalServerError)
+		return
+	}
+
+	var resharedStatusID int
+	err = tx.QueryRow(`
+		INSERT INTO statuses (
+			user_id, content, media_url, media_type, expires_at,
+			original_status_id, original_user_id, original_username, reshare_message
+		)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		RETURNING id
+	`,
+		userID, content, mediaURL, mediaType, time.Now().Add(24*time.Hour),
+		rootStatusID, originalUserID, originalUsername, message,
+	).Scan(&resharedStatusID)
+
+	if err != nil {
+		_ = tx.Rollback()
+		http.Error(w, "Unable to reshare this status.", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = tx.Exec(`
+		INSERT INTO status_shares (status_id, reshared_status_id, sharer_id)
+		VALUES ($1, $2, $3)
+	`, rootStatusID, resharedStatusID, userID)
+	if err != nil {
+		_ = tx.Rollback()
+		http.Error(w, "Unable to record this reshare.", http.StatusInternalServerError)
+		return
+	}
+
+	if err = tx.Commit(); err != nil {
+		http.Error(w, "Unable to complete this reshare.", http.StatusInternalServerError)
 		return
 	}
 

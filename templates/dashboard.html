@@ -340,6 +340,19 @@ function togglePostEdit(button, cancel) {
 
                 <div id="storyViewerText" class="story-viewer-text"></div>
 
+                <section id="storyInsightsPanel" class="story-insights-panel" style="display:none;" aria-live="polite">
+                        <h3>Status insights</h3>
+                        <div class="story-insights-counts">
+                                <span>Views: <strong id="storyInsightsViewCount">0</strong></span>
+                                <span>Reshares: <strong id="storyInsightsShareCount">0</strong></span>
+                        </div>
+                        <h4>Viewed by</h4>
+                        <ul id="storyInsightsViewers"></ul>
+                        <h4>Reshared by</h4>
+                        <ul id="storyInsightsShares"></ul>
+                        <p id="storyInsightsMessage" role="status"></p>
+                </section>
+
                 <div class="story-action-buttons">
                         <button type="button" id="storyShareButton" class="story-reshare-toggle">
                                 Share status
@@ -1041,6 +1054,83 @@ async function sharePost(postID) {
           ? String(currentUserButton.dataset.currentUserId || "")
           : "";
       const statusUserID = String(card.dataset.userId || "");
+
+      const insightsPanel = document.getElementById("storyInsightsPanel");
+      const insightsViewCount = document.getElementById("storyInsightsViewCount");
+      const insightsShareCount = document.getElementById("storyInsightsShareCount");
+      const insightsViewers = document.getElementById("storyInsightsViewers");
+      const insightsShares = document.getElementById("storyInsightsShares");
+      const insightsMessage = document.getElementById("storyInsightsMessage");
+
+      if (insightsPanel) {
+          insightsPanel.style.display =
+              currentUserID && statusUserID === currentUserID ? "block" : "none";
+      }
+
+      if (insightsPanel && currentUserID && statusUserID === currentUserID) {
+          insightsViewCount.textContent = "0";
+          insightsShareCount.textContent = "0";
+          insightsViewers.replaceChildren();
+          insightsShares.replaceChildren();
+          insightsMessage.textContent = "Loading insights...";
+
+          fetch("/status/insights?status_id=" + encodeURIComponent(statusID))
+              .then(function (response) {
+                  if (!response.ok) {
+                      throw new Error("Could not load status insights.");
+                  }
+                  return response.json();
+              })
+              .then(function (data) {
+                  insightsViewCount.textContent = String(data.view_count || 0);
+                  insightsShareCount.textContent = String(data.share_count || 0);
+                  insightsViewers.replaceChildren();
+                  insightsShares.replaceChildren();
+
+                  (data.viewers || []).forEach(function (viewer) {
+                      const item = document.createElement("li");
+                      const viewedAt = new Date(viewer.viewed_at);
+                      item.textContent = (viewer.username || "Unknown user") +
+                          " · " + (Number.isNaN(viewedAt.getTime())
+                              ? "Time unavailable"
+                              : viewedAt.toLocaleString());
+                      insightsViewers.appendChild(item);
+                  });
+
+                  (data.shares || []).forEach(function (sharer) {
+                      const item = document.createElement("li");
+                      const sharedAt = new Date(sharer.shared_at);
+                      item.textContent = (sharer.username || "Unknown user") +
+                          " · " + (Number.isNaN(sharedAt.getTime())
+                              ? "Time unavailable"
+                              : sharedAt.toLocaleString());
+                      insightsShares.appendChild(item);
+                  });
+
+                  if (!data.viewers.length && !data.shares.length) {
+                      insightsMessage.textContent = "No views or reshares recorded yet.";
+                  } else {
+                      insightsMessage.textContent = "";
+                  }
+              })
+              .catch(function (error) {
+                  console.error("Loading status insights failed:", error);
+                  insightsMessage.textContent = "Unable to load status insights.";
+              });
+      }
+
+      if (statusID && currentUserID && statusUserID !== currentUserID) {
+          fetch("/status/view", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/x-www-form-urlencoded"
+              },
+              body: new URLSearchParams({ status_id: statusID })
+          }).catch(function (error) {
+              console.error("Recording status view failed:", error);
+          });
+      }
+
       const reshareToggle = document.getElementById("storyReshareToggle");
       const reshareForm = document.getElementById("storyReshareForm");
       const reshareInput = document.getElementById("storyReshareInput");

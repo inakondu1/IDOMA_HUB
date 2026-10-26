@@ -176,6 +176,8 @@ func main() {
 	http.HandleFunc("/admin/monetization", adminMonetizationHandler)
 	http.HandleFunc("/status", createStatusHandler)
 	http.HandleFunc("/status/reshare", statusReshareHandler)
+	http.HandleFunc("/status/view", statusViewHandler)
+	http.HandleFunc("/status/insights", statusInsightsHandler)
 	http.HandleFunc("/profile", profileHandler)
 	http.HandleFunc("/profile-view", profileViewHandler)
 	http.HandleFunc("/profile-picture", profilePictureUploadHandler)
