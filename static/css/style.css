@@ -12084,3 +12084,19 @@ body.dashboard-body .story-reply-emoji-picker button {
         font-size: 11px !important;
     }
 }
+
+/* MOBILE FIX: Round uploaded status profile pictures */
+@media (max-width: 768px) {
+    body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-wrapper,
+    body.dashboard-body .stories-row .story-card.story-view-card .story-avatar,
+    body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-fallback {
+        width: 60px !important;
+        height: 60px !important;
+        min-width: 60px !important;
+        min-height: 60px !important;
+        border-radius: 50% !important;
+        overflow: hidden !important;
+        object-fit: cover !important;
+        box-sizing: border-box !important;
+    }
+}
