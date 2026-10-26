@@ -12102,6 +12102,33 @@ body.dashboard-body .story-reply-emoji-picker button {
 }
 
 
+/* STATUS AVATAR RING AND SPACING FIX */
+body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-wrapper {
+    overflow: visible !important;
+    border: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+body.dashboard-body .stories-row .story-card.story-view-card .story-avatar.story-ring,
+body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-fallback.story-ring {
+    border: 3px solid #b5121b !important;
+    padding: 0 !important;
+    background-clip: padding-box !important;
+}
+
+body.dashboard-body .stories-row {
+    column-gap: 5px !important;
+    row-gap: 5px !important;
+}
+
+@media (max-width: 768px) {
+    body.dashboard-body .stories-row {
+        gap: 4px !important;
+        column-gap: 4px !important;
+    }
+}
+
 /* COMPACT STATUS SPACING — PHONE AND LAPTOP */
 body.dashboard-body .stories-row {
     justify-content: flex-start !important;
@@ -12117,8 +12144,8 @@ body.dashboard-body .stories-row .story-create-wrapper {
 
 @media (max-width: 768px) {
     body.dashboard-body .stories-row {
-        gap: 5px !important;
-        column-gap: 5px !important;
+        gap: 4px !important;
+        column-gap: 4px !important;
         padding-left: 4px !important;
         padding-right: 4px !important;
     }
