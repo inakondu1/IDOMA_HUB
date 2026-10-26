@@ -1297,7 +1297,10 @@ async function sharePost(postID) {
           visibleUsers.add(userID);
 
           card.addEventListener("click", function () {
-              openStory(index);
+              const clickedIndex = storyCards.indexOf(card);
+              if (clickedIndex >= 0) {
+                  openStory(clickedIndex);
+              }
           });
       });
 
