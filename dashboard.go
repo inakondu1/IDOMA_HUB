@@ -758,6 +758,70 @@ func profilePictureUploadHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
 
+func editPostHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	postID := strings.TrimSpace(r.FormValue("post_id"))
+	content := strings.TrimSpace(r.FormValue("content"))
+	if postID == "" {
+		http.Error(w, "Post ID is required.", http.StatusBadRequest)
+		return
+	}
+
+	// Allow an empty caption only when the owned post already contains media.
+	if content == "" {
+		var mediaURL string
+		err := db.QueryRow(
+			"SELECT COALESCE(media_url, '') FROM posts WHERE id = $1 AND user_id = $2",
+			postID, userID,
+		).Scan(&mediaURL)
+		if err != nil {
+			http.Error(w, "Post not found or you do not own it.", http.StatusNotFound)
+			return
+		}
+		if strings.TrimSpace(mediaURL) == "" {
+			http.Error(w, "A post must contain text or media.", http.StatusBadRequest)
+			return
+		}
+	}
+
+	result, err := db.Exec(
+		"UPDATE posts SET content = $1 WHERE id = $2 AND user_id = $3",
+		content, postID, userID,
+	)
+	if err != nil {
+		log.Println("Unable to edit post:", err)
+		http.Error(w, "Unable to edit post.", http.StatusInternalServerError)
+		return
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		log.Println("Unable to verify edited post:", err)
+		http.Error(w, "Unable to verify edited post.", http.StatusInternalServerError)
+		return
+	}
+	if affected == 0 {
+		http.Error(w, "Post not found or you do not own it.", http.StatusNotFound)
+		return
+	}
+
+	returnTo := r.FormValue("return_to")
+	if returnTo != "/dashboard" && !strings.HasPrefix(returnTo, "/dashboard#post-") {
+		returnTo = "/dashboard"
+	}
+	http.Redirect(w, r, returnTo, http.StatusSeeOther)
+}
+
 func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)

@@ -129,6 +129,27 @@
         </form>
 
         <script>
+function togglePostEdit(button, cancel) {
+    const post = button.closest(".feed-post");
+    if (!post) return;
+    const form = post.querySelector(".post-edit-form");
+    if (!form) return;
+    if (cancel) {
+        form.hidden = true;
+        return;
+    }
+    form.hidden = !form.hidden;
+    if (!form.hidden) {
+        const textarea = form.querySelector("textarea");
+        if (textarea) {
+            textarea.focus();
+            textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+        }
+    }
+}
+</script>
+
+<script>
         function toggleStoryMenu() {
                 const menu = document.getElementById("story-create-menu");
 
@@ -490,6 +511,24 @@
                                     </video>
                                     {{end}}
                                     </div>
+                                    {{end}}
+
+                                    {{if eq $.UserID .UserID}}
+                                    <div class="post-owner-controls">
+                                        <button type="button" class="post-edit-toggle" onclick="togglePostEdit(this)">✏️ Edit</button>
+                                        <form action="/delete-post" method="POST" class="post-delete-form" onsubmit="return confirm('Delete this post? This cannot be undone.');">
+                                            <input type="hidden" name="post_id" value="{{.ID}}">
+                                            <button type="submit" class="post-delete-button">🗑 Delete</button>
+                                        </form>
+                                    </div>
+                                    <form action="/edit-post" method="POST" class="post-edit-form" hidden>
+                                        <input type="hidden" name="post_id" value="{{.ID}}">
+                                        <textarea name="content" rows="3" maxlength="10000" placeholder="Write a caption (optional for media posts)">{{.Content}}</textarea>
+                                        <div class="post-edit-actions">
+                                            <button type="submit">Save changes</button>
+                                            <button type="button" onclick="togglePostEdit(this, true)">Cancel</button>
+                                        </div>
+                                    </form>
                                     {{end}}
 
                                     <div class="post-actions">
@@ -882,6 +921,42 @@ async function sharePost(postID) {
       }, 150);
   }
 
+  function applySegmentedStatusRings(groups) {
+      groups.forEach(function (group) {
+          const count = group.cards.length;
+          if (!count) return;
+
+          const segmentAngle = 360 / count;
+          const gapAngle = Math.min(5, segmentAngle * 0.18);
+          const parts = [];
+
+          for (let i = 0; i < count; i++) {
+              const start = i * segmentAngle;
+              const end = (i + 1) * segmentAngle;
+              const redEnd = end - gapAngle;
+
+              parts.push("#b5121b " + start + "deg " + redEnd + "deg");
+              parts.push("#171717 " + redEnd + "deg " + end + "deg");
+          }
+
+          const gradient = "conic-gradient(" + parts.join(", ") + ")";
+
+          group.cards.forEach(function (card) {
+              const wrapper = card.querySelector(".story-avatar-wrapper");
+              const avatar = card.querySelector(".story-avatar.story-ring, .story-avatar-fallback.story-ring");
+
+              if (wrapper) {
+                  wrapper.classList.add("segmented-status-ring");
+                  wrapper.style.setProperty("--status-ring-gradient", gradient);
+              }
+
+              if (avatar) {
+                  avatar.classList.add("segmented-status-avatar");
+              }
+          });
+      });
+  }
+
   function loadStoryCards() {
       storyCards = Array.from(document.querySelectorAll(".story-view-card"));
 
@@ -903,6 +978,8 @@ async function sharePost(postID) {
               cards: entry[1]
           };
       });
+
+      applySegmentedStatusRings(storyGroups);
   }
 
   function openStory(index) {

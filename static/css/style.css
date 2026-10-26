@@ -12156,3 +12156,116 @@ body.dashboard-body .stories-row .story-create-wrapper {
 body.dashboard-body .stories-row .story-card[hidden] {
     display: none !important;
 }
+
+
+/* Segmented status rings: one segment per active status */
+body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-wrapper.segmented-status-ring {
+    position: relative !important;
+    isolation: isolate;
+}
+
+body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-wrapper.segmented-status-ring::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: var(--status-ring-gradient, #b5121b);
+    z-index: 0;
+    pointer-events: none;
+}
+
+body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-wrapper.segmented-status-ring .story-profile-link {
+    position: relative;
+    z-index: 1;
+    display: block;
+    border-radius: 50%;
+    background: #171717;
+    padding: 2px;
+    line-height: 0;
+}
+
+body.dashboard-body .stories-row .story-card.story-view-card .story-avatar.segmented-status-avatar,
+body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-fallback.segmented-status-avatar {
+    border: 0 !important;
+    padding: 0 !important;
+    display: block;
+    border-radius: 50% !important;
+}
+
+
+/* IDOMA HUB post owner controls */
+body.dashboard-body .post-owner-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+body.dashboard-body .post-owner-controls .post-delete-form {
+    margin: 0;
+}
+body.dashboard-body .post-owner-controls button,
+body.dashboard-body .post-edit-actions button {
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 1px solid #b5121b;
+    border-radius: 8px;
+    background: #171717;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+}
+body.dashboard-body .post-owner-controls .post-edit-toggle:hover,
+body.dashboard-body .post-edit-actions button[type="submit"] {
+    background: #b5121b;
+}
+body.dashboard-body .post-owner-controls .post-delete-button {
+    border-color: #71343a;
+    color: #ffb8bd;
+}
+body.dashboard-body .post-owner-controls .post-delete-button:hover {
+    background: #521319;
+    border-color: #b5121b;
+}
+body.dashboard-body .post-edit-form {
+    display: grid;
+    gap: 10px;
+    margin: 10px 0 14px;
+}
+body.dashboard-body .post-edit-form[hidden] {
+    display: none !important;
+}
+body.dashboard-body .post-edit-form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 90px;
+    resize: vertical;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 10px;
+    background: #101010;
+    color: #fff;
+    font: inherit;
+}
+body.dashboard-body .post-edit-form textarea:focus {
+    outline: 2px solid #b5121b;
+    outline-offset: 1px;
+}
+body.dashboard-body .post-edit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+body.dashboard-body .post-edit-actions button[type="button"] {
+    border-color: #555;
+    background: #292929;
+}
+@media (max-width: 480px) {
+    body.dashboard-body .post-owner-controls button,
+    body.dashboard-body .post-edit-actions button {
+        min-height: 40px;
+    }
+    body.dashboard-body .post-edit-form textarea {
+        font-size: 16px;
+    }
+}

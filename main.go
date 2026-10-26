@@ -221,6 +221,7 @@ func main() {
 	http.HandleFunc("/like", likePostHandler)
 	http.HandleFunc("/share", sharePostHandler)
 	http.HandleFunc("/comment", createCommentHandler)
+	http.HandleFunc("/edit-post", editPostHandler)
 	http.HandleFunc("/delete-post", deletePostHandler)
 	http.HandleFunc("/logout", logoutHandler)
 
