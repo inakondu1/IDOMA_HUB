@@ -12100,3 +12100,26 @@ body.dashboard-body .story-reply-emoji-picker button {
         box-sizing: border-box !important;
     }
 }
+
+
+/* COMPACT STATUS SPACING — PHONE AND LAPTOP */
+body.dashboard-body .stories-row {
+    justify-content: flex-start !important;
+    column-gap: 8px !important;
+    row-gap: 8px !important;
+}
+
+body.dashboard-body .stories-row .story-card,
+body.dashboard-body .stories-row .story-create-wrapper {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+@media (max-width: 768px) {
+    body.dashboard-body .stories-row {
+        gap: 5px !important;
+        column-gap: 5px !important;
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
+}
