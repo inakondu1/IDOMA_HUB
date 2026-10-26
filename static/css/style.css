@@ -12043,3 +12043,44 @@ body.dashboard-body .story-reply-emoji-picker button {
         overflow: hidden !important;
     }
 }
+
+
+/* FIX: Make uploaded status avatars round on mobile */
+@media (max-width: 768px) {
+    body.dashboard-body .stories-row .story-card.story-view-card {
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 3px 2px !important;
+        overflow: visible !important;
+    }
+
+    body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-wrapper {
+        width: 64px !important;
+        height: 64px !important;
+        min-width: 64px !important;
+        min-height: 64px !important;
+        border-radius: 50% !important;
+        overflow: hidden !important;
+        margin: 0 auto 7px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .stories-row .story-card.story-view-card .story-avatar,
+    body.dashboard-body .stories-row .story-card.story-view-card .story-avatar-fallback {
+        width: 64px !important;
+        height: 64px !important;
+        min-width: 64px !important;
+        min-height: 64px !important;
+        border-radius: 50% !important;
+        object-fit: cover !important;
+        box-sizing: border-box !important;
+    }
+
+    body.dashboard-body .stories-row .story-card.story-view-card > strong {
+        color: #fff !important;
+        text-align: center !important;
+        font-size: 11px !important;
+    }
+}
