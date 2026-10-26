@@ -12408,3 +12408,73 @@ body.dashboard-body #storyInsightsPanel .story-insights-counts {
         font-size: 11px;
     }
 }
+
+
+/* Bottom controls for the status viewer on desktop and mobile */
+body.dashboard-body .story-viewer-content #storyInsightsToggle {
+    position: absolute;
+    right: 12px;
+    bottom: 72px;
+    z-index: 14;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid #b5121b;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .92);
+    color: #fff;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+body.dashboard-body .story-viewer-content #storyInsightsPanel {
+    top: auto;
+    bottom: 124px;
+    max-height: 30vh;
+}
+
+body.dashboard-body .story-viewer-content #storyReplyForm {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 13;
+    box-sizing: border-box;
+}
+
+body.dashboard-body .story-viewer-content .story-action-buttons {
+    position: absolute;
+    left: 12px;
+    bottom: 72px;
+    z-index: 13;
+}
+
+@media (max-width: 600px) {
+    body.dashboard-body .story-viewer-content #storyInsightsToggle {
+        right: 10px;
+        bottom: 76px;
+        width: 40px;
+        height: 40px;
+    }
+
+    body.dashboard-body .story-viewer-content #storyInsightsPanel {
+        left: 8px;
+        right: 8px;
+        bottom: 124px;
+        max-height: 28vh;
+        padding: 10px;
+    }
+
+    body.dashboard-body .story-viewer-content #storyReplyForm {
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+    }
+
+    body.dashboard-body .story-viewer-content .story-action-buttons {
+        left: 8px;
+        bottom: 76px;
+    }
+}

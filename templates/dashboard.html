@@ -129,6 +129,21 @@
         </form>
 
         <script>
+(function () {
+    if (window.__storyInsightsToggleBound) return;
+    window.__storyInsightsToggleBound = true;
+    document.addEventListener("click", function (event) {
+        const button = event.target.closest("#storyInsightsToggle");
+        if (!button || button.style.display === "none") return;
+        const panel = document.getElementById("storyInsightsPanel");
+        if (!panel) return;
+        const opening = panel.style.display === "none" || !panel.style.display;
+        panel.style.display = opening ? "block" : "none";
+        button.setAttribute("aria-expanded", String(opening));
+        button.setAttribute("aria-label", opening ? "Hide status insights" : "Show status insights");
+    });
+})();
+
 function togglePostEdit(button, cancel) {
     const post = button.closest(".feed-post");
     if (!post) return;
@@ -339,6 +354,8 @@ function togglePostEdit(button, cancel) {
                 <div id="storyViewerMedia" class="story-viewer-media"></div>
 
                 <div id="storyViewerText" class="story-viewer-text"></div>
+
+                <button type="button" id="storyInsightsToggle" class="story-insights-toggle" style="display:none;" aria-label="Show status insights" aria-controls="storyInsightsPanel" aria-expanded="false" title="Status insights">👁</button>
 
                 <section id="storyInsightsPanel" class="story-insights-panel" style="display:none;" aria-live="polite">
                         <h3>Status insights</h3>
@@ -1053,15 +1070,19 @@ async function sharePost(postID) {
       const statusUserID = String(card.dataset.userId || "");
 
       const insightsPanel = document.getElementById("storyInsightsPanel");
+      const insightsToggle = document.getElementById("storyInsightsToggle");
       const insightsViewCount = document.getElementById("storyInsightsViewCount");
       const insightsShareCount = document.getElementById("storyInsightsShareCount");
       const insightsViewers = document.getElementById("storyInsightsViewers");
       const insightsShares = document.getElementById("storyInsightsShares");
       const insightsMessage = document.getElementById("storyInsightsMessage");
 
-      if (insightsPanel) {
-          insightsPanel.style.display =
-              currentUserID && statusUserID === currentUserID ? "block" : "none";
+      const ownsCurrentStatus = Boolean(currentUserID && statusUserID === currentUserID);
+      if (insightsPanel) insightsPanel.style.display = "none";
+      if (insightsToggle) {
+          insightsToggle.style.display = ownsCurrentStatus ? "inline-flex" : "none";
+          insightsToggle.setAttribute("aria-expanded", "false");
+          insightsToggle.setAttribute("aria-label", "Show status insights");
       }
 
       if (insightsPanel && currentUserID && statusUserID === currentUserID) {
