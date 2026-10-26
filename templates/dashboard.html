@@ -1285,12 +1285,12 @@ async function sharePost(postID) {
           const userID = String(card.dataset.userId || "");
 
           if (currentUserID && userID === currentUserID) {
-              card.style.display = "none";
+              card.hidden = true;
               return;
           }
 
           if (visibleUsers.has(userID)) {
-              card.style.display = "none";
+              card.hidden = true;
               return;
           }
 

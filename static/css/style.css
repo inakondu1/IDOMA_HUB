@@ -12150,3 +12150,9 @@ body.dashboard-body .stories-row .story-create-wrapper {
         padding-right: 4px !important;
     }
 }
+
+
+/* Keep intentionally hidden duplicate status cards hidden on every screen. */
+body.dashboard-body .stories-row .story-card[hidden] {
+    display: none !important;
+}
