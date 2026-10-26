@@ -354,9 +354,6 @@ function togglePostEdit(button, cancel) {
                 </section>
 
                 <div class="story-action-buttons">
-                        <button type="button" id="storyShareButton" class="story-reshare-toggle">
-                                Share status
-                        </button>
                         <button type="button" id="storyReshareToggle" class="story-reshare-toggle" style="display:none;">
                                 Reshare to my status
                         </button>
@@ -365,7 +362,7 @@ function togglePostEdit(button, cancel) {
                 <form id="storyReshareForm" class="story-reshare-form" action="/status/reshare" method="POST" style="display:none;">
                         <input type="hidden" id="storyReshareStatusID" name="status_id">
                         <textarea id="storyReshareInput" name="message" maxlength="1000" placeholder="Add your message before resharing..."></textarea>
-                        <button type="submit">Share status</button>
+                        <button type="submit">Reshare</button>
                         <button type="button" id="storyReshareCancel">Cancel</button>
                 </form>
 
@@ -1136,35 +1133,6 @@ async function sharePost(postID) {
       const reshareInput = document.getElementById("storyReshareInput");
 
       document.getElementById("storyViewerUsername").textContent = username;
-
-      const storyShareButton = document.getElementById("storyShareButton");
-      storyShareButton.onclick = async function () {
-          const shareURL = window.location.origin + "/dashboard#status-" + encodeURIComponent(statusID);
-          const shareData = {
-              title: "IDOMA HUB",
-              text: "Check out this status by " + username + " on IDOMA HUB.",
-              url: shareURL
-          };
-
-          if (navigator.share) {
-              try {
-                  await navigator.share(shareData);
-              } catch (error) {
-                  if (error.name !== "AbortError") {
-                      console.error("Sharing status failed:", error);
-                  }
-              }
-          } else if (navigator.clipboard) {
-              try {
-                  await navigator.clipboard.writeText(shareURL);
-                  alert("Status link copied to clipboard!");
-              } catch (error) {
-                  prompt("Copy this status link:", shareURL);
-              }
-          } else {
-              prompt("Copy this status link:", shareURL);
-          }
-      };
 
       document.getElementById("storyReshareStatusID").value = statusID;
       reshareInput.value = "";
