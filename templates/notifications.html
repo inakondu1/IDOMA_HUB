@@ -109,6 +109,8 @@
                                                                 <span>commented on your post.</span>
                                                         {{else if eq .Type "share"}}
                                                                 <span>shared your post.</span>
+                                                        {{else if eq .Type "new_post"}}
+                                                                <span>published a new post.</span>
                                                         {{else if eq .Type "story_reply"}}
                                                                 <span>replied to your story.</span>
                                                         {{else if eq .Type "status_reshare"}}

@@ -548,19 +548,47 @@ func createPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = db.Exec(
-		"INSERT INTO posts (user_id, content, media_url, media_type, category) VALUES ($1, $2, $3, $4, $5)",
+	var newPostID int
+	err = db.QueryRow(
+		"INSERT INTO posts (user_id, content, media_url, media_type, category) VALUES ($1, $2, $3, $4, $5) RETURNING id",
 		userID,
 		content,
 		mediaURL,
 		mediaType,
 		category,
-	)
+	).Scan(&newPostID)
 
 	if err != nil {
 		http.Error(w, "Unable to create post.", http.StatusInternalServerError)
 		log.Println(err)
 		return
+	}
+
+	// Notify everyone who currently follows the author.
+	followerRows, followErr := db.Query(
+		"SELECT follower_id FROM follows WHERE following_id = $1",
+		userID,
+	)
+	if followErr != nil {
+		log.Println("Unable to find followers for new-post notifications:", followErr)
+	} else {
+		var followerIDs []int
+		for followerRows.Next() {
+			var followerID int
+			if scanErr := followerRows.Scan(&followerID); scanErr != nil {
+				log.Println("Unable to read follower for new-post notification:", scanErr)
+				continue
+			}
+			followerIDs = append(followerIDs, followerID)
+		}
+		if rowsErr := followerRows.Err(); rowsErr != nil {
+			log.Println("Error reading followers for new-post notifications:", rowsErr)
+		}
+		followerRows.Close()
+
+		for _, followerID := range followerIDs {
+			createPostNotification(followerID, userID, strconv.Itoa(newPostID), "new_post")
+		}
 	}
 
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
