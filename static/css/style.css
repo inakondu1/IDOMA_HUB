@@ -11593,6 +11593,10 @@ body.dashboard-body .dashboard-rightbar-link:hover {
 }
 
 @media (min-width: 1001px) {
+    body.dashboard-body .dashboard-welcome-row {
+        display: none !important;
+    }
+
     body.dashboard-body .dashboard-layout {
         display: grid !important;
         grid-template-columns: minmax(190px, 220px) minmax(0, 1fr) minmax(230px, 270px) !important;
@@ -11619,7 +11623,7 @@ body.dashboard-body .dashboard-rightbar-link:hover {
 
     body.dashboard-body .dashboard-layout > .stories-section {
         display: block !important;
-        grid-column: 3 !important;
+        grid-column: 2 !important;
         grid-row: 1 !important;
         order: initial !important;
         width: 100% !important;
@@ -11631,7 +11635,7 @@ body.dashboard-body .dashboard-rightbar-link:hover {
 
     body.dashboard-body .dashboard-layout > .feed-section {
         grid-column: 2 !important;
-        grid-row: 1 / span 2 !important;
+        grid-row: 2 !important;
         order: initial !important;
         width: 100% !important;
         max-width: 100% !important;
@@ -11643,7 +11647,7 @@ body.dashboard-body .dashboard-rightbar-link:hover {
     body.dashboard-body .dashboard-layout > .dashboard-rightbar {
         display: block !important;
         grid-column: 3 !important;
-        grid-row: 2 !important;
+        grid-row: 1 / span 2 !important;
         width: 100% !important;
         min-width: 0 !important;
         margin: 0 !important;
