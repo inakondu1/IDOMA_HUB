@@ -629,40 +629,81 @@ function togglePostEdit(button, cancel) {
 
 
                 <aside class="dashboard-rightbar">
-                    <section class="dashboard-card dashboard-rightbar-card">
-                        <div class="dashboard-rightbar-heading">
-                            <h2>People You May Know</h2>
-                            <a href="/friends#people-you-may-know">See all</a>
-                        </div>
+    <section class="dashboard-card dashboard-rightbar-card">
+        <div class="dashboard-rightbar-heading">
+            <h2>People You May Know</h2>
+            <a href="/friends#people-you-may-know">See all</a>
+        </div>
 
-                        {{if .Suggestions}}
-                            <div class="dashboard-rightbar-suggestions">
-                                {{range .Suggestions}}
-                                    <div class="dashboard-suggestion">
-                                        <a href="/profile-view?id={{.ID}}" class="dashboard-suggestion-profile">
-                                            {{if .ProfilePicture}}
-                                                <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="dashboard-suggestion-avatar">
-                                            {{else}}
-                                                <span class="dashboard-suggestion-avatar dashboard-suggestion-initial">{{printf "%.1s" .Username}}</span>
-                                            {{end}}
-                                            <span class="dashboard-suggestion-name">{{.Username}}</span>
-                                        </a>
+        {{if .Suggestions}}
+        <div class="dashboard-rightbar-suggestions" id="dashboard-people-suggestions">
+            {{range $index, $person := .Suggestions}}
+            <div class="dashboard-suggestion{{if gt $index 0}} dashboard-suggestion-collapsed{{end}}"{{if gt $index 0}} hidden{{end}}>
+                <a href="/profile-view?id={{$person.ID}}" class="dashboard-suggestion-profile">
+                    {{if $person.ProfilePicture}}
+                    <img src="{{$person.ProfilePicture}}" alt="{{$person.Username}}" class="dashboard-suggestion-avatar">
+                    {{else}}
+                    <span class="dashboard-suggestion-avatar dashboard-suggestion-initial">{{printf "%.1s" $person.Username}}</span>
+                    {{end}}
+                    <span class="dashboard-suggestion-name">{{$person.Username}}</span>
+                </a>
+                <form method="POST" action="/friends">
+                    <input type="hidden" name="action" value="send">
+                    <input type="hidden" name="user_id" value="{{$person.ID}}">
+                    <button class="dashboard-suggestion-button" type="submit">Add Friend</button>
+                </form>
+            </div>
+            {{end}}
+        </div>
 
-                                        <form method="POST" action="/friends">
-                                            <input type="hidden" name="action" value="send">
-                                            <input type="hidden" name="user_id" value="{{.ID}}">
-                                            <button class="dashboard-suggestion-button" type="submit">Add Friend</button>
-                                        </form>
-                                    </div>
-                                {{end}}
-                            </div>
-                        {{else}}
-                            <p class="dashboard-rightbar-empty">No new people to connect with right now.</p>
-                        {{end}}
-                    </section>
+        {{if gt (len .Suggestions) 1}}
+        <button class="dashboard-see-people" id="dashboard-see-people"
+                type="button" aria-expanded="false"
+                aria-controls="dashboard-people-suggestions">See People</button>
+        {{end}}
+        {{else}}
+        <p class="dashboard-rightbar-empty">No new people to connect with right now.</p>
+        {{end}}
+    </section>
 
+    <section class="dashboard-card dashboard-rightbar-card dashboard-incoming-requests">
+        <div class="dashboard-rightbar-heading">
+            <h2>Friend Requests</h2>
+            <a href="/friends">See all</a>
+        </div>
 
-                </aside>
+        {{if .Incoming}}
+        <div class="dashboard-incoming-list">
+            {{range .Incoming}}
+            <div class="dashboard-incoming-request">
+                <a href="/profile-view?id={{.UserID}}" class="dashboard-suggestion-profile">
+                    {{if .ProfilePicture}}
+                    <img src="{{.ProfilePicture}}" alt="{{.Username}}" class="dashboard-suggestion-avatar">
+                    {{else}}
+                    <span class="dashboard-suggestion-avatar dashboard-suggestion-initial">{{printf "%.1s" .Username}}</span>
+                    {{end}}
+                    <span class="dashboard-suggestion-name">{{.Username}}</span>
+                </a>
+                <div class="dashboard-request-actions">
+                    <form method="POST" action="/friends">
+                        <input type="hidden" name="action" value="accept">
+                        <input type="hidden" name="user_id" value="{{.ID}}">
+                        <button class="dashboard-request-button dashboard-request-confirm" type="submit">Confirm</button>
+                    </form>
+                    <form method="POST" action="/friends">
+                        <input type="hidden" name="action" value="reject">
+                        <input type="hidden" name="user_id" value="{{.ID}}">
+                        <button class="dashboard-request-button dashboard-request-delete" type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+            {{end}}
+        </div>
+        {{else}}
+        <p class="dashboard-rightbar-empty">No incoming friend requests.</p>
+        {{end}}
+    </section>
+</aside>
 
                 </div>
 
@@ -1567,6 +1608,26 @@ function toggleComments(button) {
     checkForNewPosts();
     window.setInterval(checkForNewPosts, 20000);
     document.addEventListener("visibilitychange", checkForNewPosts);
+})();
+</script>
+
+    <script>
+(function () {
+    const button = document.getElementById("dashboard-see-people");
+    const list = document.getElementById("dashboard-people-suggestions");
+    if (!button || !list) return;
+
+    button.addEventListener("click", function () {
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        const collapsedPeople = list.querySelectorAll(".dashboard-suggestion-collapsed");
+
+        collapsedPeople.forEach(function (person) {
+            person.hidden = expanded;
+        });
+
+        button.setAttribute("aria-expanded", String(!expanded));
+        button.textContent = expanded ? "See People" : "Show Less";
+    });
 })();
 </script>
 

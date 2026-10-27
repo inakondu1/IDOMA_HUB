@@ -373,6 +373,37 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Unable to load dashboard suggestions:", suggestionErr)
 	}
 
+	var incomingRequests []FriendRequest
+	requestRows, requestErr := db.Query(`
+        SELECT fr.id, u.id, u.username, COALESCE(u.profile_picture, '')
+        FROM friend_requests fr
+        JOIN users u ON u.id = fr.sender_id
+        WHERE fr.receiver_id = $1 AND fr.status = 'pending'
+        ORDER BY fr.created_at DESC
+        LIMIT 5
+    `, userID)
+	if requestErr != nil {
+		log.Println("Unable to load incoming dashboard friend requests:", requestErr)
+	} else {
+		for requestRows.Next() {
+			var request FriendRequest
+			if scanErr := requestRows.Scan(
+				&request.ID,
+				&request.UserID,
+				&request.Username,
+				&request.ProfilePicture,
+			); scanErr != nil {
+				log.Println("Unable to read dashboard friend request:", scanErr)
+				continue
+			}
+			incomingRequests = append(incomingRequests, request)
+		}
+		if rowsErr := requestRows.Err(); rowsErr != nil {
+			log.Println("Error reading dashboard friend requests:", rowsErr)
+		}
+		requestRows.Close()
+	}
+
 	data := struct {
 		Title                string
 		UserID               int
@@ -382,6 +413,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		LatestPostID         int
 		Statuses             []Status
 		Suggestions          []FriendUser
+		Incoming             []FriendRequest
 		NotificationCount    int
 		MessageCount         int
 		OnlineCount          int
@@ -395,6 +427,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		LatestPostID:         latestDashboardPostID(posts),
 		Statuses:             statuses,
 		Suggestions:          suggestions,
+		Incoming:             incomingRequests,
 		NotificationCount:    notificationCount,
 		MessageCount:         messageCount,
 		OnlineCount:          getOnlineCount(),

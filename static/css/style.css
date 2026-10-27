@@ -12555,3 +12555,82 @@ body.dashboard-body .welcome-community-links a:hover {
         height: auto;
     }
 }
+
+
+/* Dashboard expandable people and incoming friend requests */
+.dashboard-suggestion-collapsed[hidden] {
+    display: none !important;
+}
+
+.dashboard-see-people {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border: 1px solid #b5121b;
+    border-radius: 8px;
+    background: #171717;
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.dashboard-see-people:hover {
+    background: #850c13;
+}
+
+.dashboard-incoming-requests {
+    margin-top: 16px;
+}
+
+.dashboard-incoming-list {
+    display: grid;
+    gap: 16px;
+}
+
+.dashboard-incoming-request {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+}
+
+.dashboard-request-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.dashboard-request-actions form {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.dashboard-request-button {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 7px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.dashboard-request-confirm {
+    background: #b5121b;
+    color: #fff;
+}
+
+.dashboard-request-confirm:hover {
+    background: #850c13;
+}
+
+.dashboard-request-delete {
+    border: 1px solid #555;
+    background: #262626;
+    color: #fff;
+}
+
+.dashboard-request-delete:hover {
+    background: #383838;
+}
