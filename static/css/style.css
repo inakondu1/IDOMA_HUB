@@ -12634,3 +12634,19 @@ body.dashboard-body .welcome-community-links a:hover {
 .dashboard-request-delete:hover {
     background: #383838;
 }
+
+
+/* PHONE STORY CARDS: REDUCE EXCESS BLACK SPACE */
+@media (max-width: 768px) {
+    body.dashboard-body .story-create-wrapper,
+    body.dashboard-body .story-create-card,
+    body.dashboard-body .stories-row .story-card {
+        width: 86px !important;
+        min-width: 86px !important;
+        max-width: 86px !important;
+        flex-basis: 86px !important;
+        height: 135px !important;
+        min-height: 135px !important;
+        max-height: 135px !important;
+    }
+}
