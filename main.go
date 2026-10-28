@@ -166,6 +166,13 @@ func main() {
 	cld = initCloudinary()
 	http.Handle("/static/uploads/posts/", http.StripPrefix("/static/uploads/posts/", http.FileServer(http.Dir(postUploadDir()))))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/service-worker.js", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+			return
+		}
+		http.ServeFile(w, r, "static/service-worker.js")
+	})
 
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/register", registerPageHandler)

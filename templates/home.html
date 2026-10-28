@@ -45,7 +45,7 @@
 <script>
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
-        navigator.serviceWorker.register("/static/service-worker.js")
+        navigator.serviceWorker.register("/service-worker.js")
             .catch(function (error) {
                 console.error("IDOMA HUB service worker registration failed:", error);
             });
