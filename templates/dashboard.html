@@ -5,6 +5,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>{{.Title}}</title>
 	<link rel="stylesheet" href="/static/css/style.css?v=20261028">
+    <meta name="theme-color" content="#850c13">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="IDOMA HUB">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/images/idoma-app-192.png">
+    <link rel="apple-touch-icon" href="/static/images/idoma-app-192.png">
 </head>
 
 <body class="dashboard-body">
@@ -1624,6 +1631,18 @@ function toggleComments(button) {
 
     <script src="/static/js/unread-message-badge.js" defer></script>
     <script src="/static/js/global-calls.js" defer></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/static/service-worker.js")
+            .catch(function (error) {
+                console.error("IDOMA HUB service worker registration failed:", error);
+            });
+    });
+}
+</script>
+
 </body>
 </html>
 
