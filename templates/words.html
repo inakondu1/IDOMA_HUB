@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Idoma Words - IDOMA HUB</title>
+    <title>Idoma Words &amp; Phrases - IDOMA HUB</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
@@ -30,11 +30,11 @@
 
     <section class="words-header">
 
-        <h1>Idoma Words</h1>
+        <h1>Idoma Words &amp; Phrases</h1>
 
         <p>
             Welcome {{.Username}}.
-            Learn common Idoma words and their meanings.
+            Explore useful Idoma words, meanings, and everyday phrases together.
         </p>
     </section>
 
@@ -42,7 +42,7 @@
         <input
             type="text"
             id="wordSearch"
-            placeholder="Search Idoma words..."
+            placeholder="Search words, phrases, or meanings..."
             onkeyup="searchWords()"
         >
     </div>
@@ -78,6 +78,38 @@
 
     </section>
 
+
+    <section class="phrases-section">
+        <header class="words-header">
+            <h2>Everyday Phrases</h2>
+            <p>Common Idoma expressions and what they mean.</p>
+        </header>
+
+        <section class="phrases-grid">
+            {{range .Phrases}}
+            <article class="phrase-card">
+                <span class="phrase-category">{{.Category}}</span>
+                <h2>{{.Phrase}}</h2>
+
+                <div class="phrase-meaning">
+                    <span>Meaning</span>
+                    <strong>{{.Meaning}}</strong>
+                </div>
+
+                <div class="phrase-detail">
+                    <span>Dialect</span>
+                    <p>{{.Dialect}}</p>
+                </div>
+
+                <div class="phrase-detail">
+                    <span>Source</span>
+                    <p>{{.Source}}</p>
+                </div>
+            </article>
+            {{end}}
+        </section>
+    </section>
+
 </main>
 
 <footer>
@@ -88,7 +120,7 @@
 function searchWords() {
     const input = document.getElementById("wordSearch");
     const search = input.value.toLowerCase().trim();
-    const cards = document.querySelectorAll(".word-card");
+    const cards = document.querySelectorAll(".word-card, .phrase-card");
 
     cards.forEach(card => {
         const text = card.textContent.toLowerCase();

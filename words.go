@@ -17,6 +17,7 @@ type IdomaWord struct {
 type WordsPageData struct {
 	Username string
 	Words    []IdomaWord
+	Phrases  []IdomaPhrase
 }
 
 func wordsHandler(w http.ResponseWriter, r *http.Request) {
@@ -121,9 +122,18 @@ func wordsHandler(w http.ResponseWriter, r *http.Request) {
 	// Keep the existing words and add the supplied Idoma nouns.
 	words = append(words, idomaNounWords()...)
 
+	phrases := []IdomaPhrase{
+		{Phrase: "Nmaochi", Meaning: "Good morning", Category: "Greetings", Dialect: "Idoma", Source: "IdomaLand"},
+		{Phrase: "Abo le? / Abole?", Meaning: "How are you?", Category: "Greetings", Dialect: "Idoma", Source: "IdomaLand"},
+		{Phrase: "A gbe hii", Meaning: "Are you OK? / Are you doing OK?", Category: "Greetings", Dialect: "Idoma", Source: "IdomaLand"},
+		{Phrase: "Nmoo", Meaning: "Goodbye", Category: "Greetings", Dialect: "Idoma", Source: "IdomaLand"},
+		{Phrase: "Ahinya / Anya", Meaning: "Thank you / Thanks", Category: "Common", Dialect: "Idoma", Source: "IdomaLand"},
+	}
+
 	data := WordsPageData{
 		Username: username,
 		Words:    words,
+		Phrases:  phrases,
 	}
 
 	tmpl, err := template.ParseFiles("templates/words.html")
