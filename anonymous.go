@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -46,6 +47,8 @@ type AnonymousMessage struct {
 	ParentID      *int
 	AnonymousName string
 	Content       string
+	MediaURL      string
+	MediaType     string
 	CreatedAt     string
 	Replies       []AnonymousMessage
 }
@@ -336,19 +339,50 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
-		content := strings.TrimSpace(r.FormValue("content"))
-
-		if content == "" {
-			http.Redirect(w, r, "/anonymous", http.StatusSeeOther)
+		if err := r.ParseMultipartForm(50 << 20); err != nil {
+			http.Error(w, "Unable to process anonymous upload.", http.StatusBadRequest)
 			return
 		}
 
+		content := strings.TrimSpace(r.FormValue("content"))
 		if len([]rune(content)) > 2000 {
 			http.Error(w, "Anonymous message is too long.", http.StatusBadRequest)
 			return
 		}
 
+		var mediaURL, mediaType string
+		media, header, mediaErr := r.FormFile("media")
+		if mediaErr == nil {
+			defer media.Close()
+			ext := strings.ToLower(filepath.Ext(header.Filename))
+
+			switch ext {
+			case ".jpg", ".jpeg", ".png", ".gif", ".webp":
+				mediaType = "image"
+			case ".mp4", ".webm", ".ogg":
+				mediaType = "video"
+			default:
+				http.Error(w, "Unsupported media format.", http.StatusBadRequest)
+				return
+			}
+
+			mediaURL, err = uploadToCloudinary(media, "idoma_hub/anonymous", mediaType)
+			if err != nil {
+				http.Error(w, "Unable to upload anonymous media.", http.StatusInternalServerError)
+				return
+			}
+		} else if mediaErr != http.ErrMissingFile {
+			http.Error(w, "Unable to read uploaded media.", http.StatusBadRequest)
+			return
+		}
+
+		if content == "" && mediaURL == "" {
+			http.Error(w, "Add a message or attach a photo/video.", http.StatusBadRequest)
+			return
+		}
+
 		parentIDText := strings.TrimSpace(r.FormValue("parent_id"))
+
 		var parentID *int
 
 		if parentIDText != "" {
@@ -387,11 +421,13 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 			INSERT INTO anonymous_messages (
 				anonymous_name,
 				content,
+				media_url,
+				media_type,
 				parent_id,
 				expires_at
 			)
-			VALUES ($1, $2, $3, CURRENT_TIMESTAMP + INTERVAL '48 hours')
-		`, anonymousName, content, parentID)
+			VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP + INTERVAL '48 hours')
+		`, anonymousName, content, mediaURL, mediaType, parentID)
 
 		if err != nil {
 			http.Error(w, "Unable to post anonymously", http.StatusInternalServerError)
@@ -415,6 +451,8 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 			parent_id,
 			anonymous_name,
 			content,
+			media_url,
+			media_type,
 			TO_CHAR(created_at, 'Mon DD, YYYY HH24:MI')
 		FROM anonymous_messages
 		WHERE expires_at > CURRENT_TIMESTAMP
@@ -437,6 +475,8 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 			&message.ParentID,
 			&message.AnonymousName,
 			&message.Content,
+			&message.MediaURL,
+			&message.MediaType,
 			&message.CreatedAt,
 		); err != nil {
 			continue

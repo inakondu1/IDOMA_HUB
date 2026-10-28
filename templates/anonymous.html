@@ -83,15 +83,22 @@
                 </span>
             </div>
 
-            <form action="/anonymous" method="POST" id="anonymousMainForm">
+            <form action="/anonymous" method="POST" enctype="multipart/form-data" id="anonymousMainForm">
 
                 <textarea
                     name="content"
                     rows="4"
                     maxlength="2000"
                     placeholder="What would you like to say?"
-                    required
+
                 ></textarea>
+
+
+                <label class="anonymous-media-picker">
+                    <span>Attach a photo or video</span>
+                    <input type="file" name="media"
+                        accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/ogg">
+                </label>
 
                 <div class="anonymous-composer-footer">
 
@@ -156,6 +163,39 @@
                             {{.Content}}
                         </div>
 
+
+                        {{if .MediaURL}}
+
+
+                        <div class="anonymous-media">
+
+
+                            {{if eq .MediaType "video"}}
+
+
+                            <video controls playsinline preload="metadata">
+
+
+                                <source src="{{.MediaURL}}">
+
+
+                            </video>
+
+
+                            {{else}}
+
+
+                            <img src="{{.MediaURL}}" alt="Anonymous attachment" loading="lazy">
+
+
+                            {{end}}
+
+
+                        </div>
+
+
+                        {{end}}
+
                         <div class="anonymous-message-actions">
 
                             <button
@@ -202,6 +242,39 @@
                                 <div class="anonymous-message-text">
                                     {{.Content}}
                                 </div>
+
+
+                                {{if .MediaURL}}
+
+
+                                <div class="anonymous-media">
+
+
+                                    {{if eq .MediaType "video"}}
+
+
+                                    <video controls playsinline preload="metadata">
+
+
+                                        <source src="{{.MediaURL}}">
+
+
+                                    </video>
+
+
+                                    {{else}}
+
+
+                                    <img src="{{.MediaURL}}" alt="Anonymous attachment" loading="lazy">
+
+
+                                    {{end}}
+
+
+                                </div>
+
+
+                                {{end}}
 
                                 <div class="anonymous-message-actions">
 
@@ -274,7 +347,7 @@
 
         </div>
 
-        <form action="/anonymous" method="POST" id="anonymousReplyForm">
+        <form action="/anonymous" method="POST" enctype="multipart/form-data" id="anonymousReplyForm">
 
             <input
                 type="hidden"
@@ -288,8 +361,15 @@
                 rows="3"
                 maxlength="2000"
                 placeholder="Write your reply..."
-                required
+
             ></textarea>
+
+                <label class="anonymous-media-picker">
+                    <span>Attach a photo or video</span>
+                    <input type="file" name="media"
+                        accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/ogg">
+                </label>
+
 
             <div class="anonymous-reply-footer">
 
