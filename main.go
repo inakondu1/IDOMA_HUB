@@ -208,6 +208,9 @@ func main() {
 	http.HandleFunc("/notifications", notificationsHandler)
 	http.HandleFunc("/messages/unread-count", unreadMessageCountHandler)
 	http.HandleFunc("/messages", messagesHandler)
+	http.HandleFunc("/push/public-key", pushPublicKeyHandler)
+	http.HandleFunc("/push/subscribe", pushSubscribeHandler)
+	http.HandleFunc("/push/unsubscribe", pushUnsubscribeHandler)
 
 	http.HandleFunc("/calls/start", callStartHandler)
 	http.HandleFunc("/calls/incoming", callIncomingHandler)

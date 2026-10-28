@@ -750,5 +750,28 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create status shares index:", err)
 	}
 
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS push_subscriptions (
+                        id SERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        endpoint TEXT NOT NULL UNIQUE,
+                        p256dh TEXT NOT NULL,
+                        auth TEXT NOT NULL,
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create push subscriptions table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user
+                ON push_subscriptions(user_id)
+        `)
+	if err != nil {
+		log.Fatal("Unable to create push subscriptions index:", err)
+	}
+
 	return db
 }

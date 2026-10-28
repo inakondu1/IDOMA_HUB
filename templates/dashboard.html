@@ -1643,6 +1643,120 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
+
+<script id="idoma-push-controls">
+(function () {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+
+  const panel = document.createElement("section");
+  panel.id = "idoma-push-panel";
+  panel.style.cssText =
+    "position:fixed;right:14px;bottom:14px;z-index:9999;" +
+    "max-width:290px;padding:12px;background:#111;color:#fff;" +
+    "border:1px solid #b5121b;border-radius:12px;" +
+    "box-shadow:0 4px 18px #0008;font:14px sans-serif";
+  panel.innerHTML =
+    '<div style="font-weight:700;margin-bottom:6px">App notifications</div>' +
+    '<div id="idoma-push-status" role="status" style="margin-bottom:8px">' +
+    'Choose whether to receive IDOMA HUB notifications on this device.</div>' +
+    '<button id="idoma-push-enable" type="button" ' +
+    'style="background:#b5121b;color:white;border:0;border-radius:7px;' +
+    'padding:8px 10px;margin-right:6px">Enable</button>' +
+    '<button id="idoma-push-disable" type="button" ' +
+    'style="background:#333;color:white;border:1px solid #777;' +
+    'border-radius:7px;padding:8px 10px">Disable</button>' +
+    '<button id="idoma-push-hide" type="button" aria-label="Hide notifications panel" ' +
+    'style="float:right;background:transparent;color:white;border:0;padding:4px">×</button>';
+
+  document.body.appendChild(panel);
+
+  const status = panel.querySelector("#idoma-push-status");
+  const enable = panel.querySelector("#idoma-push-enable");
+  const disable = panel.querySelector("#idoma-push-disable");
+  const hide = panel.querySelector("#idoma-push-hide");
+
+  function setStatus(message) {
+    status.textContent = message;
+  }
+
+  function decodeKey(value) {
+    const padding = "=".repeat((4 - value.length % 4) % 4);
+    const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const raw = atob(base64);
+    return Uint8Array.from(raw, ch => ch.charCodeAt(0));
+  }
+
+  async function getSubscription() {
+    const registration = await navigator.serviceWorker.ready;
+    return { registration, subscription: await registration.pushManager.getSubscription() };
+  }
+
+  async function saveSubscription(subscription) {
+    const response = await fetch("/push/subscribe", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(subscription)
+    });
+    if (!response.ok) throw new Error(await response.text() || "Could not save subscription.");
+  }
+
+  enable.addEventListener("click", async function () {
+    enable.disabled = true;
+    try {
+      if (!("Notification" in window)) throw new Error("Notifications are not supported by this browser.");
+      if (!window.isSecureContext) throw new Error("Notifications require a secure HTTPS connection.");
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") throw new Error("Notification permission was not granted.");
+
+      setStatus("Preparing notifications…");
+      const keyResponse = await fetch("/push/public-key", { credentials: "same-origin" });
+      if (!keyResponse.ok) throw new Error("Push notifications are not configured on the server yet.");
+      const result = await keyResponse.json();
+      if (!result.publicKey) throw new Error("The server did not provide a push key.");
+
+      const { registration, subscription: existing } = await getSubscription();
+      const subscription = existing || await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: decodeKey(result.publicKey)
+      });
+
+      await saveSubscription(subscription);
+      setStatus("Notifications are enabled on this device.");
+    } catch (error) {
+      setStatus(error.message || "Could not enable notifications.");
+    } finally {
+      enable.disabled = false;
+    }
+  });
+
+  disable.addEventListener("click", async function () {
+    disable.disabled = true;
+    try {
+      const { subscription } = await getSubscription();
+      if (subscription) {
+        const endpoint = subscription.endpoint;
+        await subscription.unsubscribe();
+        const response = await fetch("/push/unsubscribe", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint })
+        });
+        if (!response.ok) throw new Error("Could not update the server subscription.");
+      }
+      setStatus("Notifications are disabled on this device.");
+    } catch (error) {
+      setStatus(error.message || "Could not disable notifications.");
+    } finally {
+      disable.disabled = false;
+    }
+  });
+
+  hide.addEventListener("click", () => panel.remove());
+})();
+</script>
+
 </body>
 </html>
 

@@ -398,6 +398,13 @@ func anonymousHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Keep anonymous notifications free of identity and message content.
+		go sendPushToAll(
+			"New activity in the Anonymous Group",
+			"Open IDOMA HUB to view the latest anonymous activity.",
+			"/anonymous",
+		)
+
 		http.Redirect(w, r, "/anonymous", http.StatusSeeOther)
 		return
 	}

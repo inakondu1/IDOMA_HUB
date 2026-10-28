@@ -50,3 +50,72 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+
+// Display private, generic push notifications from IDOMA HUB.
+self.addEventListener("push", (event) => {
+  event.waitUntil((async () => {
+    let data = {};
+    try {
+      data = event.data ? event.data.json() : {};
+    } catch (_) {}
+
+    const title = typeof data.title === "string" ? data.title : "IDOMA HUB";
+    const body = typeof data.body === "string"
+      ? data.body
+      : "You have a new notification.";
+
+    // Only allow a local path; never navigate to an external site.
+    let target = "/dashboard";
+    if (typeof data.url === "string" && data.url.startsWith("/") &&
+        !data.url.startsWith("//")) {
+      try {
+        const parsed = new URL(data.url, self.location.origin);
+        if (parsed.origin === self.location.origin) {
+          target = parsed.pathname + parsed.search + parsed.hash;
+        }
+      } catch (_) {}
+    }
+
+    await self.registration.showNotification(title, {
+      body,
+      icon: "/static/images/idoma-app-192.png",
+      badge: "/static/images/idoma-app-192.png",
+      data: { url: target }
+    });
+  })());
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  let target = "/dashboard";
+  const supplied = event.notification.data &&
+    event.notification.data.url;
+
+  if (typeof supplied === "string" && supplied.startsWith("/") &&
+      !supplied.startsWith("//")) {
+    try {
+      const parsed = new URL(supplied, self.location.origin);
+      if (parsed.origin === self.location.origin) {
+        target = parsed.href;
+      }
+    } catch (_) {}
+  }
+
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({
+      type: "window",
+      includeUncontrolled: true
+    });
+
+    for (const client of windows) {
+      if (new URL(client.url).origin === self.location.origin) {
+        if ("navigate" in client) await client.navigate(target);
+        return client.focus();
+      }
+    }
+
+    return self.clients.openWindow(target);
+  })());
+});

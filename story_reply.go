@@ -64,6 +64,13 @@ func storyReplyHandler(w http.ResponseWriter, r *http.Request) {
 
 	if ownerID != userID {
 		createStoryNotification(ownerID, userID, "story_reply")
+
+		go sendPushToUser(
+			ownerID,
+			"New story reply",
+			"Open IDOMA HUB to view the reply to your story.",
+			"/messages?user_id="+strconv.Itoa(userID),
+		)
 	}
 
 	if ownerID == userID {

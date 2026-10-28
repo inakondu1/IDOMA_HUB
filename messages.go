@@ -229,6 +229,12 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "Unable to forward message", http.StatusInternalServerError)
 				return
 			}
+			go sendPushToUser(
+				forwardToUserID,
+				"New private message",
+				"Open IDOMA HUB to view your message.",
+				"/messages?user_id="+strconv.Itoa(userID),
+			)
 
 			http.Redirect(
 				w,
@@ -370,6 +376,12 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "Unable to send message", http.StatusInternalServerError)
 				return
 			}
+			go sendPushToUser(
+				otherUserID,
+				"New private message",
+				"Open IDOMA HUB to view your message.",
+				"/messages?user_id="+strconv.Itoa(userID),
+			)
 		}
 
 		http.Redirect(
