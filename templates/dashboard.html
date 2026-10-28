@@ -1670,6 +1670,51 @@ if ("serviceWorker" in navigator) {
 
   document.body.appendChild(panel);
 
+  const preferenceKey = "idomaPushPanelPreference";
+  const savedPreference = localStorage.getItem(preferenceKey);
+
+  const reopen = document.createElement("button");
+  reopen.type = "button";
+  reopen.textContent = "🔔 Notifications";
+  reopen.style.cssText =
+    "position:fixed;right:16px;bottom:16px;z-index:99998;" +
+    "padding:10px 14px;border:0;border-radius:22px;" +
+    "background:#b5121b;color:#fff;font-weight:600;" +
+    "cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.3)";
+  document.body.appendChild(reopen);
+
+  function showPanel() {
+    panel.style.display = "";
+    reopen.style.display = "none";
+  }
+
+  function hidePanel() {
+    panel.style.display = "none";
+    reopen.style.display = "";
+  }
+
+  reopen.addEventListener("click", showPanel);
+
+  if (savedPreference === "hidden" || savedPreference === "enabled") {
+    hidePanel();
+  } else {
+    reopen.style.display = "none";
+  }
+
+  if (savedPreference === "enabled") {
+    (async function checkSavedSubscription() {
+      try {
+        const { subscription } = await getSubscription();
+        if (!subscription) {
+          localStorage.removeItem(preferenceKey);
+          showPanel();
+        }
+      } catch (error) {
+        console.warn("Could not verify saved push subscription:", error);
+      }
+    })();
+  }
+
   const status = panel.querySelector("#idoma-push-status");
   const enable = panel.querySelector("#idoma-push-enable");
   const disable = panel.querySelector("#idoma-push-disable");
@@ -1723,6 +1768,8 @@ if ("serviceWorker" in navigator) {
 
       await saveSubscription(subscription);
       setStatus("Notifications are enabled on this device.");
+      localStorage.setItem(preferenceKey, "enabled");
+      hidePanel();
     } catch (error) {
       setStatus(error.message || "Could not enable notifications.");
     } finally {
@@ -1746,6 +1793,7 @@ if ("serviceWorker" in navigator) {
         if (!response.ok) throw new Error("Could not update the server subscription.");
       }
       setStatus("Notifications are disabled on this device.");
+      localStorage.removeItem(preferenceKey);
     } catch (error) {
       setStatus(error.message || "Could not disable notifications.");
     } finally {
@@ -1753,7 +1801,10 @@ if ("serviceWorker" in navigator) {
     }
   });
 
-  hide.addEventListener("click", () => panel.remove());
+  hide.addEventListener("click", () => {
+    localStorage.setItem(preferenceKey, "hidden");
+    hidePanel();
+  });
 })();
 </script>
 
