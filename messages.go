@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Message struct {
@@ -26,6 +27,7 @@ type Message struct {
 	ReplyToIsVideo bool
 	Edited         bool
 	Deleted        bool
+	CanEdit        bool
 }
 
 type ForwardRecipient struct {
@@ -191,9 +193,10 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 			var messageSenderID int
 			var messageContent string
 			var deletedForEveryone bool
+			var messageCreatedAt time.Time
 
 			err := db.QueryRow(`
-				SELECT sender_id, content, deleted_for_everyone
+				SELECT sender_id, content, deleted_for_everyone, created_at
 				FROM messages
 				WHERE id = $1
 				  AND (
@@ -201,7 +204,7 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 					OR (sender_id = $3 AND receiver_id = $2)
 				  )
 			`, messageID, userID, otherUserID).Scan(
-				&messageSenderID, &messageContent, &deletedForEveryone,
+				&messageSenderID, &messageContent, &deletedForEveryone, &messageCreatedAt,
 			)
 			if err != nil {
 				http.Error(w, "Message not found in this conversation", http.StatusNotFound)
@@ -212,6 +215,10 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 			case "edit":
 				if messageSenderID != userID {
 					http.Error(w, "You can only edit your own messages", http.StatusForbidden)
+					return
+				}
+				if time.Since(messageCreatedAt) >= 24*time.Hour {
+					http.Error(w, "Messages can only be edited within 24 hours of sending", http.StatusForbidden)
 					return
 				}
 				if deletedForEveryone {
@@ -507,6 +514,7 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
                CASE WHEN m.deleted_for_everyone THEN '' ELSE m.content END,
                m.is_read,
                TO_CHAR(m.created_at, 'YYYY-MM-DD HH24:MI'),
+               m.created_at,
                COALESCE(m.reply_to_id, 0),
                CASE WHEN replied.deleted_for_everyone THEN ''
                     ELSE COALESCE(replied.content, '') END,
@@ -569,6 +577,7 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var message Message
+		var messageCreatedAt time.Time
 
 		if err := rows.Scan(
 			&message.ID,
@@ -577,6 +586,7 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 			&message.Content,
 			&message.IsRead,
 			&message.CreatedAt,
+			&messageCreatedAt,
 			&message.ReplyToID,
 			&message.ReplyToContent,
 			&message.Edited,
@@ -610,6 +620,8 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 				message.ReplyToIsVideo = true
 				message.ReplyToContent = "🎬 Video message"
 			}
+			message.CanEdit = message.SenderID == userID &&
+				time.Since(messageCreatedAt) < 24*time.Hour
 			data.Messages = append(data.Messages, message)
 		}
 	}
