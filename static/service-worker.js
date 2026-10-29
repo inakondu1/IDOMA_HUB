@@ -86,6 +86,45 @@ self.addEventListener("push", (event) => {
   })());
 });
 
+// Close only push notifications belonging to the conversation currently open.
+self.addEventListener("message", (event) => {
+  const message = event.data;
+  if (!message || message.type !== "CLOSE_CONVERSATION_NOTIFICATIONS") {
+    return;
+  }
+
+  const supplied = message.url;
+  if (typeof supplied !== "string" || !supplied.startsWith("/") ||
+      supplied.startsWith("//")) {
+    return;
+  }
+
+  let target;
+  try {
+    const parsed = new URL(supplied, self.location.origin);
+    if (parsed.origin !== self.location.origin) return;
+    target = parsed.pathname + parsed.search;
+  } catch (_) {
+    return;
+  }
+
+  event.waitUntil((async () => {
+    const notifications = await self.registration.getNotifications();
+    for (const notification of notifications) {
+      const notificationURL = notification.data && notification.data.url;
+      if (typeof notificationURL !== "string") continue;
+
+      try {
+        const parsed = new URL(notificationURL, self.location.origin);
+        if (parsed.origin === self.location.origin &&
+            parsed.pathname + parsed.search === target) {
+          notification.close();
+        }
+      } catch (_) {}
+    }
+  })());
+});
+
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 

@@ -1,6 +1,5 @@
 (function () {
     const badges = document.querySelectorAll(".unread-message-badge");
-    if (!badges.length) return;
 
     let checking = false;
 

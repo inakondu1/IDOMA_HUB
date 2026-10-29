@@ -2510,8 +2510,27 @@
     })();
     </script>
 
+    <script src="/static/js/unread-message-badge.js" defer></script>
     <script src="/static/js/global-calls.js" defer></script>
     <script src="/static/js/voice-messages.js" defer></script>
     <script src="/static/js/video-messages.js" defer></script>
+    <script>
+      // Ask the service worker to dismiss notifications for this conversation.
+      if ("serviceWorker" in navigator) {
+        const conversationURL = window.location.pathname + window.location.search;
+        if (window.location.pathname === "/messages" &&
+            new URLSearchParams(window.location.search).has("user_id")) {
+          navigator.serviceWorker.ready.then((registration) => {
+            const worker = navigator.serviceWorker.controller || registration.active;
+            if (worker) {
+              worker.postMessage({
+                type: "CLOSE_CONVERSATION_NOTIFICATIONS",
+                url: conversationURL
+              });
+            }
+          }).catch(() => {});
+        }
+      }
+    </script>
 </body>
 </html>
