@@ -263,6 +263,34 @@ func initDatabase() *sql.DB {
 	}
 
 	_, err = db.Exec(`
+		ALTER TABLE messages
+		ADD COLUMN IF NOT EXISTS edited_at TIMESTAMP NULL
+	`)
+	if err != nil {
+		log.Fatal("Unable to add message edited timestamp:", err)
+	}
+
+	_, err = db.Exec(`
+		ALTER TABLE messages
+		ADD COLUMN IF NOT EXISTS deleted_for_everyone BOOLEAN NOT NULL DEFAULT FALSE
+	`)
+	if err != nil {
+		log.Fatal("Unable to add message deletion flag:", err)
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS message_hidden_for (
+			message_id INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+			user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (message_id, user_id)
+		)
+	`)
+	if err != nil {
+		log.Fatal("Unable to create per-user hidden messages table:", err)
+	}
+
+	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS farm_produce (
 			id SERIAL PRIMARY KEY,
 			name TEXT NOT NULL,
