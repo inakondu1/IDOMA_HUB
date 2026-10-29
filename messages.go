@@ -24,6 +24,8 @@ type Message struct {
 	ReplyToContent string
 	ReplyToIsVoice bool
 	ReplyToIsVideo bool
+	Edited         bool
+	Deleted        bool
 }
 
 type ForwardRecipient struct {
@@ -177,6 +179,113 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
+
+		action := strings.TrimSpace(r.FormValue("message_action"))
+		if action != "" {
+			messageID, parseErr := strconv.Atoi(r.FormValue("message_id"))
+			if parseErr != nil || messageID <= 0 {
+				http.Error(w, "Invalid message ID", http.StatusBadRequest)
+				return
+			}
+
+			var messageSenderID int
+			var messageContent string
+			var deletedForEveryone bool
+
+			err := db.QueryRow(`
+				SELECT sender_id, content, deleted_for_everyone
+				FROM messages
+				WHERE id = $1
+				  AND (
+					(sender_id = $2 AND receiver_id = $3)
+					OR (sender_id = $3 AND receiver_id = $2)
+				  )
+			`, messageID, userID, otherUserID).Scan(
+				&messageSenderID, &messageContent, &deletedForEveryone,
+			)
+			if err != nil {
+				http.Error(w, "Message not found in this conversation", http.StatusNotFound)
+				return
+			}
+
+			switch action {
+			case "edit":
+				if messageSenderID != userID {
+					http.Error(w, "You can only edit your own messages", http.StatusForbidden)
+					return
+				}
+				if deletedForEveryone {
+					http.Error(w, "This message has already been deleted", http.StatusBadRequest)
+					return
+				}
+				if strings.HasPrefix(messageContent, "VOICE:") ||
+					strings.HasPrefix(messageContent, "VIDEO:") {
+					http.Error(w, "Voice and video messages cannot be edited", http.StatusBadRequest)
+					return
+				}
+
+				newContent := strings.TrimSpace(r.FormValue("content"))
+				if newContent == "" ||
+					strings.HasPrefix(newContent, "VOICE:") ||
+					strings.HasPrefix(newContent, "VIDEO:") {
+					http.Error(w, "Enter valid text for the edited message", http.StatusBadRequest)
+					return
+				}
+
+				_, err = db.Exec(`
+					UPDATE messages
+					SET content = $1, edited_at = CURRENT_TIMESTAMP
+					WHERE id = $2 AND sender_id = $3
+					  AND deleted_for_everyone = FALSE
+				`, newContent, messageID, userID)
+				if err != nil {
+					log.Println("Unable to edit message:", err)
+					http.Error(w, "Unable to edit message", http.StatusInternalServerError)
+					return
+				}
+
+			case "delete_for_me":
+				_, err = db.Exec(`
+					INSERT INTO message_hidden_for (message_id, user_id)
+					VALUES ($1, $2)
+					ON CONFLICT (message_id, user_id) DO NOTHING
+				`, messageID, userID)
+				if err != nil {
+					log.Println("Unable to hide message:", err)
+					http.Error(w, "Unable to hide message", http.StatusInternalServerError)
+					return
+				}
+
+			case "delete_for_everyone":
+				if messageSenderID != userID {
+					http.Error(w, "You can only delete your own messages for everyone", http.StatusForbidden)
+					return
+				}
+				if !deletedForEveryone {
+					_, err = db.Exec(`
+						UPDATE messages
+						SET deleted_for_everyone = TRUE
+						WHERE id = $1 AND sender_id = $2
+					`, messageID, userID)
+					if err != nil {
+						log.Println("Unable to delete message for everyone:", err)
+						http.Error(w, "Unable to delete message", http.StatusInternalServerError)
+						return
+					}
+				}
+
+			default:
+				http.Error(w, "Unknown message action", http.StatusBadRequest)
+				return
+			}
+
+			http.Redirect(
+				w, r,
+				"/messages?user_id="+strconv.Itoa(otherUserID),
+				http.StatusSeeOther,
+			)
+			return
+		}
 		forwardMessageID, _ := strconv.Atoi(r.FormValue("forward_message_id"))
 		if forwardMessageID > 0 {
 			forwardToUserID, parseErr := strconv.Atoi(r.FormValue("forward_to_user_id"))
@@ -394,18 +503,27 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT m.id, m.sender_id, m.receiver_id, m.content, m.is_read,
-                   TO_CHAR(m.created_at, 'YYYY-MM-DD HH24:MI'),
-                   COALESCE(m.reply_to_id, 0),
-                   COALESCE(replied.content, '')
-            FROM messages m
-            LEFT JOIN messages replied ON replied.id = m.reply_to_id
-            WHERE
-                    (m.sender_id = $1 AND m.receiver_id = $2)
-                    OR
-                    (m.sender_id = $2 AND m.receiver_id = $1)
-            ORDER BY m.created_at ASC
-	`, userID, otherUserID)
+        SELECT m.id, m.sender_id, m.receiver_id,
+               CASE WHEN m.deleted_for_everyone THEN '' ELSE m.content END,
+               m.is_read,
+               TO_CHAR(m.created_at, 'YYYY-MM-DD HH24:MI'),
+               COALESCE(m.reply_to_id, 0),
+               CASE WHEN replied.deleted_for_everyone THEN ''
+                    ELSE COALESCE(replied.content, '') END,
+               (m.edited_at IS NOT NULL),
+               m.deleted_for_everyone
+        FROM messages m
+        LEFT JOIN messages replied ON replied.id = m.reply_to_id
+        WHERE (
+            (m.sender_id = $1 AND m.receiver_id = $2)
+            OR (m.sender_id = $2 AND m.receiver_id = $1)
+        )
+        AND NOT EXISTS (
+            SELECT 1 FROM message_hidden_for hidden
+            WHERE hidden.message_id = m.id AND hidden.user_id = $1
+        )
+        ORDER BY m.created_at ASC
+    `, userID, otherUserID)
 
 	if err != nil {
 		http.Error(w, "Unable to load messages", http.StatusInternalServerError)
@@ -461,7 +579,19 @@ func messagesHandler(w http.ResponseWriter, r *http.Request) {
 			&message.CreatedAt,
 			&message.ReplyToID,
 			&message.ReplyToContent,
-		); err == nil {
+			&message.Edited,
+			&message.Deleted,
+		); err != nil {
+			log.Println("Unable to scan message row:", err)
+			http.Error(w, "Unable to read messages", http.StatusInternalServerError)
+			return
+		}
+
+		{
+			if message.Deleted {
+				message.Content = "This message was deleted."
+			}
+
 			if strings.HasPrefix(message.Content, "VOICE:") {
 				message.IsVoice = true
 				message.AudioURL = strings.TrimPrefix(message.Content, "VOICE:")
