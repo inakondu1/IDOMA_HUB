@@ -12692,3 +12692,93 @@ body.dashboard-body .welcome-community-links a:hover {
 .anonymous-media video {
     max-width: 100%;
 }
+
+/* X-style post action icons */
+body.dashboard-body .feed-post .x-post-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 8px;
+    width: 100%;
+}
+
+body.dashboard-body .feed-post .x-post-actions .post-action-form {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+}
+
+body.dashboard-body .feed-post .x-post-actions .post-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    padding: 7px 5px;
+    border: 0;
+    border-radius: 20px;
+    background: transparent;
+    color: #9299a1;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .2s ease, color .2s ease;
+}
+
+body.dashboard-body .feed-post .x-post-actions .post-action-button svg {
+    width: 19px;
+    height: 19px;
+    flex: 0 0 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+body.dashboard-body .feed-post .x-post-actions .post-action-count {
+    color: inherit;
+    font-size: 13px;
+}
+
+body.dashboard-body .feed-post .x-post-actions .comment-action:hover {
+    color: #1d9bf0;
+    background: rgba(29, 155, 240, .10);
+}
+
+body.dashboard-body .feed-post .x-post-actions .share-button:hover {
+    color: #00ba7c;
+    background: rgba(0, 186, 124, .10);
+}
+
+body.dashboard-body .feed-post .x-post-actions .like-button:hover,
+body.dashboard-body .feed-post .x-post-actions .like-button.is-liked {
+    color: #f91880;
+}
+
+body.dashboard-body .feed-post .x-post-actions .like-button.is-liked svg {
+    fill: currentColor;
+}
+
+@media (max-width: 380px) {
+    body.dashboard-body .feed-post .x-post-actions {
+        gap: 2px;
+    }
+
+    body.dashboard-body .feed-post .x-post-actions .post-action-button {
+        gap: 4px;
+        font-size: 12px;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+    body.dashboard-body .feed-post .x-post-actions .post-action-button svg {
+        width: 17px;
+        height: 17px;
+        flex-basis: 17px;
+    }
+}
