@@ -32,9 +32,7 @@
 </a>
                         <a href="/notifications" class="dashboard-notification-link">
     <span>Notifications</span>
-    {{if gt .NotificationCount 0}}
-        <span class="notification-badge">{{.NotificationCount}}</span>
-    {{end}}
+    <span class="notification-badge unread-notification-badge" {{if le .NotificationCount 0}}hidden{{end}}>{{if gt .NotificationCount 0}}{{.NotificationCount}}{{end}}</span>
 </a>
 			<a href="/logout">Logout</a>
 		</nav>
@@ -1659,6 +1657,7 @@ function toggleComments(button) {
 })();
 </script>
 
+    <script src="/static/js/unread-notification-badge.js" defer></script>
     <script src="/static/js/unread-message-badge.js" defer></script>
     <script src="/static/js/global-calls.js" defer></script>
 

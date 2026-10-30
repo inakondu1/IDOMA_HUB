@@ -214,6 +214,7 @@ func main() {
 	http.HandleFunc("/history", historyHandler)
 	http.HandleFunc("/farm-produce", farmProduceHandler)
 	http.HandleFunc("/notifications", notificationsHandler)
+	http.HandleFunc("/notifications/count", notificationCountHandler)
 	http.HandleFunc("/messages/unread-count", unreadMessageCountHandler)
 	http.HandleFunc("/messages", messagesHandler)
 	http.HandleFunc("/push/public-key", pushPublicKeyHandler)
