@@ -37,6 +37,7 @@ type Post struct {
 	LikeCount      int
 	CommentCount   int
 	ShareCount     int
+	ViewCount      int
 	LikedByMe      bool
 	MediaURL       string
 	MediaType      string
@@ -164,6 +165,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		       COUNT(post_likes.id) AS like_count,
                     (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comment_count,
                     (SELECT COUNT(*) FROM posts shares WHERE shares.original_post_id = posts.id) AS share_count,
+                    (SELECT COUNT(*) FROM post_views WHERE post_views.post_id = posts.id) AS view_count,
 		       EXISTS (
 			       SELECT 1
 			       FROM post_likes user_like
@@ -201,6 +203,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 			&post.LikeCount,
 			&post.CommentCount,
 			&post.ShareCount,
+			&post.ViewCount,
 			&post.LikedByMe,
 		)
 
@@ -1035,4 +1038,68 @@ func createCommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, returnTo, http.StatusSeeOther)
+}
+
+func postViewHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, loggedIn := getUserIDFromSession(r)
+	if !loggedIn {
+		http.Error(w, "Please log in.", http.StatusUnauthorized)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Invalid request.", http.StatusBadRequest)
+		return
+	}
+
+	postID, err := strconv.Atoi(r.FormValue("post_id"))
+	if err != nil || postID <= 0 {
+		http.Error(w, "Invalid post ID.", http.StatusBadRequest)
+		return
+	}
+
+	var exists bool
+	err = db.QueryRow(
+		"SELECT EXISTS(SELECT 1 FROM posts WHERE id = $1)",
+		postID,
+	).Scan(&exists)
+	if err != nil {
+		http.Error(w, "Unable to check post.", http.StatusInternalServerError)
+		log.Println("postViewHandler: post lookup failed:", err)
+		return
+	}
+	if !exists {
+		http.Error(w, "Post not found.", http.StatusNotFound)
+		return
+	}
+
+	_, err = db.Exec(`
+		INSERT INTO post_views (post_id, user_id)
+		VALUES ($1, $2)
+		ON CONFLICT (post_id, user_id) DO NOTHING
+	`, postID, userID)
+	if err != nil {
+		http.Error(w, "Unable to record view.", http.StatusInternalServerError)
+		log.Println("postViewHandler: insert failed:", err)
+		return
+	}
+
+	var viewCount int
+	err = db.QueryRow(
+		"SELECT COUNT(*) FROM post_views WHERE post_id = $1",
+		postID,
+	).Scan(&viewCount)
+	if err != nil {
+		http.Error(w, "Unable to load view count.", http.StatusInternalServerError)
+		log.Println("postViewHandler: count failed:", err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]int{"view_count": viewCount})
 }

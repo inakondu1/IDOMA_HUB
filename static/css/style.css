@@ -12782,3 +12782,101 @@ body.dashboard-body .feed-post .x-post-actions .like-button.is-liked svg {
         flex-basis: 17px;
     }
 }
+
+
+/* COMPACT X-STYLE POST ACTIONS WITH VIEWS */
+body.dashboard-body .feed-post .x-post-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 2px !important;
+    width: 100% !important;
+}
+
+body.dashboard-body .feed-post .x-post-actions > form,
+body.dashboard-body .feed-post .x-post-actions > button,
+body.dashboard-body .feed-post .x-post-actions > .post-action-view {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 1 25% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+body.dashboard-body .feed-post .x-post-actions .post-action-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 32px !important;
+    padding: 4px 1px !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #9299a1 !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard-body .feed-post .x-post-actions .post-action-button svg {
+    width: 15px !important;
+    height: 15px !important;
+    flex: 0 0 15px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+body.dashboard-body .feed-post .x-post-actions .post-action-label,
+body.dashboard-body .feed-post .x-post-actions .post-action-count {
+    color: inherit !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+}
+
+body.dashboard-body .feed-post .x-post-actions .like-button:hover,
+body.dashboard-body .feed-post .x-post-actions .like-button.is-liked {
+    color: #f91880 !important;
+}
+
+body.dashboard-body .feed-post .x-post-actions .like-button.is-liked svg {
+    fill: currentColor !important;
+}
+
+body.dashboard-body .feed-post .x-post-actions .comment-action:hover {
+    color: #1d9bf0 !important;
+}
+
+body.dashboard-body .feed-post .x-post-actions .share-button:hover {
+    color: #00ba7c !important;
+}
+
+@media (max-width: 380px) {
+    body.dashboard-body .feed-post .x-post-actions {
+        gap: 0 !important;
+    }
+
+    body.dashboard-body .feed-post .x-post-actions .post-action-button {
+        gap: 2px !important;
+        font-size: 10px !important;
+    }
+
+    body.dashboard-body .feed-post .x-post-actions .post-action-button svg {
+        width: 13px !important;
+        height: 13px !important;
+        flex-basis: 13px !important;
+    }
+
+    body.dashboard-body .feed-post .x-post-actions .post-action-label,
+    body.dashboard-body .feed-post .x-post-actions .post-action-count {
+        font-size: 10px !important;
+    }
+}

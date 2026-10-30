@@ -574,6 +574,7 @@ function togglePostEdit(button, cancel) {
             <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>
             </svg>
+            <span class="post-action-label">Like</span>
             <span class="post-action-count">{{.LikeCount}}</span>
         </button>
     </form>
@@ -586,6 +587,7 @@ function togglePostEdit(button, cancel) {
         <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/>
         </svg>
+        <span class="post-action-label">Comment</span>
         <span class="post-action-count">{{.CommentCount}}</span>
     </button>
 
@@ -602,13 +604,23 @@ function togglePostEdit(button, cancel) {
                 <path d="M7 22l-5-5 5-5"/>
                 <path d="M2 17h13a5 5 0 0 0 5-5v-1"/>
             </svg>
+            <span class="post-action-label">Share</span>
             <span class="post-action-count">{{.ShareCount}}</span>
         </button>
     </form>
 
-</div>
 
-    <div class="comments-section" style="display: none;">
+    <div class="post-action-view post-action-button" title="Views" aria-label="Post views">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/>
+            <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span class="post-action-label">Views</span>
+        <span class="post-action-count post-view-count">{{.ViewCount}}</span>
+    </div>
+
+</div>
+<div class="comments-section" style="display: none;">
 
                                             <form action="/comment" method="POST" class="comment-form">
                                                     <input type="hidden" name="post_id" value="{{.ID}}">
@@ -1823,6 +1835,49 @@ if ("serviceWorker" in navigator) {
     localStorage.setItem(preferenceKey, "hidden");
     hidePanel();
   });
+})();
+</script>
+
+
+<script id="idoma-post-view-tracker">
+(() => {
+    const posts = document.querySelectorAll('.feed-post[id^="post-"]');
+    if (!posts.length || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(async (entry) => {
+            if (!entry.isIntersecting) return;
+
+            const post = entry.target;
+            observer.unobserve(post);
+
+            const postId = post.id.replace("post-", "");
+            const countElement = post.querySelector(".post-view-count");
+            if (!postId || !countElement) return;
+
+            try {
+                const response = await fetch("/post/view", {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({ post_id: postId })
+                });
+
+                if (!response.ok) return;
+
+                const result = await response.json();
+                if (Number.isInteger(result.view_count)) {
+                    countElement.textContent = result.view_count;
+                }
+            } catch (error) {
+                console.error("Unable to record post view:", error);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    posts.forEach(post => observer.observe(post));
 })();
 </script>
 

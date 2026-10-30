@@ -228,6 +228,7 @@ func main() {
 	http.HandleFunc("/calls/events", callEventsHandler)
 	http.HandleFunc("/story-reply", storyReplyHandler)
 	http.HandleFunc("/post", createPostHandler)
+	http.HandleFunc("/post/view", postViewHandler)
 	http.HandleFunc("/video-watch", videoWatchHandler)
 	http.HandleFunc("/video-watch/start", videoWatchStartHandler)
 	http.HandleFunc("/video-watch/complete", videoWatchCompleteHandler)

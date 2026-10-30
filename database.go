@@ -809,5 +809,18 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create push subscriptions index:", err)
 	}
 
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS post_views (
+			id SERIAL PRIMARY KEY,
+			post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+			user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE(post_id, user_id)
+		)
+	`)
+	if err != nil {
+		log.Fatal("Unable to create post views table:", err)
+	}
+
 	return db
 }
