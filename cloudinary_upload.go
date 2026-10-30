@@ -31,6 +31,23 @@ func uploadToCloudinary(reader io.Reader, folder string, resourceType string) (s
 	return result.SecureURL, nil
 }
 
+// uploadPostMediaToCloudinary uploads post media and returns its URL and public ID.
+func uploadPostMediaToCloudinary(reader io.Reader, folder string, resourceType string) (string, string, error) {
+	result, err := cld.Upload.Upload(
+		context.Background(),
+		reader,
+		uploader.UploadParams{
+			Folder:       folder,
+			ResourceType: resourceType,
+		},
+	)
+	if err != nil {
+		return "", "", err
+	}
+
+	return result.SecureURL, result.PublicID, nil
+}
+
 func deleteStoryVideo(publicID string) {
 	_, err := cld.Upload.Destroy(
 		context.Background(),
@@ -43,6 +60,31 @@ func deleteStoryVideo(publicID string) {
 	)
 	if err != nil {
 		log.Printf("Unable to delete rejected story video %s: %v", publicID, err)
+	}
+}
+
+// deletePostMediaFromCloudinary removes a post image or video by its stored public ID.
+func deletePostMediaFromCloudinary(publicID string, resourceType string) {
+	if publicID == "" {
+		return
+	}
+
+	if resourceType != "image" && resourceType != "video" {
+		log.Printf("Skipping Cloudinary deletion for unsupported post media type %q (public ID %s)", resourceType, publicID)
+		return
+	}
+
+	_, err := cld.Upload.Destroy(
+		context.Background(),
+		uploader.DestroyParams{
+			PublicID:     publicID,
+			Type:         "upload",
+			ResourceType: resourceType,
+			Invalidate:   api.Bool(true),
+		},
+	)
+	if err != nil {
+		log.Printf("Unable to delete post media %s: %v", publicID, err)
 	}
 }
 

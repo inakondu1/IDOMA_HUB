@@ -238,6 +238,14 @@ func initDatabase() *sql.DB {
 	}
 
 	_, err = db.Exec(`
+		ALTER TABLE posts
+		ADD COLUMN IF NOT EXISTS media_public_id TEXT NOT NULL DEFAULT ''
+	`)
+	if err != nil {
+		log.Fatal("Unable to add post media public ID column:", err)
+	}
+
+	_, err = db.Exec(`
                 CREATE TABLE IF NOT EXISTS messages (
                         id SERIAL PRIMARY KEY,
                         sender_id INTEGER NOT NULL,
