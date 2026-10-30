@@ -180,6 +180,7 @@ func main() {
 	http.HandleFunc("/dashboard", dashboardHandler)
 	http.HandleFunc("/feed/new-count", newFeedPostCountHandler)
 	http.HandleFunc("/creator-studio", creatorStudioHandler)
+	http.HandleFunc("/admin", adminDashboardHandler)
 	http.HandleFunc("/admin/monetization", adminMonetizationHandler)
 	http.HandleFunc("/status", createStatusHandler)
 	http.HandleFunc("/status/reshare", statusReshareHandler)
