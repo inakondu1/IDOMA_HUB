@@ -22,6 +22,11 @@
         .status { color: #ff9a9f; text-transform: capitalize; font-weight: bold; }
         a { color: #ff777d; }
     </style>
+
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <meta name="theme-color" content="#b5121b">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+
 </head>
 <body>
 <header><a href="/dashboard">IDOMA HUB · Administration</a></header>
@@ -73,5 +78,15 @@
     <p><a href="/dashboard">Back to dashboard</a></p>
 </main>
     <script src="/static/js/global-calls.js" defer></script>
+
+    <script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/sw.js")
+                .catch(error => console.error("Service worker registration failed:", error));
+        });
+    }
+    </script>
+
 </body>
 </html>

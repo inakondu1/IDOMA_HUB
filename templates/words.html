@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Idoma Words - IDOMA HUB</title>
     <link rel="stylesheet" href="/static/css/style.css">
+
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <meta name="theme-color" content="#b5121b">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+
 </head>
 
 <body>
@@ -103,6 +108,16 @@ function searchWords() {
 </script>
 
     <script src="/static/js/global-calls.js" defer></script>
+
+    <script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/sw.js")
+                .catch(error => console.error("Service worker registration failed:", error));
+        });
+    }
+    </script>
+
 </body>
 </html>
 {{end}}

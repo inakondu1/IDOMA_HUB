@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/cloudinary/cloudinary-go/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -167,6 +168,25 @@ func main() {
 	http.Handle("/static/uploads/posts/", http.StripPrefix("/static/uploads/posts/", http.FileServer(http.Dir(postUploadDir()))))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	http.HandleFunc("/static/manifest.webmanifest", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		w.Header().Set("Content-Type", "application/manifest+json")
+		http.ServeFile(w, r, "static/manifest.webmanifest")
+	})
+
+	http.HandleFunc("/sw.js", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+		w.Header().Set("Cache-Control", "no-cache")
+		http.ServeFile(w, r, "static/sw.js")
+	})
+
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/register", registerPageHandler)
 	http.HandleFunc("/login", loginPageHandler)
@@ -224,6 +244,11 @@ func main() {
 	http.HandleFunc("/delete-post", deletePostHandler)
 	http.HandleFunc("/logout", logoutHandler)
 
-	fmt.Println("IDOMA HUB is running at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("IDOMA HUB is running on port " + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

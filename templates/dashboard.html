@@ -5,6 +5,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>{{.Title}}</title>
 	<link rel="stylesheet" href="/static/css/style.css?v=20261016">
+
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <meta name="theme-color" content="#b5121b">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+
 </head>
 
 <body class="dashboard-body">
@@ -1250,6 +1255,16 @@ function toggleComments(button) {
 
     <script src="/static/js/unread-message-badge.js" defer></script>
     <script src="/static/js/global-calls.js" defer></script>
+
+    <script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/sw.js")
+                .catch(error => console.error("Service worker registration failed:", error));
+        });
+    }
+    </script>
+
 </body>
 </html>
 

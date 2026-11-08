@@ -15,3 +15,6 @@ idoma_translation_db/
 *.anonymous-db-backup
 *.story-backup
 *.story-grouped-backup
+
+# Compiled application binary
+/IDOMA_HUB
