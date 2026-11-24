@@ -11938,3 +11938,20 @@ body.dashboard-body .story-action-buttons button {
         background: #850c13 !important;
     }
 }
+
+/* FORGOT PASSWORD LINK */
+.forgot-password {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.forgot-password a {
+    color: var(--idoma-red);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}

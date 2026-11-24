@@ -62,3 +62,15 @@ func setSessionCookie(w http.ResponseWriter, sessionID string) {
 		SameSite: http.SameSiteLaxMode,
 	})
 }
+
+// deleteUserSessions removes all active sessions belonging to a user.
+func deleteUserSessions(userID int) {
+	sessionMux.Lock()
+	defer sessionMux.Unlock()
+
+	for sessionID, id := range sessions {
+		if id == userID {
+			delete(sessions, sessionID)
+		}
+	}
+}
