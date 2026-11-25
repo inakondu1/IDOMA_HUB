@@ -822,5 +822,27 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create post views table:", err)
 	}
 
+	_, err = db.Exec(`
+                CREATE TABLE IF NOT EXISTS password_reset_tokens (
+                        id BIGSERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        token_hash TEXT NOT NULL UNIQUE,
+                        expires_at TIMESTAMP NOT NULL,
+                        used_at TIMESTAMP,
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+        `)
+	if err != nil {
+		log.Fatal("Unable to create password reset tokens table:", err)
+	}
+
+	_, err = db.Exec(`
+                CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_user
+                ON password_reset_tokens(user_id, expires_at)
+        `)
+	if err != nil {
+		log.Fatal("Unable to create password reset tokens index:", err)
+	}
+
 	return db
 }

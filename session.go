@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"net/http"
+	"os"
+	"strings"
 	"sync"
 )
 
@@ -53,12 +55,26 @@ func deleteSession(r *http.Request) {
 	sessionMux.Unlock()
 }
 
+func deleteUserSessions(userID int) {
+	sessionMux.Lock()
+	defer sessionMux.Unlock()
+
+	for sessionID, id := range sessions {
+		if id == userID {
+			delete(sessions, sessionID)
+		}
+	}
+}
+
 func setSessionCookie(w http.ResponseWriter, sessionID string) {
+	secure := strings.EqualFold(os.Getenv("COOKIE_SECURE"), "true")
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "idoma_session",
 		Value:    sessionID,
 		Path:     "/",
 		HttpOnly: true,
+		Secure:   secure,
 		SameSite: http.SameSiteLaxMode,
 	})
 }

@@ -12880,3 +12880,21 @@ body.dashboard-body .feed-post .x-post-actions .share-button:hover {
         font-size: 10px !important;
     }
 }
+
+
+/* Forgot password link */
+.forgot-password {
+    text-align: right;
+    margin: 10px 0;
+}
+
+.forgot-password a {
+    color: var(--idoma-red);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}

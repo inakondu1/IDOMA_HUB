@@ -18,6 +18,8 @@ type PageData struct {
 	Title      string
 	Registered bool
 	Error      string
+	Message    string
+	Token      string
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -151,6 +153,7 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 	data := PageData{
 		Registered: r.URL.Query().Get("registered") == "1",
 		Error:      map[string]string{"login_invalid": "We couldn't sign you in. Check your username or email and password, then try again."}[r.URL.Query().Get("error")],
+		Message:    map[string]string{"1": "Your password has been reset successfully. You can now log in."}[r.URL.Query().Get("password_reset")],
 		Title:      "Login - IDOMA HUB",
 	}
 
@@ -177,6 +180,8 @@ func main() {
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/register", registerPageHandler)
 	http.HandleFunc("/login", loginPageHandler)
+	http.HandleFunc("/forgot-password", forgotPasswordHandler)
+	http.HandleFunc("/reset-password", resetPasswordHandler)
 	http.HandleFunc("/dashboard", dashboardHandler)
 	http.HandleFunc("/feed/new-count", newFeedPostCountHandler)
 	http.HandleFunc("/creator-studio", creatorStudioHandler)
