@@ -758,5 +758,18 @@ func initDatabase() *sql.DB {
 		log.Fatal("Unable to create password reset tokens index:", err)
 	}
 
+	_, err = db.Exec(`
+	    CREATE TABLE IF NOT EXISTS recovery_rate_limits (
+	        scope TEXT NOT NULL,
+	        identifier_hash TEXT NOT NULL,
+	        window_started_at TIMESTAMPTZ NOT NULL,
+	        request_count INTEGER NOT NULL DEFAULT 1,
+	        PRIMARY KEY (scope, identifier_hash)
+	    )
+	`)
+	if err != nil {
+		log.Fatal("Unable to create recovery rate limits table:", err)
+	}
+
 	return db
 }

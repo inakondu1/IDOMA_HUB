@@ -5,10 +5,18 @@ import (
 	"encoding/hex"
 	"net/http"
 	"sync"
+	"time"
 )
 
+const sessionLifetime = 24 * time.Hour
+
+type sessionData struct {
+	userID    int
+	expiresAt time.Time
+}
+
 var (
-	sessions   = make(map[string]int)
+	sessions   = make(map[string]sessionData)
 	sessionMux sync.RWMutex
 )
 
@@ -23,8 +31,20 @@ func createSession(userID int) (string, error) {
 	sessionID := hex.EncodeToString(bytes)
 
 	sessionMux.Lock()
-	sessions[sessionID] = userID
-	sessionMux.Unlock()
+	defer sessionMux.Unlock()
+
+	now := time.Now()
+
+	for id, session := range sessions {
+		if now.After(session.expiresAt) {
+			delete(sessions, id)
+		}
+	}
+
+	sessions[sessionID] = sessionData{
+		userID:    userID,
+		expiresAt: now.Add(sessionLifetime),
+	}
 
 	return sessionID, nil
 }
@@ -35,11 +55,20 @@ func getUserIDFromSession(r *http.Request) (int, bool) {
 		return 0, false
 	}
 
-	sessionMux.RLock()
-	userID, exists := sessions[cookie.Value]
-	sessionMux.RUnlock()
+	sessionMux.Lock()
+	defer sessionMux.Unlock()
 
-	return userID, exists
+	session, exists := sessions[cookie.Value]
+	if !exists {
+		return 0, false
+	}
+
+	if time.Now().After(session.expiresAt) {
+		delete(sessions, cookie.Value)
+		return 0, false
+	}
+
+	return session.userID, true
 }
 
 func deleteSession(r *http.Request) {
@@ -58,6 +87,8 @@ func setSessionCookie(w http.ResponseWriter, sessionID string) {
 		Name:     "idoma_session",
 		Value:    sessionID,
 		Path:     "/",
+		MaxAge:   int(sessionLifetime.Seconds()),
+		Expires:  time.Now().Add(sessionLifetime),
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 	})
@@ -68,8 +99,8 @@ func deleteUserSessions(userID int) {
 	sessionMux.Lock()
 	defer sessionMux.Unlock()
 
-	for sessionID, id := range sessions {
-		if id == userID {
+	for sessionID, session := range sessions {
+		if session.userID == userID {
 			delete(sessions, sessionID)
 		}
 	}

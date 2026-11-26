@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/cloudinary/cloudinary-go/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -19,6 +20,8 @@ type PageData struct {
 	Title      string
 	Registered bool
 	Error      string
+	Success    string
+	Token      string
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -164,6 +167,17 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	db = initDatabase()
+
+	go func() {
+		cleanupRecoveryRateLimits()
+
+		ticker := time.NewTicker(6 * time.Hour)
+		defer ticker.Stop()
+
+		for range ticker.C {
+			cleanupRecoveryRateLimits()
+		}
+	}()
 	cld = initCloudinary()
 	http.Handle("/static/uploads/posts/", http.StripPrefix("/static/uploads/posts/", http.FileServer(http.Dir(postUploadDir()))))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
@@ -190,6 +204,9 @@ func main() {
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/register", registerPageHandler)
 	http.HandleFunc("/login", loginPageHandler)
+	http.HandleFunc("/forgot-password", forgotPasswordHandler)
+	http.HandleFunc("/forgot-username", forgotUsernameHandler)
+	http.HandleFunc("/reset-password", resetPasswordHandler)
 	http.HandleFunc("/dashboard", dashboardHandler)
 	http.HandleFunc("/feed/new-count", newFeedPostCountHandler)
 	http.HandleFunc("/creator-studio", creatorStudioHandler)
